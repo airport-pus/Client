@@ -12,9 +12,9 @@ export default function Home() {
   };
 
   return (
-    <>
-      <div className="min-h-screen p-8 bg-[#F3F4F6] font-pretendard">
-        <div className="max-w-[1280px] mx-auto px-5">  
+    <div className="flex flex-col min-h-screen">
+      <main className="flex-grow p-8 bg-[#F3F4F6] font-pretendard">
+        <div className="max-w-[1280px] mx-auto px-5">
           <div className="col-span-12 flex items-center gap-4 mb-8">
             <Image
               src="/logo.svg"
@@ -32,10 +32,10 @@ export default function Home() {
             </div>
           </div>
 
-        <div className="grid grid-cols-12 gap-5 mb-5">
-          <div className="col-span-6 bg-white rounded-[8px] h-[300px] w-[610px]"></div>
-          <div className="col-span-6 bg-white rounded-[8px] h-[300px] w-[610px]"></div>
-        </div>
+          <div className="grid grid-cols-12 gap-5 mb-5">
+            <div className="col-span-6 bg-white rounded-[8px] h-[300px] w-[610px]"></div>
+            <div className="col-span-6 bg-white rounded-[8px] h-[300px] w-[610px]"></div>
+          </div>
 
           <div className="grid grid-cols-12 gap-5 mb-5 bg-[#CDD4E5] rounded-lg p-2">
             <button
@@ -69,11 +69,11 @@ export default function Home() {
               실시간 도착 주기장 정보
             </button>
           </div>
-      
+
           <div className="col-span-12 bg-white rounded-lg p-4 min-h-[400px]"></div>
         </div>
-      </div>
-      <Footer />
-    </>
+      </main>
+      <Footer className="mt-auto" />
+    </div>
   );
-} 
+}
