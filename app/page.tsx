@@ -33,8 +33,7 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-12 gap-5 mb-5">
-            <div className="col-span-6 bg-white rounded-[8px] h-[300px] w-[610px]"></div>
-            <div className="col-span-6 bg-white rounded-[8px] h-[300px] w-[610px]"></div>
+            <div className="col-span-6 bg-white rounded-[8px] h-[300px] w-[1240px]"></div>
           </div>
 
           <div className="grid grid-cols-12 gap-5 mb-5 bg-[#CDD4E5] rounded-lg p-2">
