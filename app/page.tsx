@@ -106,7 +106,7 @@ export default function Home() {
         <div className="max-w-[1280px] mx-auto px-5">
           <div className="col-span-12 flex items-center gap-4 mb-6">
             <Image src="/logo.svg" alt="PUSAN logo" width={100} height={100} />
-            <div>
+            <div className="flex-grow">
               <h1 className="text-[24px] font-bold text-[#000000]">
                 김해국제공항의 모든 정보를 한 곳에서,
               </h1>
@@ -114,10 +114,14 @@ export default function Home() {
                 지금까지 <span className="text-[#215DCE] font-semibold">333</span>명이 페이지에 방문했어요.
               </p>
             </div>
+            <div className="flex items-center space-x-4">
+              <div className="text-[#606060] text-[14px] ml-4">데이터셋</div>
+              <div className="text-[#606060] text-[14px] ml-4">문의하기</div>
+            </div>
           </div>
 
           <div className="grid grid-cols-12 gap-5 mb-5">
-            <div className="col-span-8 bg-white rounded-[8px] h-[300px] w-[530px] p-6 relative">
+            <div className="col-span-12 sm:col-span-8 bg-white rounded-[8px] h-[300px] sm:w-[530px] p-6 relative">
               <h2 className="text-xl font-bold mb-2 text-[#000000] text-[20px]">
                 공항 주차장 혼잡도
               </h2>
