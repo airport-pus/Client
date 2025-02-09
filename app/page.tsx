@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import Footer from "./footer/page";
 import { Line } from "react-chartjs-2";
 import {
@@ -14,6 +15,7 @@ import {
   Tooltip,
   Legend
 } from 'chart.js';
+
 
 ChartJS.register(
   CategoryScale,
@@ -115,7 +117,9 @@ export default function Home() {
               </p>
             </div>
             <div className="flex items-center space-x-4">
-              <div className="text-[#606060] text-[14px] ml-4">데이터셋</div>
+              <Link href="/dataset">
+                <div className="text-[#606060] text-[14px] ml-4 cursor-pointer">데이터셋</div>
+              </Link>
               <div className="text-[#606060] text-[14px] ml-4">문의하기</div>
             </div>
           </div>
