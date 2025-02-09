@@ -3,12 +3,69 @@
 import { useState } from "react";
 import Image from "next/image";
 import Footer from "./footer/page";
+import { Line } from "react-chartjs-2";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+} from 'chart.js';
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 export default function Home() {
   const [selected, setSelected] = useState<number>(1);
 
   const handleButtonClick = (index: number) => {
     setSelected(index);
+  };
+
+  const chartData = {
+    labels: ['P1 여객주차장', 'P2 여객주차장', 'P3 여객(화물)'],
+    datasets: [
+      {
+        label: '주차장 혼잡도',
+        data: [40, 60, 14],
+        borderColor: '#215DCE',
+        backgroundColor: '#215DCE',
+        tension: 0, 
+        pointStyle: 'circle',
+        pointRadius: 6, 
+        pointHoverRadius: 8,
+        showLine: true, 
+      },
+    ],
+  };
+
+  const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: false,
+      },
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        max: 100,
+        ticks: {
+          stepSize: 10,
+        },
+      },
+    },
   };
 
   return (
@@ -32,45 +89,12 @@ export default function Home() {
               <h2 className="text-xl font-bold mb-2 text-[#000000] text-[20px]">
                 공항 주차장 혼잡도
               </h2>
-              <p className="text-blue-500 mb-2 mt-[-8px]">
-                <a href="#" className="hover:underline">P1 여객주차장</a>을 이용하는게 좋겠어요.
+              <p className="text-[#ACACAC] mb-2 mt-[-8px] text-[14px]">
+                <span className="text-[#215DCE] underline">P1 여객주차장</span>을 이용하는게 좋겠어요.
               </p>
-
-              <div className="space-y-8 relative translate-y-2.5 -translate-x-5">
-                <div className="absolute left-28 top-[-20px] bottom-[20px] w-[1px] bg-gray-200"></div>
-                <div className="space-y-6">
-                  <div className="flex items-center gap-10">
-                    <span className="text-xs text-gray-500 w-28 text-right ml-[-22px]">P1 여객주차장</span>
-                    <div className="relative h-4 w-[490.05px]">
-                      <div className="absolute inset-y-0 left-0 bg-green-500 w-[40%] rounded-full"></div>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-10">
-                    <span className="text-xs text-gray-500 w-28 text-right ml-[-20px]">P2 여객주차장</span>
-                    <div className="relative h-4 w-[490.05px]">
-                      <div className="absolute inset-y-0 left-0 bg-yellow-500 w-[60%] rounded-full"></div>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-10">
-                    <span className="text-xs text-gray-500 w-28 text-right ml-[-22px]">P3 여객(화물)</span>
-                    <div className="relative h-4 w-[490.05px]">
-                      <div className="absolute inset-y-0 left-0 bg-red-500 w-[80%] rounded-full"></div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="relative mt-4 ml-32 border-t border-gray-200 w-[490.05px] translate-y-2.5 -translate-x-5">
-                  <div className="flex justify-between absolute w-full -translate-y-1/2">
-                    {[...Array(11)].map((_, i) => (
-                      <div key={i} className="flex flex-col items-center">
-                        <div className="h-2 w-[1px] bg-gray-200"></div>
-                        <span className="text-xs text-gray-500 mt-1">{i * 10}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+              
+              <div className="h-[200px] w-full">
+                <Line data={chartData} options={chartOptions} />
               </div>
             </div>
           </div>
