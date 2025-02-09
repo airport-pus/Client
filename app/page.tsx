@@ -45,7 +45,7 @@ export default function Home() {
     datasets: [
       {
         label: '주차장 혼잡도',
-        data: [40, 60, 14],
+        data: [80, 60, 30],
         borderColor: '#215DCE',
         backgroundColor: (context: any) => {
           const value = context.raw;
@@ -145,6 +145,13 @@ export default function Home() {
                 <Line data={chartData} options={chartOptions} />
               </div>
             </div>
+            <div className="col-span-12 sm:col-span-4 bg-white rounded-[8px] h-[300px] p-6 relative w-[700px] absolute left-[-300px]">
+            <div className="flex justify-center items-center h-full text-[#9F9F9F] text-[16px]">
+            🙄 개발 중이니 조금만 기다려주세요,,
+            </div>
+          </div>
+
+
           </div>
 
           <div className="grid grid-cols-12 gap-5 mb-5 bg-[#CDD4E5] rounded-lg p-2">
