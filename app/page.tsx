@@ -32,6 +32,12 @@ export default function Home() {
     setSelected(index);
   };
 
+  const getColorByValue = (value: number) => {
+    if (value <= 30) return '#16A34A';  
+    if (value <= 70) return '#FABE00';  
+    return '#EF0000'; 
+  };
+
   const chartData = {
     labels: ['P1 여객주차장', 'P2 여객주차장', 'P3 여객(화물)'],
     datasets: [
@@ -39,12 +45,25 @@ export default function Home() {
         label: '주차장 혼잡도',
         data: [40, 60, 14],
         borderColor: '#215DCE',
-        backgroundColor: '#215DCE',
-        tension: 0, 
+        backgroundColor: (context: any) => {
+          const value = context.raw;
+          return getColorByValue(value);
+        },
+        tension: 0,
         pointStyle: 'circle',
-        pointRadius: 6, 
-        pointHoverRadius: 8,
-        showLine: true, 
+        pointRadius: 5,
+        pointHoverRadius: 7,
+        showLine: true,
+        segment: {
+          borderColor: '#215DCE'
+        },
+        pointBorderColor: '#FFFFFF',
+        pointBorderWidth: 2,
+        parkingInfo: [
+          { current: 200, total: 500 },
+          { current: 300, total: 500 },
+          { current: 70, total: 500 },
+        ]
       },
     ],
   };
@@ -56,6 +75,19 @@ export default function Home() {
       legend: {
         display: false,
       },
+      tooltip: {
+        callbacks: {
+          label: function(context: any) {
+            const dataIndex = context.dataIndex;
+            const dataset = context.dataset;
+            const parkingInfo = dataset.parkingInfo[dataIndex];
+            return [
+              `주차된 차량 수: ${parkingInfo.current}대`,
+              `주차 가능 차량 수: ${parkingInfo.total}대`
+            ];
+          }
+        }
+      }
     },
     scales: {
       y: {
@@ -85,7 +117,7 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-12 gap-5 mb-5">
-            <div className="col-span-6 bg-white rounded-[8px] h-[300px] w-[1240px] p-6 relative">
+            <div className="col-span-8 bg-white rounded-[8px] h-[300px] w-[800px] p-6 relative">
               <h2 className="text-xl font-bold mb-2 text-[#000000] text-[20px]">
                 공항 주차장 혼잡도
               </h2>
