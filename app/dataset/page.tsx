@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link"; 
 import Footer from ".././footer/page";
@@ -26,6 +25,44 @@ export default function Home() {
               </Link>
               <div className="text-[#606060] text-[14px] ml-4">문의하기</div>
             </div>
+          </div>
+
+          <div className="h-[80px]"></div>
+
+          <div className="flex flex-col items-center justify-center">
+            <div className="text-center max-w-[600px]">
+              <h2 className="text-[24px] font-bold text-[#111827] mb-2">
+                아래 데이터를 기반으로 개발되었습니다.
+              </h2>
+              <p className="text-[16px] text-[#6B7280] mb-8">
+                클릭하면 데이터 세부정보로 이동합니다.
+              </p>
+
+              <div className="bg-white rounded-lg p-8 shadow-sm mb-6">
+                <div className="flex items-center justify-center mb-6">
+                  <span className="text-[24px] text-[#000000]">◕‿◕✿</span>
+                </div>
+                
+                <div className="space-y-4">
+                  <Link href="#" className="flex items-center text-[#2563EB] hover:underline">
+                    <Image src="/link.svg" alt="link icon" width={18} height={16} className="mr-2" />
+                    한국공항공사_공항 혼잡도 정보(김해, 청주, 대구공항)
+                  </Link>
+                  <Link href="#" className="flex items-center text-[#2563EB] hover:underline">
+                    <Image src="/link.svg" alt="link icon" width={18} height={16} className="mr-2" />
+                    한국공항공사_김해국제공항 실시간 주기장 현황정보
+                  </Link>
+                  <Link href="#" className="flex items-center text-[#2563EB] hover:underline">
+                    <Image src="/link.svg" alt="link icon" width={18} height={16} className="mr-2" />
+                    한국공항공사_전국공항 주차장 혼잡도
+                  </Link>
+                </div>
+              </div>
+
+              <Link href="/" className="inline-block px-6 py-2 bg-[#D2E4FF] text-[#2563EB] rounded-lg hover:bg-[#D1E0FF] transition-colors">
+                홈으로
+              </Link>
+            </div>  
           </div>
         </div>
       </main>
