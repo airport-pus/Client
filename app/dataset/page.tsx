@@ -15,7 +15,7 @@ export default function Home() {
               <h1 className="text-[24px] font-bold text-[#000000]">
                 김해국제공항의 모든 정보를 한 곳에서,
               </h1>
-              <p className="text-[16px] text-[#6B7280]">
+              <p className="text-[16px] text-[#606060]">
                 지금까지 <span className="text-[#215DCE] font-semibold">333</span>명이 페이지에 방문했어요.
               </p>
             </div>
@@ -32,10 +32,10 @@ export default function Home() {
           <div className="flex flex-col items-center justify-center">
             <div className="text-center max-w-[600px]">
               <h2 className="text-[24px] font-bold text-[#111827] mb-2">
-                아래 데이터를 기반으로 개발되었습니다.
+                아래 데이터를 기반으로 개발되었어요.
               </h2>
               <p className="text-[16px] text-[#6B7280] mb-8">
-                클릭하면 데이터 세부정보로 이동합니다.
+                클릭하면 데이터 세부 정보로 이동해요.
               </p>
 
               <div className="bg-white rounded-lg p-8 shadow-sm mb-6">
