@@ -3,12 +3,101 @@
 import { useState } from "react";
 import Image from "next/image";
 import Footer from "./footer/page";
+import { Line } from "react-chartjs-2";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+} from 'chart.js';
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 export default function Home() {
   const [selected, setSelected] = useState<number>(1);
 
   const handleButtonClick = (index: number) => {
     setSelected(index);
+  };
+
+  const getColorByValue = (value: number) => {
+    if (value <= 30) return '#16A34A';  
+    if (value <= 70) return '#FABE00';  
+    return '#EF0000'; 
+  };
+
+  const chartData = {
+    labels: ['P1 여객주차장', 'P2 여객주차장', 'P3 여객(화물)'],
+    datasets: [
+      {
+        label: '주차장 혼잡도',
+        data: [40, 60, 14],
+        borderColor: '#215DCE',
+        backgroundColor: (context: any) => {
+          const value = context.raw;
+          return getColorByValue(value);
+        },
+        tension: 0,
+        pointStyle: 'circle',
+        pointRadius: 5,
+        pointHoverRadius: 7,
+        showLine: true,
+        segment: {
+          borderColor: '#215DCE'
+        },
+        pointBorderColor: '#FFFFFF',
+        pointBorderWidth: 2,
+        parkingInfo: [
+          { current: 200, total: 500 },
+          { current: 300, total: 500 },
+          { current: 70, total: 500 },
+        ]
+      },
+    ],
+  };
+
+  const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: false,
+      },
+      tooltip: {
+        callbacks: {
+          label: function(context: any) {
+            const dataIndex = context.dataIndex;
+            const dataset = context.dataset;
+            const parkingInfo = dataset.parkingInfo[dataIndex];
+            return [
+              `주차된 차량 수: ${parkingInfo.current}대`,
+              `주차 가능 차량 수: ${parkingInfo.total}대`
+            ];
+          }
+        }
+      }
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        max: 100,
+        ticks: {
+          stepSize: 10,
+        },
+      },
+    },
   };
 
   return (
@@ -28,49 +117,24 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-12 gap-5 mb-5">
-            <div className="col-span-6 bg-white rounded-[8px] h-[300px] w-[1240px] p-6 relative">
+            <div className="col-span-8 bg-white rounded-[8px] h-[300px] w-[530px] p-6 relative">
               <h2 className="text-xl font-bold mb-2 text-[#000000] text-[20px]">
                 공항 주차장 혼잡도
               </h2>
-              <p className="text-blue-500 mb-2 mt-[-8px]">
-                <a href="#" className="hover:underline">P1 여객주차장</a>을 이용하는게 좋겠어요.
+              <p className="text-[#7B7B7B] mb-2 mt-[-8px] text-[14px] flex items-center">
+                <span className="text-[#215DCE] underline">P1 여객주차장</span>을 이용하는게 좋겠어요.
+                  <div className="flex items-center ml-20">
+                    <span className="w-3 h-3 rounded-full bg-[#16A34A]"></span> 
+                    <span className="text-sm ml-1">원활</span>
+                    <span className="w-3 h-3 rounded-full bg-[#FABE00] ml-4"></span> 
+                    <span className="text-sm ml-1">보통</span>
+                    <span className="w-3 h-3 rounded-full bg-[#EF0000] ml-4"></span> 
+                    <span className="text-sm ml-1">혼잡</span>
+                </div>
               </p>
-
-              <div className="space-y-8 relative translate-y-2.5 -translate-x-5">
-                <div className="absolute left-28 top-[-20px] bottom-[20px] w-[1px] bg-gray-200"></div>
-                <div className="space-y-6">
-                  <div className="flex items-center gap-10">
-                    <span className="text-xs text-gray-500 w-28 text-right ml-[-22px]">P1 여객주차장</span>
-                    <div className="relative h-4 w-[490.05px]">
-                      <div className="absolute inset-y-0 left-0 bg-green-500 w-[40%] rounded-full"></div>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-10">
-                    <span className="text-xs text-gray-500 w-28 text-right ml-[-20px]">P2 여객주차장</span>
-                    <div className="relative h-4 w-[490.05px]">
-                      <div className="absolute inset-y-0 left-0 bg-yellow-500 w-[60%] rounded-full"></div>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-10">
-                    <span className="text-xs text-gray-500 w-28 text-right ml-[-22px]">P3 여객(화물)</span>
-                    <div className="relative h-4 w-[490.05px]">
-                      <div className="absolute inset-y-0 left-0 bg-red-500 w-[80%] rounded-full"></div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="relative mt-4 ml-32 border-t border-gray-200 w-[490.05px] translate-y-2.5 -translate-x-5">
-                  <div className="flex justify-between absolute w-full -translate-y-1/2">
-                    {[...Array(11)].map((_, i) => (
-                      <div key={i} className="flex flex-col items-center">
-                        <div className="h-2 w-[1px] bg-gray-200"></div>
-                        <span className="text-xs text-gray-500 mt-1">{i * 10}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+              
+              <div className="h-[200px] w-full">
+                <Line data={chartData} options={chartOptions} />
               </div>
             </div>
           </div>
@@ -78,7 +142,7 @@ export default function Home() {
           <div className="grid grid-cols-12 gap-5 mb-5 bg-[#CDD4E5] rounded-lg p-2">
             <button
               className={`col-span-4 py-2 px-4 rounded-[8px] text-[16px] transition-colors ${
-                selected === 1 ? "bg-white text-[#2A5FEC] font-[600]" : "text-[#484848]"
+                selected === 1 ? "bg-white text-[#2A5FEC] font-[600]" : "text-[#7B7B7B]"
               }`}
               onClick={() => handleButtonClick(1)}
             >
@@ -86,7 +150,7 @@ export default function Home() {
             </button>
             <button
               className={`col-span-4 py-2 px-4 rounded-[8px] text-[16px] transition-colors ${
-                selected === 2 ? "bg-white text-[#2A5FEC] font-[600]" : "text-[#484848]"
+                selected === 2 ? "bg-white text-[#2A5FEC] font-[600]" : "text-[#7B7B7B]"
               }`}
               onClick={() => handleButtonClick(2)}
             >
@@ -94,7 +158,7 @@ export default function Home() {
             </button>
             <button
               className={`col-span-4 py-2 px-4 rounded-[8px] text-[16px] transition-colors ${
-                selected === 3 ? "bg-white text-[#2A5FEC] font-[600]" : "text-[#484848]"
+                selected === 3 ? "bg-white text-[#2A5FEC] font-[600]" : "text-[#7B7B7B]"
               }`}
               onClick={() => handleButtonClick(3)}
             >
