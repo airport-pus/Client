@@ -121,14 +121,16 @@ export default function Home() {
               <h2 className="text-xl font-bold mb-2 text-[#000000] text-[20px]">
                 공항 주차장 혼잡도
               </h2>
-              <p className="text-[#ACACAC] mb-2 mt-[-8px] text-[14px] flex items-center">
+              <p className="text-[#7B7B7B] mb-2 mt-[-8px] text-[14px] flex items-center">
                 <span className="text-[#215DCE] underline">P1 여객주차장</span>을 이용하는게 좋겠어요.
-                <span className="w-3 h-3 rounded-full bg-[#16A34A] ml-2"></span> 
-                <span className="text-sm ml-1">원활</span>
-                <span className="w-3 h-3 rounded-full bg-[#FABE00] ml-4"></span> 
-                <span className="text-sm ml-1">보통</span>
-                <span className="w-3 h-3 rounded-full bg-[#EF0000] ml-4"></span> 
-                <span className="text-sm ml-1">혼잡</span>
+                  <div className="flex items-center ml-20">
+                    <span className="w-3 h-3 rounded-full bg-[#16A34A]"></span> 
+                    <span className="text-sm ml-1">원활</span>
+                    <span className="w-3 h-3 rounded-full bg-[#FABE00] ml-4"></span> 
+                    <span className="text-sm ml-1">보통</span>
+                    <span className="w-3 h-3 rounded-full bg-[#EF0000] ml-4"></span> 
+                    <span className="text-sm ml-1">혼잡</span>
+                </div>
               </p>
               
               <div className="h-[200px] w-full">
@@ -140,7 +142,7 @@ export default function Home() {
           <div className="grid grid-cols-12 gap-5 mb-5 bg-[#CDD4E5] rounded-lg p-2">
             <button
               className={`col-span-4 py-2 px-4 rounded-[8px] text-[16px] transition-colors ${
-                selected === 1 ? "bg-white text-[#2A5FEC] font-[600]" : "text-[#484848]"
+                selected === 1 ? "bg-white text-[#2A5FEC] font-[600]" : "text-[#7B7B7B]"
               }`}
               onClick={() => handleButtonClick(1)}
             >
@@ -148,7 +150,7 @@ export default function Home() {
             </button>
             <button
               className={`col-span-4 py-2 px-4 rounded-[8px] text-[16px] transition-colors ${
-                selected === 2 ? "bg-white text-[#2A5FEC] font-[600]" : "text-[#484848]"
+                selected === 2 ? "bg-white text-[#2A5FEC] font-[600]" : "text-[#7B7B7B]"
               }`}
               onClick={() => handleButtonClick(2)}
             >
@@ -156,7 +158,7 @@ export default function Home() {
             </button>
             <button
               className={`col-span-4 py-2 px-4 rounded-[8px] text-[16px] transition-colors ${
-                selected === 3 ? "bg-white text-[#2A5FEC] font-[600]" : "text-[#484848]"
+                selected === 3 ? "bg-white text-[#2A5FEC] font-[600]" : "text-[#7B7B7B]"
               }`}
               onClick={() => handleButtonClick(3)}
             >
