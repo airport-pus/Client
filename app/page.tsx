@@ -134,8 +134,8 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="grid grid-cols-12 gap-5 mb-5">
-            <div className="col-span-12 sm:col-span-8 bg-white rounded-[8px] h-[300px] sm:w-[530px] p-6 relative">
+          <div className="grid xl:grid-cols-12 gap-5 mb-5">
+            <div className="col-span-12 xl:col-span-8 bg-white rounded-[8px] h-[300px] xl:w-[530px] w-[700px]  p-6 relative ">
               <h2 className="text-xl font-bold mb-2 text-[#000000] text-[20px]">공항 주차장 혼잡도</h2>
               <p className="text-[#7B7B7B] mb-2 mt-[-8px] text-[14px] flex items-center">
                 <span className="text-[#215DCE] underline">P1 여객주차장</span>을 이용하는게 좋겠어요.
@@ -153,7 +153,7 @@ export default function Home() {
                 <Line data={chartData} options={chartOptions} />
               </div>
             </div>
-            <div className="col-span-12 sm:col-span-4 bg-white rounded-[8px] h-[300px] p-6 relative w-[700px] absolute left-[-300px]">
+            <div className="col-span-12  sm:col-span-4 bg-white rounded-[8px] h-[300px] p-6 relative w-[700px] absolute xl:left-[-300px]">
               <h2 className="text-xl font-bold mb-4 text-[#000000]">예상 주차요금 조회</h2>
 
               <div className="flex mb-4">
@@ -303,7 +303,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="grid grid-cols-12 gap-5 mb-5 bg-[#CDD4E5] rounded-lg p-2">
+          <div className="grid grid-cols-12 gap-5 mb-5 rounded-lg p-2">
             <button
               className={`col-span-4 py-2 px-4 rounded-[8px] text-[16px] transition-colors ${
                 selected === 1 ? "bg-white text-[#2A5FEC] font-[600]" : "text-[#7B7B7B]"
