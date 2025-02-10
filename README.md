@@ -16,7 +16,7 @@
 <div style="margin-left: auto; margin-right: auto; width: fit-content">
   <table style="display: flex; align-items: flex-start; align: center">
     <tr>
-      <td align="left" width="85">
+      <td align="center" width="85">
           <img src="https://skillicons.dev/icons?i=nextjs" width="48" height="48" alt="Next.js" />
         <br>Next.js
       </td>
