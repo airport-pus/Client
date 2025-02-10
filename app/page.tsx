@@ -16,7 +16,6 @@ import {
   Legend
 } from 'chart.js';
 
-
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -29,6 +28,10 @@ ChartJS.register(
 
 export default function Home() {
   const [selected, setSelected] = useState<number>(1);
+  const [startDate, setStartDate] = useState("2023-03-13");
+  const [startTime, setStartTime] = useState("11:00");
+  const [endDate, setEndDate] = useState("2023-03-13");
+  const [endTime, setEndTime] = useState("11:00");
 
   const handleButtonClick = (index: number) => {
     setSelected(index);
@@ -146,12 +149,71 @@ export default function Home() {
               </div>
             </div>
             <div className="col-span-12 sm:col-span-4 bg-white rounded-[8px] h-[300px] p-6 relative w-[700px] absolute left-[-300px]">
-            <div className="flex justify-center items-center h-full text-[#9F9F9F] text-[16px]">
-            🙄 개발 중이니 조금만 기다려주세요,,
+              <h2 className="text-xl font-bold mb-4 text-[#000000]">예상 주차요금 조회</h2>
+
+              <div className="flex mb-4">
+                <div className="flex-1">
+                  <span className="text-sm font-semibold text-[#6B7280]">주차장 선택</span>
+                  <div className="flex items-center mt-2">
+                    <label className="flex items-center mr-4">
+                      <input type="radio" name="parking" checked className="mr-2" />
+                      <span className="font-medium text-black">P1·P2 주차장</span>
+                    </label>
+                    <label className="flex items-center text-[#757575]">
+                      <input type="radio" name="parking" className="mr-2" />
+                      <span>P3 (화물)</span>
+                    </label>
+                  </div>
+                </div>
+
+                <div className="flex-1">
+                  <span className="text-sm font-semibold text-[#6B7280]">차량 크기 선택</span>
+                  <div className="flex items-center mt-2">
+                    <label className="flex items-center mr-4">
+                      <input type="radio" name="size" checked className="mr-2" />
+                      <span className="font-medium text-black">소형</span>
+                    </label>
+                    <label className="flex items-center text-[#757575]">
+                      <input type="radio" name="size" className="mr-2" />
+                      <span>대형</span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <span className="text-sm font-semibold text-[#6B7280]">입·출차 시간 선택</span>
+                <div className="flex items-center mt-2">
+                  <input 
+                    type="date" 
+                    className="border px-3 py-1 rounded-md mr-2 text-[#6B7280]" 
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
+                  />
+                  <input 
+                    type="time" 
+                    className="border px-3 py-1 rounded-md mr-4 text-[#6B7280]" 
+                    value={startTime}
+                    onChange={(e) => setStartTime(e.target.value)}
+                    step="1800"
+                  />
+                  <span className="text-[#6B7280]">~</span>
+                  <input 
+                    type="date" 
+                    className="border px-3 py-1 rounded-md ml-4 mr-2 text-[#6B7280]" 
+                    value={endDate}
+                    onChange={(e) => setEndDate(e.target.value)}
+                  />
+                  <input 
+                    type="time" 
+                    className="border px-3 py-1 rounded-md text-[#6B7280]" 
+                    value={endTime}
+                    onChange={(e) => setEndTime(e.target.value)}
+                    step="1800"
+                  />
+                </div>
+              </div>
             </div>
-          </div>
-
-
           </div>
 
           <div className="grid grid-cols-12 gap-5 mb-5 bg-[#CDD4E5] rounded-lg p-2">
