@@ -141,11 +141,11 @@ export default function Home() {
                 <span className="text-[#215DCE] underline">P1 여객주차장</span>을 이용하는게 좋겠어요.
                 <div className="flex items-center ml-20">
                   <span className="w-3 h-3 rounded-full bg-[#16A34A]"></span>
-                  <span className="text-sm ml-1">원활</span>
+                  <span className="xl:text-xs text-sm ml-1">원활</span>
                   <span className="w-3 h-3 rounded-full bg-[#FABE00] ml-4"></span>
-                  <span className="text-sm ml-1">보통</span>
+                  <span className="xl:text-xs text-sm ml-1">보통</span>
                   <span className="w-3 h-3 rounded-full bg-[#EF0000] ml-4"></span>
-                  <span className="text-sm ml-1">혼잡</span>
+                  <span className="xl:text-xs text-sm ml-1">혼잡</span>
                 </div>
               </p>
 
