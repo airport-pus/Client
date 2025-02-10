@@ -107,6 +107,44 @@ export default function Home() {
 
   return (
     <div className="flex flex-col min-h-screen">
+      <style jsx global>{`
+        /* Hide non-30-minute options in time picker */
+        input[type="time"]::-webkit-calendar-picker-indicator {
+          background: none;
+          display: none;
+        }
+        
+        input[type="time"] {
+          position: relative;
+        }
+        
+        input[type="time"]::-webkit-datetime-edit-minute-field {
+          pointer-events: none;
+        }
+        
+        /* Custom time picker dropdown */
+        .time-select {
+          position: absolute;
+          background: white;
+          border: 1px solid #e5e7eb;
+          border-radius: 0.375rem;
+          box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+          z-index: 50;
+          width: 120px;
+          max-height: 200px;
+          overflow-y: auto;
+        }
+        
+        .time-option {
+          padding: 0.5rem;
+          cursor: pointer;
+        }
+        
+        .time-option:hover {
+          background-color: #f3f4f6;
+        }
+      `}</style>
+      
       <main className="flex-grow p-8 bg-[#F3F4F6] font-pretendard">
         <div className="max-w-[1280px] mx-auto px-5">
           <div className="col-span-12 flex items-center gap-4 mb-6">
@@ -190,13 +228,19 @@ export default function Home() {
                     value={startDate}
                     onChange={(e) => setStartDate(e.target.value)}
                   />
-                  <input 
-                    type="time" 
+                  <select 
                     className="border px-3 py-1 rounded-md mr-4 text-[#6B7280]" 
                     value={startTime}
                     onChange={(e) => setStartTime(e.target.value)}
-                    step="1800"
-                  />
+                  >
+                    {Array.from({length: 48}, (_, i) => {
+                      const hour = Math.floor(i/2).toString().padStart(2, '0');
+                      const minute = i%2 === 0 ? '00' : '30';
+                      return `${hour}:${minute}`;
+                    }).map(time => (
+                      <option key={time} value={time}>{time}</option>
+                    ))}
+                  </select>
                   <span className="text-[#6B7280]">~</span>
                   <input 
                     type="date" 
@@ -204,13 +248,19 @@ export default function Home() {
                     value={endDate}
                     onChange={(e) => setEndDate(e.target.value)}
                   />
-                  <input 
-                    type="time" 
+                  <select 
                     className="border px-3 py-1 rounded-md text-[#6B7280]" 
                     value={endTime}
                     onChange={(e) => setEndTime(e.target.value)}
-                    step="1800"
-                  />
+                  >
+                    {Array.from({length: 48}, (_, i) => {
+                      const hour = Math.floor(i/2).toString().padStart(2, '0');
+                      const minute = i%2 === 0 ? '00' : '30';
+                      return `${hour}:${minute}`;
+                    }).map(time => (
+                      <option key={time} value={time}>{time}</option>
+                    ))}
+                  </select>
                 </div>
               </div>
             </div>
