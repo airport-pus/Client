@@ -14,10 +14,10 @@ export default function Header() {
         </p>
       </div>
       <div className="flex items-center space-x-4">
-        <Link href="/dataset" className="text-[#606060] text-[14px] ml-4 cursor-pointer">
+        <Link href="/dataset" className="text-[#606060] text-[14px] ml-4 mt-[-20px] cursor-pointer">
           데이터셋
         </Link>
-        <span className="text-[#606060] text-[14px] ml-4">문의하기</span>
+        <span className="text-[#606060] text-[14px] ml-4 mt-[-20px]">문의하기</span>
       </div>
     </div>
   )
