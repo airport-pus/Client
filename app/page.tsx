@@ -121,7 +121,7 @@ export default function Home() {
           <div className="col-span-12 flex items-center gap-4 mb-6">
             <Image src="/logo.svg" alt="PUSAN logo" width={100} height={100} />
             <div className="flex-grow">
-              <h1 className="text-[24px] font-bold text-[#000000]">김해국제공항의 모든 정보를 한 곳에서,</h1>
+              <h1 className="text-[20px] lg:text-[24px] font-bold text-[#000000]">김해국제공항의 모든 정보를 한 곳에서,</h1>
               <p className="text-[16px] text-[#6B7280]">
                 지금까지 <span className="text-[#215DCE] font-semibold">333</span>명이 페이지에 방문했어요.
               </p>
@@ -168,7 +168,7 @@ export default function Home() {
                         onChange={() => setSelectedParking("P1P2")}
                         className="mr-2"
                       />
-                      <span className={`${selectedParking === "P1P2" ? "font-medium text-black" : "text-[#757575]"}`}>
+                      <span className={`${selectedParking === "P1P2" ? "text-sm font-medium text-black" : "text-[#757575]"}`}>
                         P1·P2 주차장
                       </span>
                     </label>
@@ -180,7 +180,7 @@ export default function Home() {
                         onChange={() => setSelectedParking("P3")}
                         className="mr-2"
                       />
-                      <span className={`${selectedParking === "P3" ? "font-medium text-black" : "text-[#757575]"}`}>
+                      <span className={`${selectedParking === "P3" ? "text-sm font-medium text-black" : "text-[#757575]"}`}>
                         P3 (화물)
                       </span>
                     </label>
