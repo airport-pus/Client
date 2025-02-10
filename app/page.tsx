@@ -3,8 +3,8 @@
 import { useState } from "react"
 import Footer from "./footer/page"
 import Header from "./header/page"
-import ParkingCongestion from "./components/ParkingCongestion"
-import FareCheck from "./components/FareCheck"
+import ParkingCongestion from "./components/ParkingCongestion/page"
+import FareCheck from "./components/FareCheck/page"
 
 export default function Home() {
   const [selected, setSelected] = useState<number>(1)
