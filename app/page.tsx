@@ -217,12 +217,15 @@ export default function Home() {
                   </div>
                 </div>
                 <div className="mb-4 mt-[-3px] ml-[120px]"> 
-                  <span className="text-sm font-semibold text-[#6B7280]">할인 선택</span>
-                  <div className="flex items-center mt-[2] ml-04">
+                  <span className="text-sm font-semibold text-[#6B7280] ml-[-20px]">할인</span>
+                  <div className="flex items-center mt-[2] ">
                     <select
                       className="border px-3 py-1 rounded-md text-[#4F5561] bg-[#EFF6FF] border-[#BFDBFE] appearance-none"
                       value={selectedDiscount}
                       onChange={(e) => setSelectedDiscount(e.target.value)}
+                      style={{
+                        transform: 'translateX(-20px) translateY(3px)',
+                      }}
                     >
                       <option value="normal">일반</option>
                       <option value="veteran">국가유공자(상이)</option>
