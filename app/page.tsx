@@ -303,7 +303,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="grid grid-cols-12 gap-5 mb-5 rounded-lg p-2">
+          <div className="grid grid-cols-12 gap-5 mb-5 bg-[#CDD4E5] rounded-lg p-2">
             <button
               className={`col-span-4 py-2 px-4 rounded-[8px] text-[16px] transition-colors ${
                 selected === 1 ? "bg-white text-[#2A5FEC] font-[600]" : "text-[#7B7B7B]"
