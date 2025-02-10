@@ -32,9 +32,11 @@ export default function Home() {
   const [startTime, setStartTime] = useState("11:00");
   const [endDate, setEndDate] = useState("2023-03-13");
   const [endTime, setEndTime] = useState("11:00");
+  const [selectedParking, setSelectedParking] = useState("P1P2"); 
+  const [selectedSize, setSelectedSize] = useState("small"); 
 
   const handleButtonClick = (index: number) => {
-    setSelected(index);
+    setSelected(index); 
   };
 
   const getColorByValue = (value: number) => {
@@ -107,44 +109,6 @@ export default function Home() {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <style jsx global>{`
-        /* Hide non-30-minute options in time picker */
-        input[type="time"]::-webkit-calendar-picker-indicator {
-          background: none;
-          display: none;
-        }
-        
-        input[type="time"] {
-          position: relative;
-        }
-        
-        input[type="time"]::-webkit-datetime-edit-minute-field {
-          pointer-events: none;
-        }
-        
-        /* Custom time picker dropdown */
-        .time-select {
-          position: absolute;
-          background: white;
-          border: 1px solid #e5e7eb;
-          border-radius: 0.375rem;
-          box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-          z-index: 50;
-          width: 120px;
-          max-height: 200px;
-          overflow-y: auto;
-        }
-        
-        .time-option {
-          padding: 0.5rem;
-          cursor: pointer;
-        }
-        
-        .time-option:hover {
-          background-color: #f3f4f6;
-        }
-      `}</style>
-      
       <main className="flex-grow p-8 bg-[#F3F4F6] font-pretendard">
         <div className="max-w-[1280px] mx-auto px-5">
           <div className="col-span-12 flex items-center gap-4 mb-6">
@@ -168,7 +132,7 @@ export default function Home() {
           <div className="grid grid-cols-12 gap-5 mb-5">
             <div className="col-span-12 sm:col-span-8 bg-white rounded-[8px] h-[300px] sm:w-[530px] p-6 relative">
               <h2 className="text-xl font-bold mb-2 text-[#000000] text-[20px]">
-                공항 주차장 혼잡도
+                공항 주차장 혼잡도 
               </h2>
               <p className="text-[#7B7B7B] mb-2 mt-[-8px] text-[14px] flex items-center">
                 <span className="text-[#215DCE] underline">P1 여객주차장</span>을 이용하는게 좋겠어요.
@@ -192,28 +156,60 @@ export default function Home() {
               <div className="flex mb-4">
                 <div className="flex-1">
                   <span className="text-sm font-semibold text-[#6B7280]">주차장 선택</span>
-                  <div className="flex items-center mt-2">
-                    <label className="flex items-center mr-4">
-                      <input type="radio" name="parking" checked className="mr-2" />
-                      <span className="font-medium text-black">P1·P2 주차장</span>
+                  <div className="flex items-center mt-2 ml-0.4">
+                    <label className="flex items-center mr-4 cursor-pointer">
+                      <input 
+                        type="radio" 
+                        name="parking" 
+                        checked={selectedParking === "P1P2"}
+                        onChange={() => setSelectedParking("P1P2")}
+                        className="mr-2" 
+                      />
+                      <span className={`${selectedParking === "P1P2" ? "font-medium text-black" : "text-[#757575]"}`}>
+                        P1·P2 주차장
+                      </span>
                     </label>
-                    <label className="flex items-center text-[#757575]">
-                      <input type="radio" name="parking" className="mr-2" />
-                      <span>P3 (화물)</span>
+                    <label className="flex items-center cursor-pointer">
+                      <input 
+                        type="radio" 
+                        name="parking"
+                        checked={selectedParking === "P3"}
+                        onChange={() => setSelectedParking("P3")}
+                        className="mr-2" 
+                      />
+                      <span className={`${selectedParking === "P3" ? "font-medium text-black" : "text-[#757575]"}`}>
+                        P3 (화물)
+                      </span>
                     </label>
                   </div>
                 </div>
 
                 <div className="flex-1">
                   <span className="text-sm font-semibold text-[#6B7280]">차량 크기 선택</span>
-                  <div className="flex items-center mt-2">
-                    <label className="flex items-center mr-4">
-                      <input type="radio" name="size" checked className="mr-2" />
-                      <span className="font-medium text-black">소형</span>
+                  <div className="flex items-center mt-2 ml-04">
+                    <label className="flex items-center mr-4 cursor-pointer">
+                      <input 
+                        type="radio" 
+                        name="size"
+                        checked={selectedSize === "small"}
+                        onChange={() => setSelectedSize("small")}
+                        className="mr-2" 
+                      />
+                      <span className={`${selectedSize === "small" ? "font-medium text-black" : "text-[#757575]"}`}>
+                        소형
+                      </span>
                     </label>
-                    <label className="flex items-center text-[#757575]">
-                      <input type="radio" name="size" className="mr-2" />
-                      <span>대형</span>
+                    <label className="flex items-center cursor-pointer">
+                      <input 
+                        type="radio" 
+                        name="size"
+                        checked={selectedSize === "large"}
+                        onChange={() => setSelectedSize("large")}
+                        className="mr-2" 
+                      />
+                      <span className={`${selectedSize === "large" ? "font-medium text-black" : "text-[#757575]"}`}>
+                        대형
+                      </span>
                     </label>
                   </div>
                 </div>
