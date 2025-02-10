@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import Footer from "./footer/page";
@@ -29,9 +29,9 @@ ChartJS.register(
 export default function Home() {
   const [selected, setSelected] = useState<number>(1);
   const [startDate, setStartDate] = useState("2023-03-13");
-  const [startTime, setStartTime] = useState("11:00");
+  const [startTime, setStartTime] = useState("00:00");
   const [endDate, setEndDate] = useState("2023-03-13");
-  const [endTime, setEndTime] = useState("11:00");
+  const [endTime, setEndTime] = useState("00:00");
   const [selectedParking, setSelectedParking] = useState("P1P2"); 
   const [selectedSize, setSelectedSize] = useState("small"); 
 
@@ -106,6 +106,23 @@ export default function Home() {
       },
     },
   };
+
+  useEffect(() => {
+    const today = new Date();
+    const start = new Date(today);
+    start.setDate(today.getDate() - 7); // 1주일 전
+    const end = new Date(today);
+
+    const formatDate = (date: Date) => {
+      const year = date.getFullYear();
+      const month = (date.getMonth() + 1).toString().padStart(2, '0');
+      const day = date.getDate().toString().padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    };
+
+    setStartDate(formatDate(start)); // 1주일 전 날짜
+    setEndDate(formatDate(end)); // 오늘 날짜
+  }, []);
 
   return (
     <div className="flex flex-col min-h-screen">
