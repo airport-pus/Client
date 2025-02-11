@@ -54,6 +54,10 @@ const TrafficStatus = () => {
 
   const yLabels = ["원활", "보통", "혼잡", "매우혼잡"];
 
+  const getStatusText = (value: number) => {
+    return yLabels[value - 1] || '';
+  };
+
   const selectedData = statusData[selectedDate][selectedSection];
 
   const chartData = {
@@ -102,6 +106,16 @@ const TrafficStatus = () => {
           color: 'rgba(0, 0, 0, 0.1)',
           borderDash: [5, 5],
           lineWidth: 1
+        }
+      }
+    },
+    plugins: {
+      tooltip: {
+        callbacks: {
+          label: function(context: any) {
+            const value = context.raw;
+            return `혼잡도: ${getStatusText(value)}`;
+          }
         }
       }
     }
