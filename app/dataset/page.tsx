@@ -39,6 +39,10 @@ export default function Home() {
                     <Image src="/link.svg" alt="link icon" width={18} height={16} className="mr-2" />
                     한국공항공사_전국공항 주차장 혼잡도
                   </Link>
+                  <Link href="https://www.data.go.kr/data/15038474/openapi.do" className="flex items-center text-[#2563EB] hover:underline">
+                    <Image src="/link.svg" alt="link icon" width={18} height={16} className="mr-2" />
+                    한국공항공사_전국공항 주차요금
+                  </Link>
                 </div>
               </div>
 
