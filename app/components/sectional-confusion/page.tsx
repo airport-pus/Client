@@ -1,5 +1,3 @@
-"use client"
-
 import React, { useState } from 'react';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Scale } from 'chart.js';
 import { Line } from 'react-chartjs-2';
@@ -32,14 +30,17 @@ const TrafficStatus = () => {
   const chartData = {
     labels,
     datasets: [
-      {
-        label: `${selectedSection} 시간별 혼잡도`,
-        data: selectedData?.chartData || [],
-        borderColor: "#215DCE",
-        backgroundColor: "rgba(33, 93, 206, 0.2)",
-        borderWidth: 2,
-        pointRadius: 3
-      }
+        {
+          label: `${selectedSection} 시간별 혼잡도`,
+          data: selectedData?.chartData || [],
+          borderColor: "#215DCE",
+          backgroundColor: "rgba(33, 93, 206, 0.2)",
+          borderWidth: 2,
+          pointRadius: 6,   
+          pointBackgroundColor: "#215DCE",
+          pointBorderColor: "#FFFFFF",
+          pointBorderWidth: 2,
+        }
     ]
   };
 
@@ -59,8 +60,8 @@ const TrafficStatus = () => {
       },
       y: {
         ticks: {
-          callback: function(this: Scale, value: number) {
-            return yLabels[value - 1];
+            callback: function(tickValue: string | number) {
+            return yLabels[Number(tickValue) - 1];
           },
           stepSize: 1,
           min: 1,
@@ -99,6 +100,9 @@ const TrafficStatus = () => {
         </div>
       </div>
       <div className="ml-4 w-[670px] h-[324px] p-4 mt-14">
+        <div className="mb-2 text-[22px] text-[#000000] font-bold ml-2 mt-[-64] mb-[32]">
+          {`${selectedSection} 혼잡도 그래프`}
+        </div>
         <Line data={chartData} options={options} />
       </div>
     </div>
