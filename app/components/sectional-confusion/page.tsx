@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
 import { Line } from 'react-chartjs-2';
-import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';  
+import Image from 'next/image';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
@@ -19,7 +19,7 @@ type StatusData = {
 const TrafficStatus = () => {
   const message = "실시간 공항 구간별 혼잡도 확인";
   const [selectedSection, setSelectedSection] = useState("1구간");
-  const [selectedDate, setSelectedDate] = useState("오늘");  // 기본은 "오늘"
+  const [selectedDate, setSelectedDate] = useState("오늘");
 
   const statusData: StatusData = {
     어제: {
@@ -128,15 +128,27 @@ const TrafficStatus = () => {
           <div className="flex items-center">
             <button 
               onClick={() => setSelectedDate("어제")}
-              className={`px-4 py-2 text-[14px] ${selectedDate === "어제" ? 'bg-[#EFF6FF] text-[#4F5561] border-[#BFDBFE]' : 'bg-[#F2F2F2] text-[#7A7A7A] border-[#D1D5DB]'} rounded-md flex items-center mr-2`}>
+              className={`px-4 py-2 text-[14px] font-medium border ${selectedDate === "어제" ? 'bg-[#EFF6FF] text-[#4F5561] border-[#BFDBFE]' : 'bg-[#F2F2F2] text-[#7A7A7A] border-[#D1D5DB]'} rounded-md flex items-center mr-2`}>
               어제
-              <FaArrowLeft className="ml-2" />
+              <Image 
+                src="/date.svg" 
+                width={20} 
+                height={20} 
+                alt="date" 
+                className={`ml-2 ${selectedDate === "어제" ? 'text-[#4F5561]' : 'text-[#7A7A7A]'}`}
+              />
             </button>
             <button 
               onClick={() => setSelectedDate("오늘")}
-              className={`px-4 py-2 text-[14px] ${selectedDate === "오늘" ? 'bg-[#EFF6FF] text-[#4F5561] border-[#BFDBFE]' : 'bg-[#F2F2F2] text-[#7A7A7A] border-[#D1D5DB]'} rounded-md flex items-center`}>
+              className={`px-4 py-2 text-[14px] font-medium border ${selectedDate === "오늘" ? 'bg-[#EFF6FF] text-[#4F5561] border-[#BFDBFE]' : 'bg-[#F2F2F2] text-[#7A7A7A] border-[#D1D5DB]'} rounded-md flex items-center`}>
               오늘
-              <FaArrowRight className="ml-2" />
+              <Image 
+                src="/date.svg" 
+                width={20} 
+                height={20} 
+                alt="date" 
+                className={`ml-2 ${selectedDate === "오늘" ? 'text-[#4F5561]' : 'text-[#7A7A7A]'}`}
+              />
             </button>
           </div>
         </div>
