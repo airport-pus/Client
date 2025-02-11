@@ -124,14 +124,14 @@ const TrafficStatus = () => {
   return (
     <div className="relative flex">
       <div>
-        <div className="mb-2 w-[480px] text-[22px] text-[#000000] font-bold mt-2 ml-2 mb-[-3]">
+        <div className="mb-2 w-[460px] text-[22px] text-[#000000] font-bold mt-2 ml-2 mb-[-3]">
           {message}
         </div>
         <div className="mb-4 w-[480px] text-[14px] text-[#7B7B7B] ml-2">
           표에서 셀을 클릭하면 시간별 그래프를 보실 수 있습니다.
         </div>
         <div className="w-[420px] ml-2">
-          <div className="bg-[#1E3A8A] text-white p-4 rounded-t-lg grid grid-cols-2 text-center">
+          <div className="bg-[#215DCE] text-white p-3 rounded-t-lg grid grid-cols-2 text-center mt-[6]">
             <div className="font-medium">구간</div>
             <div className="font-medium">혼잡도</div>
           </div>
@@ -160,8 +160,8 @@ const TrafficStatus = () => {
               어제
               <Image 
                 src="/date.svg" 
-                width={20} 
-                height={20} 
+                width={16} 
+                height={16} 
                 alt="date" 
                 className={`ml-2 ${selectedDate === "어제" ? 'text-[#4F5561]' : 'text-[#7A7A7A]'}`}
               />
@@ -172,8 +172,8 @@ const TrafficStatus = () => {
               오늘
               <Image 
                 src="/date.svg" 
-                width={20} 
-                height={20} 
+                width={16} 
+                height={16} 
                 alt="date" 
                 className={`ml-2 ${selectedDate === "오늘" ? 'text-[#4F5561]' : 'text-[#7A7A7A]'}`}
               />
