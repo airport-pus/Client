@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import Image from "next/image"
 
 interface ParkingFeeCalculatorProps {
   className?: string;
@@ -34,11 +33,11 @@ export default function ParkingFeeCalculator({ className }: ParkingFeeCalculator
   }, [])
 
   return (
-    <div className={`col-span-12 sm:col-span-4 bg-white rounded-[8px] h-[300px] p-6 relative w-[700px] absolute xl:left-[-300px] ${className}`}>
+    <div className={`col-span-12 sm:col-span-4 bg-white rounded-[8px] h-[260px] p-6 relative w-[700px] absolute xl:left-[-300px] ${className}`}>
       <h2 className="text-xl font-bold mb-4 text-[#000000]">예상 주차요금 조회</h2>
 
       <div className="flex mb-4">
-        <div className="flex-1">
+        <div className="flex-1" >
           <span className="text-sm font-semibold text-[#6B7280]">주차장 선택</span>
           <div className="flex items-center mt-2 ml-0.4">
             <label className="flex items-center mr-4 cursor-pointer">
@@ -121,65 +120,66 @@ export default function ParkingFeeCalculator({ className }: ParkingFeeCalculator
         </div>
       </div>
 
-      <div className="mb-4 mt-[-10px]">
-        <span className="text-sm font-semibold text-[#6B7280]">입·출차 시간 선택</span>
-        <div className="flex items-center mt-2">
-          <input
-            type="date"
-            className="border px-3 py-1 rounded-md mr-2 text-[#4F5561] bg-[#EFF6FF] border-[#BFDBFE]"
-            value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
-          />
-          <select
-            className="border px-3 py-1 rounded-md mr-4 text-[#4F5561] bg-[#EFF6FF] border-[#BFDBFE] appearance-none"
-            style={{ WebkitAppearance: "none", MozAppearance: "none" }}
-            value={startTime}
-            onChange={(e) => setStartTime(e.target.value)}
-          >
-            {Array.from({ length: 48 }, (_, i) => {
-              const hour = Math.floor(i / 2)
-                .toString()
-                .padStart(2, "0")
-              const minute = i % 2 === 0 ? "00" : "30"
-              return `${hour}:${minute}`
-            }).map((time) => (
-              <option key={time} value={time}>
-                {time}
-              </option>
-            ))}
-          </select>
-          <span className="text-[#4F5561]">~</span>
-          <input
-            type="date"
-            className="border px-3 py-1 rounded-md ml-4 mr-2 text-[#4F5561] bg-[#EFF6FF] border-[#BFDBFE]"
-            value={endDate}
-            onChange={(e) => setEndDate(e.target.value)}
-          />
-          <select
-            className="border px-3 py-1 rounded-md text-[#4F5561] bg-[#EFF6FF] border-[#BFDBFE] appearance-none"
-            style={{ WebkitAppearance: "none", MozAppearance: "none" }}
-            value={endTime}
-            onChange={(e) => setEndTime(e.target.value)}
-          >
-            {Array.from({ length: 48 }, (_, i) => {
-              const hour = Math.floor(i / 2)
-                .toString()
-                .padStart(2, "0")
-              const minute = i % 2 === 0 ? "00" : "30"
-              return `${hour}:${minute}`
-            }).map((time) => (
-              <option key={time} value={time}>
-                {time}
-              </option>
-            ))}
-          </select>
+      <div className="mb-4 mt-[-10px] flex items-center">
+        <div className="flex-1">
+          <span className="text-sm font-semibold text-[#6B7280]">입·출차 시간 선택</span>
+          <div className="flex items-center mt-2">
+            <input
+              type="date"
+              className="border px-3 py-1 rounded-md mr-2 text-[#4F5561] bg-[#EFF6FF] border-[#BFDBFE]"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+            />
+            <select
+              className="border px-3 py-1 rounded-md mr-4 text-[#4F5561] bg-[#EFF6FF] border-[#BFDBFE] appearance-none"
+              style={{ WebkitAppearance: "none", MozAppearance: "none" }}
+              value={startTime}
+              onChange={(e) => setStartTime(e.target.value)}
+            >
+              {Array.from({ length: 48 }, (_, i) => {
+                const hour = Math.floor(i / 2)
+                  .toString()
+                  .padStart(2, "0")
+                const minute = i % 2 === 0 ? "00" : "30"
+                return `${hour}:${minute}`
+              }).map((time) => (
+                <option key={time} value={time}>
+                  {time}
+                </option>
+              ))}
+            </select>
+            <span className="text-[#4F5561]">~</span>
+            <input
+              type="date"
+              className="border px-3 py-1 rounded-md ml-4 mr-2 text-[#4F5561] bg-[#EFF6FF] border-[#BFDBFE]"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+            />
+            <select
+              className="border px-3 py-1 rounded-md text-[#4F5561] bg-[#EFF6FF] border-[#BFDBFE] appearance-none"
+              style={{ WebkitAppearance: "none", MozAppearance: "none" }}
+              value={endTime}
+              onChange={(e) => setEndTime(e.target.value)}
+            >
+              {Array.from({ length: 48 }, (_, i) => {
+                const hour = Math.floor(i / 2)
+                  .toString()
+                  .padStart(2, "0")
+                const minute = i % 2 === 0 ? "00" : "30"
+                return `${hour}:${minute}`
+              }).map((time) => (
+                <option key={time} value={time}>
+                  {time}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
-      </div>
-
-      <div className="absolute bottom-4 right-4 flex items-center space-x-2">
-        <button className="w-[240px] h-[42px] bg-[#215DCE] text-white flex items-center justify-between px-3 rounded-[8px] mr-[40]">
-          <span>🚗  주차요금 조회하기</span>
-          <Image src="/right-arrow.svg" alt="Right Arrow" width={10} height={12} className="ml-2" />
+        <button 
+        className="h-[42px] w-[90px] bg-[#215DCE] text-white px-2 rounded-[8px] ml-2 mt-8"
+        style={{ transform: 'translateX(-36px)' }}
+        >
+        🚗 조회
         </button>
       </div>
     </div>
