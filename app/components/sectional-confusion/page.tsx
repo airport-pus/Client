@@ -7,11 +7,10 @@ import Image from 'next/image';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
+type DateType = "어제" | "오늘";
+
 type StatusData = {
-  어제: {
-    [key: string]: number[];
-  };
-  오늘: {
+  [key in DateType]: {
     [key: string]: number[];
   };
 };
@@ -19,7 +18,7 @@ type StatusData = {
 const TrafficStatus = () => {
   const message = "실시간 공항 구간별 혼잡도 확인";
   const [selectedSection, setSelectedSection] = useState("1구간");
-  const [selectedDate, setSelectedDate] = useState("오늘");
+  const [selectedDate, setSelectedDate] = useState<DateType>("오늘");
 
   const statusData: StatusData = {
     어제: {
