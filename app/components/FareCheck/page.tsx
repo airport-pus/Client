@@ -20,7 +20,7 @@ export default function ParkingFeeCalculator({ className }: ParkingFeeCalculator
     const today = new Date()
     const start = new Date(today)
     start.setDate(today.getDate() - 7)
-    const end = new Date(today)
+    const end = new Date(today) 
 
     const formatDate = (date: Date) => {
       const year = date.getFullYear()
