@@ -151,7 +151,7 @@ const TrafficStatus = () => {
         </div>
       </div>
       <div className="ml-4 w-[670px] h-[324px] p-4 mt-14">
-        <div className="mb-2 text-[22px] text-[#000000] font-bold ml-2 mt-[-64] mb-[32] flex justify-between items-center">
+        <div className="mb-2 text-[22px] text-[#000000] font-bold ml-2 mt-[-68] mb-[32] flex justify-between items-center">
           <div>{`${selectedSection} 혼잡도 그래프`}</div>
           <div className="flex items-center">
             <button 
