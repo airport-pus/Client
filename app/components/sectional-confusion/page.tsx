@@ -1,8 +1,7 @@
 import React from 'react';
-import { MdInfoOutline } from "react-icons/md";
 
 const TrafficStatus = () => {
-  const message = "어제의 데이터를 보고, 공항에 가면 복잡도가 낮아질거에요!";
+  const message = "실시간 공항 구간별 혼잡도     확인";
 
   const statusData = [
     { section: "1구간", status: "원활", statusColor: "bg-[#E2FFEB] text-[#16A34A]" },
@@ -15,12 +14,11 @@ const TrafficStatus = () => {
 
   return (
     <div className="relative">
-      <div className="bg-[#EFF6FF] p-3 rounded-md flex items-center gap-2 text-[#4F5561] border border-[#BFDBFE] mb-4 w-[420px]">
-        <MdInfoOutline className="text-lg" />
-        <span className="text-sm font-medium">{message}</span>
+      <div className="mb-4 w-[480px] text-[22px] text-[#000000] font-bold mt-4 ml-2">
+        {message}
       </div>
 
-      <div className="w-[420px]">
+      <div className="w-[420px] ml-2">
         <div className="bg-[#1E3A8A] text-white p-4 rounded-t-lg grid grid-cols-2 text-center">
           <div className="font-medium">구간</div>
           <div className="font-medium">혼잡도</div>
