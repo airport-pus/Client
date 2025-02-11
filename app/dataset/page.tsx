@@ -8,9 +8,9 @@ import Header from "../header/page";
 export default function Home() {
   return (
     <div className="flex flex-col min-h-screen">
-    <main className="flex-grow p-8 bg-[#F3F4F6] font-pretendard">
-      <div className="max-w-[1280px] mx-auto px-5">
-        <Header />
+      <main className="flex-grow p-8 bg-[#F3F4F6] font-pretendard">
+        <div className="max-w-[1280px] mx-auto px-5">
+          <Header />
 
           <div className="flex flex-col items-center justify-center">
             <div className="text-center max-w-[600px]">
@@ -27,18 +27,42 @@ export default function Home() {
                 </div>
                 
                 <div className="space-y-4">
-                  <Link href="https://www.data.go.kr/data/15110019/openapi.do" className="flex items-center text-[#2563EB] hover:underline">
+                  <a 
+                    href="https://www.data.go.kr/data/15110019/openapi.do" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="flex items-center text-[#2563EB] hover:underline"
+                  >
                     <Image src="/link.svg" alt="link icon" width={18} height={16} className="mr-2" />
                     한국공항공사_공항 혼잡도 정보(김해, 청주, 대구공항)
-                  </Link>
-                  <Link href="https://www.data.go.kr/data/15127758/openapi.do" className="flex items-center text-[#2563EB] hover:underline">
+                  </a>
+                  <a 
+                    href="https://www.data.go.kr/data/15127758/openapi.do" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="flex items-center text-[#2563EB] hover:underline"
+                  >
                     <Image src="/link.svg" alt="link icon" width={18} height={16} className="mr-2" />
                     한국공항공사_김해국제공항 실시간 주기장 현황정보
-                  </Link>
-                  <Link href="https://www.data.go.kr/data/15063437/openapi.do" className="flex items-center text-[#2563EB] hover:underline">
+                  </a>
+                  <a 
+                    href="https://www.data.go.kr/data/15063437/openapi.do" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="flex items-center text-[#2563EB] hover:underline"
+                  >
                     <Image src="/link.svg" alt="link icon" width={18} height={16} className="mr-2" />
                     한국공항공사_전국공항 주차장 혼잡도
-                  </Link>
+                  </a>
+                  <a 
+                    href="https://www.data.go.kr/data/15038474/openapi.do" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="flex items-center text-[#2563EB] hover:underline"
+                  >
+                    <Image src="/link.svg" alt="link icon" width={18} height={16} className="mr-2" />
+                    한국공항공사_전국공항 주차요금
+                  </a>
                 </div>
               </div>
 

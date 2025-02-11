@@ -5,6 +5,7 @@ import Footer from "./footer/page"
 import Header from "./header/page"
 import ParkingCongestion from "./components/ParkingCongestion/page"
 import FareCheck from "./components/FareCheck/page"
+import SectionalConfusion from "./components/sectional-confusion/page"
 
 export default function Home() {
   const [selected, setSelected] = useState<number>(1)
@@ -51,7 +52,11 @@ export default function Home() {
             </button>
           </div>
 
-          <div className="col-span-12 bg-white rounded-lg p-4 min-h-[400px]"></div>
+          <div className="relative col-span-12 bg-white rounded-lg p-4 min-h-[400px]">
+            {selected === 1 && (
+              <SectionalConfusion /> 
+            )}
+          </div>
         </div>
       </main>
       <Footer className="mt-auto" />
