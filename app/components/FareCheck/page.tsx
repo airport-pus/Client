@@ -36,8 +36,8 @@ export default function ParkingFeeCalculator({ className }: ParkingFeeCalculator
     <div className={`col-span-12 sm:col-span-4 bg-white rounded-[8px] h-[260px] p-6 relative w-[700px] absolute xl:left-[-300px] ${className}`}>
       <h2 className="text-xl font-bold mb-4 text-[#000000]">예상 주차요금 조회</h2>
 
-      <div className="flex mb-4">
-        <div className="flex-1" >
+      <div className="flex mb-4 mt-[20px]">
+        <div className="flex-1">
           <span className="text-sm font-semibold text-[#6B7280]">주차장 선택</span>
           <div className="flex items-center mt-2 ml-0.4">
             <label className="flex items-center mr-4 cursor-pointer">
@@ -120,7 +120,7 @@ export default function ParkingFeeCalculator({ className }: ParkingFeeCalculator
         </div>
       </div>
 
-      <div className="mb-4 mt-[-10px] flex items-center">
+      <div className="mb-4 mt-[-8px] flex items-center">
         <div className="flex-1">
           <span className="text-sm font-semibold text-[#6B7280]">입·출차 시간 선택</span>
           <div className="flex items-center mt-2">
