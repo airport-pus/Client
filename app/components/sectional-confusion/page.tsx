@@ -1,7 +1,7 @@
 import React from 'react';
 
 const TrafficStatus = () => {
-  const message = "실시간 공항 구간별 혼잡도     확인";
+  const message = "실시간 공항 구간별 혼잡도 확인";
 
   const statusData = [
     { section: "1구간", status: "원활", statusColor: "bg-[#E2FFEB] text-[#16A34A]" },
@@ -25,7 +25,7 @@ const TrafficStatus = () => {
         </div>
         <div className="border border-gray-200 rounded-b-lg">
           {statusData.map((item, index) => (
-            <div key={index} className="grid grid-cols-2 p-4 border-b last:border-b-0 text-center">     
+            <div key={index} className="grid grid-cols-2 p-4 border-b last:border-b-0 text-center hover:bg-[#F3F3F3] transition-colors duration-200">     
               <div className="font-medium text-[#000000]">{item.section}</div>
               <div>
                 <span className={`rounded-md ${sizeClass} ${item.statusColor}`}>
