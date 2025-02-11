@@ -74,7 +74,7 @@ const TrafficStatus = () => {
   return (
     <div className="relative flex">
       <div>
-        <div className="mb-2 w-[480px] text-[22px] text-[#000000] font-bold mt-2 ml-2">
+        <div className="mb-2 w-[480px] text-[22px] text-[#000000] font-bold mt-2 ml-2 mb-[-3]">
           {message}
         </div>
         <div className="mb-4 w-[480px] text-[14px] text-[#7B7B7B] ml-2">
@@ -98,7 +98,7 @@ const TrafficStatus = () => {
           </div>
         </div>
       </div>
-      <div className="ml-4 w-[670px] h-[340px] p-4 mt-14">
+      <div className="ml-4 w-[670px] h-[324px] p-4 mt-14">
         <Line data={chartData} options={options} />
       </div>
     </div>
