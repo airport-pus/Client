@@ -125,7 +125,7 @@ const TrafficStatus = () => {
         <div className="mb-2 text-[22px] text-[#000000] font-bold ml-2 mt-[-64] mb-[32] flex justify-between items-center">
           <div>{`${selectedSection} 혼잡도 그래프`}</div>
           <div className="flex items-center">
-            <button 
+            <button   
               onClick={() => setSelectedDate("어제")}
               className={`px-4 py-2 text-[14px] font-medium border ${selectedDate === "어제" ? 'bg-[#EFF6FF] text-[#4F5561] border-[#BFDBFE]' : 'bg-[#F2F2F2] text-[#7A7A7A] border-[#D1D5DB]'} rounded-md flex items-center mr-2`}>
               어제

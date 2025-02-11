@@ -177,7 +177,7 @@ export default function ParkingFeeCalculator({ className }: ParkingFeeCalculator
       </div>
 
       <div className="absolute bottom-4 right-4 flex items-center space-x-2">
-        <button className="w-[240px] h-[42px] bg-[#215DCE] text-white flex items-center justify-between px-3 rounded-[8px]">
+        <button className="w-[240px] h-[42px] bg-[#215DCE] text-white flex items-center justify-between px-3 rounded-[8px] mr-[40]">
           <span>🚗  주차요금 조회하기</span>
           <Image src="/right-arrow.svg" alt="Right Arrow" width={10} height={12} className="ml-2" />
         </button>
