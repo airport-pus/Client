@@ -36,6 +36,7 @@ const TrafficStatus = () => {
         pointBackgroundColor: "#215DCE",
         pointBorderColor: "#FFFFFF",
         pointBorderWidth: 2,
+        tension: 0.4, 
       }
     ]
   };
