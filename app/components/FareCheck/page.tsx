@@ -49,7 +49,7 @@ export default function ParkingFeeCalculator({ className }: ParkingFeeCalculator
                 onChange={() => setSelectedParking("P1P2")}
                 className="mr-2"
               />
-              <span className={`${selectedParking === "P1P2" ? "text-sm font-medium text-black" : "text-[#757575]"}`}>
+              <span className={`${selectedParking === "P1P2" ? "font-medium text-black" : "text-[#757575]"}`}>
                 P1·P2 주차장
               </span>
             </label>
@@ -61,7 +61,7 @@ export default function ParkingFeeCalculator({ className }: ParkingFeeCalculator
                 onChange={() => setSelectedParking("P3")}
                 className="mr-2"
               />
-              <span className={`${selectedParking === "P3" ? "text-sm font-medium text-black" : "text-[#757575]"}`}>
+              <span className={`${selectedParking === "P3" ? "font-medium text-black" : "text-[#757575]"}`}>
                 P3 (화물)
               </span>
             </label>
