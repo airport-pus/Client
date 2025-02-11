@@ -81,7 +81,7 @@ const ParkingCongestion = () => {
   }
 
   return (
-    <div className="col-span-12 xl:col-span-8 bg-white rounded-[8px] h-[300px] xl:w-[530px] w-[700px] p-6 relative">
+    <div className="col-span-12 xl:col-span-8 bg-white rounded-[8px] h-[260px] xl:w-[530px] w-[700px] p-6 relative">
       <h2 className="text-xl font-bold mb-2 text-[#000000] text-[20px]">공항 주차장 혼잡도</h2>
       <div className="text-[#7B7B7B] mb-2 mt-[-8px] text-[14px] flex items-center">
         <span className="text-[#215DCE] underline">P1 여객주차장</span>을 이용하는게 좋겠어요.
@@ -95,7 +95,7 @@ const ParkingCongestion = () => {
         </div>
       </div>
 
-      <div className="h-[200px] w-full">
+      <div className="h-[170px] w-full">
         <Line data={chartData} options={chartOptions} />
       </div>
     </div>
