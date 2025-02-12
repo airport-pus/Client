@@ -20,27 +20,35 @@ export default function StartInformation() {
 
   const lastFlightElementRef = (node: HTMLElement | null) => {
     if (!node || !hasMore) return;
-    
+
     if (observer.current) observer.current.disconnect();
-    
+
     observer.current = new IntersectionObserver((entries) => {
       if (entries[0].isIntersecting) {
         loadMoreFlights();
       }
     });
-    
+
     observer.current.observe(node);
   };
 
   const loadMoreFlights = () => {
-    setTimeout(() => {
-      const nextFlights = allFlightData.slice(displayedFlights.length, displayedFlights.length + 10);
-      setDisplayedFlights((prev) => [...prev, ...nextFlights]);
-      if (displayedFlights.length + 10 >= allFlightData.length) {
+    const nextFlights = allFlightData.slice(displayedFlights.length, displayedFlights.length + 10);
+    
+    setDisplayedFlights((prev) => {
+      const updatedFlights = [...prev, ...nextFlights];
+      if (updatedFlights.length >= allFlightData.length) {
         setHasMore(false);
       }
-    }, 500);
+      return updatedFlights;
+    });
   };
+
+  useEffect(() => {
+    if (displayedFlights.length >= allFlightData.length) {
+      setHasMore(false);
+    }
+  }, [displayedFlights]);
 
   return (
     <>
