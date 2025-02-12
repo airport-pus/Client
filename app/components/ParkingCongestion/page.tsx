@@ -83,14 +83,14 @@ const ParkingCongestion = () => {
   return (
     <div className="col-span-12 xl:col-span-8 bg-white rounded-[8px] h-[260px] xl:w-[530px] w-[700px] p-6 relative">
       <h2 className="text-xl font-bold mb-2 text-[#000000] text-[20px]">공항 주차장 혼잡도</h2>
-      <div className="text-[#7B7B7B] mb-2 mt-[-8px] text-[14px] flex items-center">
-        <span className="text-[#215DCE] underline">P1 여객주차장</span>을 이용하는게 좋겠어요.
+      <div className="text-gray400 mb-2 mt-[-8px] text-[14px] flex items-center">
+        <span className="text-blue500 underline">P1 여객주차장</span>을 이용하는게 좋겠어요.
         <div className="flex items-center ml-20">
-            <span className="w-3 h-3 rounded-full bg-[#16A34A]"></span>
+            <span className="w-3 h-3 rounded-full bg-green500"></span>
           <span className="xl:text-xs text-sm ml-1">원활</span>
-          <span className="w-3 h-3 rounded-full bg-[#FABE00] ml-4"></span>
+          <span className="w-3 h-3 rounded-full bg-yellow500 ml-4"></span>
           <span className="xl:text-xs text-sm ml-1">보통</span>
-          <span className="w-3 h-3 rounded-full bg-[#EF0000] ml-4"></span>
+          <span className="w-3 h-3 rounded-full bg-red500 ml-4"></span>
           <span className="xl:text-xs text-sm ml-1">혼잡</span>
         </div>
       </div>
