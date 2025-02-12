@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import Image from "next/image"
+import PaymentResult from "../payment/page"
 
 interface ParkingFeeCalculatorProps {
   className?: string;
@@ -189,34 +190,19 @@ export default function ParkingFeeCalculator({ className }: ParkingFeeCalculator
               </div>
             </div>
             <button 
-              className={`h-[36px] w-[96px] bg-primary 
-                text-[#FFFFFF] border-2 border-primary 
+              className={`h-[36px] w-[96px] bg-blue500 
+                text-[#FFFFFF] 
                 px-2 rounded-[8px] ml-2 mt-8 
                 transition-all duration-200 ease-in-out`}
               style={{ transform: 'translateX(-36px)' }}
               onClick={calculateParkingFee}
             >
-              🚗조회
+              🚗 조회
             </button>
           </div>
         </>
       ) : (
-        <div className="flex items-center flex-col justify-center h-full gap-1">
-          <Image src="/Payment.svg" alt="PUSAN logo" width={180} height={50} />
-          <p className="text-[20px] font-bold text-[#000000]">
-            예상 주차 요금은 <span className="text-[24px] text-primary">{parkingFee?.toLocaleString()}원</span> 입니다
-          </p>
-          <button 
-            className={`h-[40px] w-[130px] bg-lightSky
-              text-[14px] text-primary border-2 
-              rounded-[8px] 
-              transition-all duration-200 ease-in-out
-              `}
-            onClick={() => setIsResultView(false)}
-          >
-            다시 조회하기
-          </button>
-        </div>
+        <PaymentResult parkingFee={parkingFee} onRetry={() => setIsResultView(false)} />
       )}
     </div>
   )
