@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import Image from "next/image"
 
 interface ParkingFeeCalculatorProps {
   className?: string;
@@ -14,6 +15,8 @@ export default function ParkingFeeCalculator({ className }: ParkingFeeCalculator
   const [selectedParking, setSelectedParking] = useState("P1P2")
   const [selectedSize, setSelectedSize] = useState("small")
   const [selectedDiscount, setSelectedDiscount] = useState("normal")
+  const [parkingFee, setParkingFee] = useState<number | null>(null)
+  const [isResultView, setIsResultView] = useState(false)
 
   useEffect(() => {
     const today = new Date()
@@ -32,156 +35,189 @@ export default function ParkingFeeCalculator({ className }: ParkingFeeCalculator
     setEndDate(formatDate(end))
   }, [])
 
+  const calculateParkingFee = () => {
+    const dummyFee = 15000;
+    setParkingFee(dummyFee);
+    setIsResultView(true);
+  };
+
   return (
     <div className={`col-span-12 sm:col-span-4 bg-white rounded-[8px] h-[260px] p-6 relative w-[700px] absolute xl:left-[-300px] ${className}`}>
-      <h2 className="text-xl font-bold mb-4 text-[#000000]">예상 주차요금 조회</h2>
+      {!isResultView ? (
+        <>
+          <h2 className="text-xl font-bold mb-4 text-[#000000]">
+            예상 주차요금 조회
+          </h2>
 
-      <div className="flex mb-4 mt-[20px]">
-        <div className="flex-1">
-          <span className="text-sm font-semibold text-[#6B7280]">주차장 선택</span>
-          <div className="flex items-center mt-2 ml-0.4">
-            <label className="flex items-center mr-4 cursor-pointer">
-              <input
-                type="radio"
-                name="parking"
-                checked={selectedParking === "P1P2"}
-                onChange={() => setSelectedParking("P1P2")}
-                className="mr-2"
-              />
-              <span className={`${selectedParking === "P1P2" ? "font-medium text-black" : "text-[#757575]"}`}>
-                P1·P2 주차장
-              </span>
-            </label>
-            <label className="flex items-center cursor-pointer">
-              <input
-                type="radio"
-                name="parking"
-                checked={selectedParking === "P3"}
-                onChange={() => setSelectedParking("P3")}
-                className="mr-2"
-              />
-              <span className={`${selectedParking === "P3" ? "font-medium text-black" : "text-[#757575]"}`}>
-                P3 (화물)
-              </span>
-            </label>
-          </div>
-        </div>
+          <div className="flex mb-4 mt-[20px]">
+            <div className="flex-1">
+              <span className="text-sm font-semibold text-[#6B7280]">주차장 선택</span>
+              <div className="flex items-center mt-2 ml-0.4">
+                <label className="flex items-center mr-4 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="parking"
+                    checked={selectedParking === "P1P2"}
+                    onChange={() => setSelectedParking("P1P2")}
+                    className="mr-2"
+                  />
+                  <span className={`${selectedParking === "P1P2" ? "font-medium text-black" : "text-[#757575]"}`}>
+                    P1·P2 주차장
+                  </span>
+                </label>
+                <label className="flex items-center cursor-pointer">
+                  <input
+                    type="radio"
+                    name="parking"
+                    checked={selectedParking === "P3"}
+                    onChange={() => setSelectedParking("P3")}
+                    className="mr-2"
+                  />
+                  <span className={`${selectedParking === "P3" ? "font-medium text-black" : "text-[#757575]"}`}>
+                    P3 (화물)
+                  </span>
+                </label>
+              </div>
+            </div>
 
-        <div className="mb-4 ml-[40px]">
-          <span className="text-sm font-semibold text-[#6B7280]">차량 크기 선택</span>
-          <div className="flex items-center mt-2 ml-04">
-            <label className="flex items-center mr-4 cursor-pointer">
-              <input
-                type="radio"
-                name="size"
-                checked={selectedSize === "small"}
-                onChange={() => setSelectedSize("small")}
-                className="mr-2"
-              />
-              <span className={`${selectedSize === "small" ? "font-medium text-black" : "text-[#757575]"}`}>
-                소형
-              </span>
-            </label>
-            <label className="flex items-center cursor-pointer">
-              <input
-                type="radio"
-                name="size"
-                checked={selectedSize === "large"}
-                onChange={() => setSelectedSize("large")}
-                className="mr-2"
-              />
-              <span className={`${selectedSize === "large" ? "font-medium text-black" : "text-[#757575]"}`}>
-                대형
-              </span>
-            </label>
+            <div className="mb-4 ml-[40px]">
+              <span className="text-sm font-semibold text-[#6B7280]">차량 크기 선택</span>
+              <div className="flex items-center mt-2 ml-04">
+                <label className="flex items-center mr-4 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="size"
+                    checked={selectedSize === "small"}
+                    onChange={() => setSelectedSize("small")}
+                    className="mr-2"
+                  />
+                  <span className={`${selectedSize === "small" ? "font-medium text-black" : "text-[#757575]"}`}>
+                    소형
+                  </span>
+                </label>
+                <label className="flex items-center cursor-pointer">
+                  <input
+                    type="radio"
+                    name="size"
+                    checked={selectedSize === "large"}
+                    onChange={() => setSelectedSize("large")}
+                    className="mr-2"
+                  />
+                  <span className={`${selectedSize === "large" ? "font-medium text-black" : "text-[#757575]"}`}>
+                    대형
+                  </span>
+                </label>
+              </div>
+            </div>
+            
+            <div className="mb-4 mt-[-3px] ml-[120px]">
+              <span className="text-sm font-semibold text-[#6B7280] ml-[-40px]">할인</span>
+              <div className="flex items-center mt-[2]">
+                <select
+                  className="border px-3 py-1 rounded-md text-[#4F5561] bg-[#EFF6FF] border-[#BFDBFE] appearance-none"
+                  value={selectedDiscount}
+                  onChange={(e) => setSelectedDiscount(e.target.value)}
+                  style={{
+                    transform: 'translateX(-40px) translateY(3px)',
+                  }}
+                >
+                  <option value="normal">일반</option>
+                  <option value="veteran">국가유공자(상이)</option>
+                  <option value="disabled">장애인 차량</option>
+                  <option value="eco3">저공해 3종</option>
+                  <option value="eco12">저공해 1,2종</option>
+                  <option value="compact">경차</option>
+                  <option value="children">다자녀</option>
+                </select>
+              </div>
+            </div>
           </div>
-        </div>
-        
-        <div className="mb-4 mt-[-3px] ml-[120px]">
-          <span className="text-sm font-semibold text-[#6B7280] ml-[-40px]">할인</span>
-          <div className="flex items-center mt-[2]">
-            <select
-              className="border px-3 py-1 rounded-md text-[#4F5561] bg-[#EFF6FF] border-[#BFDBFE] appearance-none"
-              value={selectedDiscount}
-              onChange={(e) => setSelectedDiscount(e.target.value)}
-              style={{
-                transform: 'translateX(-40px) translateY(3px)',
-              }}
-            >
-              <option value="normal">일반</option>
-              <option value="veteran">국가유공자(상이)</option>
-              <option value="disabled">장애인 차량</option>
-              <option value="eco3">저공해 3종</option>
-              <option value="eco12">저공해 1,2종</option>
-              <option value="compact">경차</option>
-              <option value="children">다자녀</option>
-            </select>
-          </div>
-        </div>
-      </div>
 
-      <div className="mb-4 mt-[-8px] flex items-center">
-        <div className="flex-1">
-          <span className="text-sm font-semibold text-[#6B7280]">입·출차 시간 선택</span>
-          <div className="flex items-center mt-2">
-            <input
-              type="date"
-              className="border px-3 py-1 rounded-md mr-2 text-[#4F5561] bg-[#EFF6FF] border-[#BFDBFE]"
-              value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
-            />
-            <select
-              className="border px-3 py-1 rounded-md mr-4 text-[#4F5561] bg-[#EFF6FF] border-[#BFDBFE] appearance-none"
-              style={{ WebkitAppearance: "none", MozAppearance: "none" }}
-              value={startTime}
-              onChange={(e) => setStartTime(e.target.value)}
+          <div className="mb-4 mt-[-8px] flex items-center">
+            <div className="flex-1">
+              <span className="text-sm font-semibold text-[#6B7280]">입·출차 시간 선택</span>
+              <div className="flex items-center mt-2">
+                <input
+                  type="date"
+                  className="border px-2 py-1 rounded-md mr-2 text-[#4F5561] bg-[#EFF6FF] border-[#BFDBFE]"
+                  value={startDate}
+                  onChange={(e) => setStartDate(e.target.value)}
+                />
+                <select
+                  className="border px-2 py-1 rounded-md mr-4 text-[#4F5561] bg-[#EFF6FF] border-[#BFDBFE] appearance-none"
+                  style={{ WebkitAppearance: "none", MozAppearance: "none" }}
+                  value={startTime}
+                  onChange={(e) => setStartTime(e.target.value)}
+                >
+                  {Array.from({ length: 48 }, (_, i) => {
+                    const hour = Math.floor(i / 2)
+                      .toString()
+                      .padStart(2, "0")
+                    const minute = i % 2 === 0 ? "00" : "30"
+                    return `${hour}:${minute}`
+                  }).map((time) => (
+                    <option key={time} value={time}>
+                      {time}
+                    </option>
+                  ))}
+                </select>
+                <span className="text-[#4F5561]">~</span>
+                <input
+                  type="date"
+                  className="border px-2 py-1 rounded-md ml-4 mr-2 text-[#4F5561] bg-[#EFF6FF] border-[#BFDBFE]"
+                  value={endDate}
+                  onChange={(e) => setEndDate(e.target.value)}
+                />
+                <select
+                  className="border px-2 py-1 rounded-md text-[#4F5561] bg-[#EFF6FF] border-[#BFDBFE] appearance-none"
+                  style={{ WebkitAppearance: "none", MozAppearance: "none" }}
+                  value={endTime}
+                  onChange={(e) => setEndTime(e.target.value)}
+                >
+                  {Array.from({ length: 48 }, (_, i) => {
+                    const hour = Math.floor(i / 2)
+                      .toString()
+                      .padStart(2, "0")
+                    const minute = i % 2 === 0 ? "00" : "30"
+                    return `${hour}:${minute}`
+                  }).map((time) => (
+                    <option key={time} value={time}>
+                      {time}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+            <button 
+              className={`h-[36px] w-[96px] bg-[#215DCE] 
+                text-[#FFFFFF] border-2 border-[#215DCE] 
+                px-2 rounded-[8px] ml-2 mt-8 
+                transition-all duration-200 ease-in-out`}
+              style={{ transform: 'translateX(-36px)' }}
+              onClick={calculateParkingFee}
             >
-              {Array.from({ length: 48 }, (_, i) => {
-                const hour = Math.floor(i / 2)
-                  .toString()
-                  .padStart(2, "0")
-                const minute = i % 2 === 0 ? "00" : "30"
-                return `${hour}:${minute}`
-              }).map((time) => (
-                <option key={time} value={time}>
-                  {time}
-                </option>
-              ))}
-            </select>
-            <span className="text-[#4F5561]">~</span>
-            <input
-              type="date"
-              className="border px-3 py-1 rounded-md ml-4 mr-2 text-[#4F5561] bg-[#EFF6FF] border-[#BFDBFE]"
-              value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
-            />
-            <select
-              className="border px-3 py-1 rounded-md text-[#4F5561] bg-[#EFF6FF] border-[#BFDBFE] appearance-none"
-              style={{ WebkitAppearance: "none", MozAppearance: "none" }}
-              value={endTime}
-              onChange={(e) => setEndTime(e.target.value)}
-            >
-              {Array.from({ length: 48 }, (_, i) => {
-                const hour = Math.floor(i / 2)
-                  .toString()
-                  .padStart(2, "0")
-                const minute = i % 2 === 0 ? "00" : "30"
-                return `${hour}:${minute}`
-              }).map((time) => (
-                <option key={time} value={time}>
-                  {time}
-                </option>
-              ))}
-            </select>
+              🚗조회
+            </button>
           </div>
+        </>
+      ) : (
+        <div className="flex items-center flex-col justify-center h-full gap-1">
+          <Image src="/Payment.svg" alt="PUSAN logo" width={180} height={50} />
+          <p className="text-[20px] font-bold text-[#000000]">
+            예상 주차 요금은 <span className="text-[24px] text-[#215DCE]">{parkingFee?.toLocaleString()}원</span> 입니다
+          </p>
+          <button 
+            className={`h-[40px] w-[130px] bg-[#D2E4FF]
+              text-[14px] text-[#215DCE] border-2 
+              rounded-[8px] 
+              transition-all duration-200 ease-in-out
+              `}
+            onClick={() => setIsResultView(false)}
+          >
+            다시 조회하기
+          </button>
         </div>
-        <button 
-        className="h-[42px] w-[90px] bg-[#215DCE] text-white px-2 rounded-[8px] ml-2 mt-8"
-        style={{ transform: 'translateX(-36px)' }}
-        >
-        🚗 조회
-        </button>
-      </div>
+      )}
     </div>
   )
 }
