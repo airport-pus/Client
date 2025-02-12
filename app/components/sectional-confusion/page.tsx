@@ -127,18 +127,18 @@ const TrafficStatus = () => {
         <div className="mb-2 w-[460px] text-[22px] text-[#000000] font-bold mt-2 ml-2 mb-[-3]">
           {message}
         </div>
-        <div className="mb-4 w-[480px] text-[14px] text-[#7B7B7B] ml-2">
+        <div className="mb-4 w-[480px] text-[14px] text-[#7B7B7B] ml-2 mb-7">
           표에서 셀을 클릭하면 시간별 그래프를 보실 수 있습니다.
         </div>
         <div className="w-[420px] ml-2">
-          <div className="bg-[#215DCE] text-white p-3 rounded-t-lg grid grid-cols-2 text-center mt-[6]">
-            <div className="font-medium">구간</div>
-            <div className="font-medium">혼잡도</div>
+          <div className="mt-6 grid grid-cols-2 bg-[#F7F7F7] p-2 text-center text-[#606060] font-regular text-[14px]">
+            <div>구간</div>
+            <div>혼잡도</div>
           </div>
-          <div className="border border-gray-200 rounded-b-lg">
+          <div className="border-b border-gray-200">
             {sectionStatuses.map((sectionStatus, index) => (
               <div key={index} onClick={() => setSelectedSection(sectionStatus.section)}
-                className="grid grid-cols-2 p-4 border-b last:border-b-0 text-center hover:bg-[#F3F3F3] transition-colors duration-200 cursor-pointer">
+                className="grid grid-cols-2 p-4 border-b last:border-b-0 text-center hover:bg-[#FBFBFB] transition-colors duration-200 cursor-pointer">
                 <div className="font-medium text-[#000000]">{sectionStatus.section}</div>
                 <div>
                   <span className={`${sizeClass} ${sectionStatus.statusColor}`}>
@@ -151,7 +151,7 @@ const TrafficStatus = () => {
         </div>
       </div>
       <div className="ml-4 w-[670px] h-[324px] p-4 mt-14">
-      <div className="mb-2 text-[22px] text-[#000000] font-bold ml-2 mt-[-68] mb-[32] flex justify-between items-center">
+        <div className="mb-2 text-[22px] text-[#000000] font-bold ml-2 mt-[-68] mb-[32] flex justify-between items-center">
           <div>{`${selectedSection} 혼잡도 그래프`}</div>
           <div className="flex items-center">
             <button 
