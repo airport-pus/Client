@@ -16,16 +16,19 @@ export default function StartInformation() {
 
   const [displayedFlights, setDisplayedFlights] = useState(allFlightData.slice(0, 10));
   const [hasMore, setHasMore] = useState(true);
-  const observer = useRef();
+  const observer = useRef<IntersectionObserver | null>(null);
 
-  const lastFlightElementRef = (node) => {
+  const lastFlightElementRef = (node: HTMLElement | null) => {
     if (!node || !hasMore) return;
+    
     if (observer.current) observer.current.disconnect();
+    
     observer.current = new IntersectionObserver((entries) => {
       if (entries[0].isIntersecting) {
         loadMoreFlights();
       }
     });
+    
     observer.current.observe(node);
   };
 
