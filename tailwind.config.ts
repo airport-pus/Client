@@ -20,6 +20,10 @@ export default {
         blue200: '#D2E4FF',
         blue300: '#BFDBFE',
         blue500: '#215DCE',
+
+        lightBlueBackground: '#EFF6FF',
+        lightBlueText: '#4F5561',
+        lightBlueBorder: '#BFDBFE',
       },
       fontFamily: {
         pretendard: ["Pretendard", "sans-serif"], 
