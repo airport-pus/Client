@@ -1,6 +1,10 @@
-"use client"
+"use client";
 
 export default function StartInformation() {
+  const compareTime = (scheduled: any, modified: any) => {
+    return scheduled === modified;
+  };
+
   return (
     <>
       <div className="mt-14 p-4 border-l-4 border-[#215DCE] bg-[#EFF6FF] text-black mt-3">
@@ -32,12 +36,47 @@ export default function StartInformation() {
         </div>
       </div>
 
-      <div className="mt-6 grid grid-cols-5 bg-[#FAFAFA] p-2 text-center text-[#606060] font-regular text-[14px]">
+      <div className="mt-6 grid grid-cols-5 bg-[#F7F7F7] p-2 text-center text-[#606060] font-regular text-[14px]">
         <div>항공사 및 항공편명</div>
         <div>도착지</div>
         <div>탑승구</div>
-        <div>시간</div>
         <div>항공편 상태</div>
+        <div>시간</div>
+      </div>
+
+      <div className="grid grid-cols-5 border-b p-4 items-center">
+        <div className="flex items-center gap-2 ml-14">
+          <img src="/logos/korean-air.webp" alt="대한항공" className="w-8 h-8" />
+          <div>
+            <div className="text-[#000000]">KE4440</div>
+            <div className="text-[#606060] text-sm">대한항공</div>
+          </div>
+        </div>
+        <div className="text-center text-[#000000] ml-[-10px]">제주</div>
+        <div className="text-center text-blue-500">3</div>
+        <div className="text-center text-blue-500 ml-2">마감 예정</div>
+        <div className="flex flex-col items-start ml-14">
+          <div className="text-sm text-[#606060]">예정 2025-02-12 08:35</div>
+          <div className="text-sm text-[#215DCE]">변경 2025-02-12 08:40</div>
+          <div className="text-red-500 text-sm">지연 5분</div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-5 border-b p-4 items-center">
+        <div className="flex items-center gap-2 ml-14">
+          <img src="/logos/korean-air.webp" alt="대한항공" className="w-8 h-8" />
+          <div>
+            <div className="text-[#000000]">KE4440</div>
+            <div className="text-[#606060] text-sm">대한항공</div>
+          </div>
+        </div>
+        <div className="text-center text-[#000000] ml-[-10px]">제주</div>
+        <div className="text-center text-blue-500">3</div>
+        <div className="text-center text-red-500 ml-2">지연</div>
+        <div className="flex flex-col items-start ml-14">
+          <div className="text-sm text-[#606060]">예정 2025-02-12 08:35</div>
+          <div className="text-sm text-[#606060]">변경 2025-02-12 08:35</div>
+        </div>
       </div>
     </>
   );
