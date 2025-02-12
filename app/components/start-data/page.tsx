@@ -42,7 +42,7 @@ const StartData: React.FC<StartDataProps> = ({ displayedFlights, lastFlightEleme
           <div className="flex flex-col items-start ml-14">
             <div className="text-sm text-[#606060]">예정 {flight.scheduledTime}</div>
             <div className="text-sm text-[#215DCE]">변경 {flight.modifiedTime}</div>
-            {flight.delay && <div className="text-red-500 text-sm">지연 {flight.delay}</div>}
+            {flight.delay && <div className="text-red-500 text-sm">지연 {flight.delay}</div>} 
           </div>
         </div>
       ))}
