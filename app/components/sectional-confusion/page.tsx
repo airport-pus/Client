@@ -124,14 +124,14 @@ const TrafficStatus = () => {
   return (
     <div className="relative flex">
       <div>
-        <div className="mb-2 w-[460px] text-[22px] text-[#000000] font-bold mt-2 ml-2 mb-[-3]">
+        <div className="mb-2 w-[460px] text-[22px] text-black font-bold mt-2 ml-2 mb-[-3]">
           {message}
         </div>
-        <div className="mb-4 w-[480px] text-[14px] text-[#7B7B7B] ml-2">
+        <div className="mb-4 w-[480px] text-[14px] text-gray400 ml-2">
           표에서 셀을 클릭하면 시간별 그래프를 보실 수 있습니다.
         </div>
         <div className="w-[420px] ml-2">
-          <div className="bg-[#215DCE] text-white p-3 rounded-t-lg grid grid-cols-2 text-center mt-[6]">
+          <div className="bg-blue500 text-white p-3 rounded-t-lg grid grid-cols-2 text-center mt-[6]">
             <div className="font-medium">구간</div>
             <div className="font-medium">혼잡도</div>
           </div>
@@ -156,7 +156,11 @@ const TrafficStatus = () => {
           <div className="flex items-center">
             <button 
               onClick={() => setSelectedDate("어제")}
-              className={`px-4 py-2 text-[14px] font-medium border ${selectedDate === "어제" ? 'bg-[#EFF6FF] text-[#4F5561] border-[#BFDBFE]' : 'bg-[#F2F2F2] text-[#7A7A7A] border-[#D1D5DB]'} rounded-md flex items-center mr-2`}>
+              className={`px-4 py-2 text-[14px] font-medium border ${
+                selectedDate === "어제" 
+                  ? 'bg-blue100 text-gray500 border-blue300' 
+                  : 'bg-[#F2F2F2] text-gray700 border-grayBorder'
+              } rounded-md flex items-center mr-2`}>
               어제
               <Image 
                 src="/date.svg" 
