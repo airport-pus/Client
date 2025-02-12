@@ -28,6 +28,16 @@ export default {
       fontFamily: {
         pretendard: ["Pretendard", "sans-serif"], 
       },
+      keyframes: {
+        marker: {
+          '0%': { width: '0%', transform: 'skewY(-7deg)' },
+          '100%': { width: '100%', transform: 'skewY(-7deg)' }
+        }
+      },
+      
+      animation: {
+        marker: 'marker 1s ease-out forwards'
+      }
     },
   },
   plugins: [],
