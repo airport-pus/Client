@@ -45,6 +45,7 @@ export default {
         red600: "#FF0000",
 
         black: "#000000",
+        black100:"#111111",
       },
       fontFamily: {
         pretendard: ["Pretendard", "sans-serif"],
