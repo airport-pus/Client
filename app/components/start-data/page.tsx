@@ -30,19 +30,19 @@ const StartData: React.FC<StartDataProps> = ({ displayedFlights, lastFlightEleme
           <div className="flex items-center gap-2 ml-14">
             <img src={flight.logo} alt={flight.airline} className="w-8 h-8" />
             <div>
-              <div className="text-[#000000]">{flight.flightNumber}</div>
-              <div className="text-[#606060] text-sm">{flight.airline}</div>
+              <div className="text-black">{flight.flightNumber}</div>
+              <div className="text-grayCustom text-sm">{flight.airline}</div>
             </div>
           </div>
-          <div className="text-center text-[#000000] ml-[-10px]">{flight.destination}</div>
+          <div className="text-center text-black ml-[-10px]">{flight.destination}</div>
           <div className="text-center text-blue-500">{flight.gate}</div>
           <div className={`text-center ml-2 ${flight.status === "지연" ? "text-red-500" : "text-blue-500"}`}>
             {flight.status}
           </div>
           <div className="flex flex-col items-start ml-14">
-            <div className="text-sm text-[#606060]">예정 {flight.scheduledTime}</div>
-            <div className="text-sm text-[#215DCE]">변경 {flight.modifiedTime}</div>
-            {flight.delay && <div className="text-red-500 text-sm">지연 {flight.delay}</div>} 
+            <div className="text-sm text-grayCustom">예정 {flight.scheduledTime}</div>
+            <div className="text-sm text-blue500">변경 {flight.modifiedTime}</div>
+            {flight.delay && <div className="text-red-500 text-sm">지연 {flight.delay}</div>}
           </div>
         </div>
       ))}
