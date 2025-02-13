@@ -12,6 +12,9 @@ export default {
         background: "var(--background)",
         foreground: "var(--foreground)",
 
+        gray200: "#F2F2F2",
+        gray300: "#F7F7F7",
+        gray350: "#FBFBFB",
         gray400: "#7B7B7B",
         gray500: "#4F5561",
         gray575: "#757575",
@@ -32,6 +35,7 @@ export default {
         green500: "#16A34A",
 
         yellow100: "#FFFBD8",
+        yellow300: "#FABE00",
         yellow500: "#CA8A04",
 
         red100: "#FFECEC",
@@ -40,11 +44,6 @@ export default {
         lightBlueBackground: "#EFF6FF",
         lightBlueText: "#4F5561",
         lightBlueBorder: "#BFDBFE",
-
-        green600: "#16A34A",
-        yellow600: "#CA8A04",
-        yellow300: "#FABE00",
-        red600: "#FF0000",
 
         black: "#000000",
         black100:"#111111",
