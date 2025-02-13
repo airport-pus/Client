@@ -23,13 +23,13 @@ export default function Inquiry() {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <main className="flex-grow p-8 bg-[#F3F4F6] font-pretendard">
+      <main className="flex-grow p-8 bg-bgcolor font-pretendard">
         <div className="max-w-[1280px] mx-auto px-5">
           <Header />
           <main className="flex-grow p-8">
             <div className="max-w-[800px] mx-auto text-center">
-              <h1 className="text-[24px] font-bold text-[#111827] mb-2">문의내용</h1>
-              <p className="text-[16px] text-[#767676] mb-10 text-center mt-[-8]">개발자들아 일해라.</p>
+              <h1 className="text-[24px] font-bold text-black150 mb-2">문의내용</h1>
+              <p className="text-[16px] text-gray800 mb-10 text-center mt-[-8]">개발자님 일해주세요...!!</p>
               <InquiryCheck 
                 items={items}
                 isExpanded={isExpanded}
