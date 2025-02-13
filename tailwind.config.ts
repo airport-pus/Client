@@ -20,8 +20,10 @@ export default {
         grayBorder: "#D1D5DB",
         grayHover: "#F3F3F3",
         grayCustom: "#606060",
+        bgcolor: "#F3F4F5",
 
         blue100: "#EFF6FF",
+        blue150: "#D1E0FF",
         blue200: "#D2E4FF",
         blue300: "#BFDBFE",
         blue500: "#215DCE", 
@@ -46,6 +48,7 @@ export default {
 
         black: "#000000",
         black100:"#111111",
+        black150:"#111827",
       },
       fontFamily: {
         pretendard: ["Pretendard", "sans-serif"],
