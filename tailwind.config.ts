@@ -19,11 +19,12 @@ export default {
         gray700: "#7A7A7A",
         grayBorder: "#D1D5DB",
         grayHover: "#F3F3F3",
+        grayCustom: "#606060",
 
         blue100: "#EFF6FF",
         blue200: "#D2E4FF",
         blue300: "#BFDBFE",
-        blue500: "#215DCE",
+        blue500: "#215DCE", 
 
         green100: "#E2FFEB",
         green500: "#16A34A",
