@@ -7,6 +7,7 @@ import ParkingCongestion from "./components/ParkingCongestion/page"
 import FareCheck from "./components/FareCheck/page"
 import SectionalConfusion from "./components/sectional-confusion/page"
 import StartInformation from "./components/start-information/page"
+import FinshInformation from "./components/finsh-imformation/page"
 
 export default function Home() {
   const [selected, setSelected] = useState<number>(1)
@@ -56,6 +57,7 @@ export default function Home() {
           <div className="relative col-span-12 bg-white rounded-lg p-4 min-h-[400px]">
             {selected === 1 && <SectionalConfusion />}
             {selected === 2 && <StartInformation />} 
+            {selected === 3 && <FinshInformation />}
           </div>
         </div>
       </main>
