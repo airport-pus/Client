@@ -46,7 +46,7 @@ export default function ParkingFeeCalculator({ className }: ParkingFeeCalculator
     <div className={`col-span-12 sm:col-span-4 bg-white rounded-[8px] h-[260px] p-6 relative w-[700px] absolute xl:left-[-300px] ${className}`}>
       {!isResultView ? (
         <>
-          <h2 className="text-xl font-bold mb-4 text-[#000000]">
+          <h2 className="text-xl font-bold mb-4 text-black">
             예상 주차요금 조회
           </h2>
 
@@ -191,7 +191,7 @@ export default function ParkingFeeCalculator({ className }: ParkingFeeCalculator
             </div>
             <button 
               className={`h-[36px] w-[96px] bg-blue500 
-                text-[#FFFFFF] 
+                text-white 
                 px-2 rounded-[8px] ml-2 mt-8 
                 transition-all duration-200 ease-in-out`}
               style={{ transform: 'translateX(-36px)' }}

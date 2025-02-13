@@ -7,13 +7,13 @@ export default function Footer({ className }: { className?: string }) {
         }}
       >
         <div className="max-w-[1280px] mx-auto h-full flex flex-col items-center justify-center">
-          <div className="flex items-center gap-2 text-[14px] text-[#111111]">
+          <div className="flex items-center gap-2 text-[14px] text-black100">
             <span>Developed by</span>
-            <a href="https://github.com/siniseong" target="_blank" rel="noopener noreferrer" className="text-[#2A5FEC] hover:underline">siniseong</a>
-            <a href="https://github.com/gyumingim" target="_blank" rel="noopener noreferrer" className="text-[#2A5FEC] hover:underline">gyumingim</a>
-            <a href="https://github.com/GSB0203" target="_blank" rel="noopener noreferrer" className="text-[#2A5FEC] hover:underline">gimseungbin</a>
+            <a href="https://github.com/siniseong" target="_blank" rel="noopener noreferrer" className="text-blue500 hover:underline">siniseong</a>
+            <a href="https://github.com/gyumingim" target="_blank" rel="noopener noreferrer" className="text-blue500 hover:underline">gyumingim</a>
+            <a href="https://github.com/GSB0203" target="_blank" rel="noopener noreferrer" className="text-blue500 hover:underline">gimseungbin</a>
           </div>
-          <div className="text-[14px] text-[#6B7280] mt-1">
+          <div className="text-[14px] text-gray600 mt-1">
             © 2025 All rights reserved.
           </div>
         </div>
