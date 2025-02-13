@@ -49,6 +49,8 @@ export default {
         black: "#000000",
         black100:"#111111",
         black150:"#111827",
+
+        white: "#FFFFFF",
       },
       fontFamily: {
         pretendard: ["Pretendard", "sans-serif"],
