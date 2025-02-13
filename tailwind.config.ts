@@ -41,6 +41,7 @@ export default {
 
         green600: "#16A34A",
         yellow600: "#CA8A04",
+        yellow300: "#FABE00",
         red600: "#FF0000",
 
         black: "#000000",
