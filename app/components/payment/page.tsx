@@ -9,7 +9,7 @@ const Payment = ({ parkingFee, onRetry }: PaymentProps) => {
   return (
     <div className="flex items-center flex-col justify-center h-full gap-1">
       <Image src="/Payment.svg" alt="payment" width={180} height={50} />
-      <p className="text-[20px] font-bold text-[#000000] mb-4 mt-2">
+      <p className="text-[20px] font-bold text-black mb-4 mt-2">
         예상 주차 요금은{" "}
         <span className="text-[24px] relative inline-block">
           <span className="relative z-10 mix-blend-multiply text-blue500">
