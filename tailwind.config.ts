@@ -20,6 +20,7 @@ export default {
         gray575: "#757575",
         gray600: "#6B7280",
         gray700: "#7A7A7A",
+        gray800: "#767676",
         grayBorder: "#D1D5DB",
         grayHover: "#F3F3F3",
         grayCustom: "#606060",

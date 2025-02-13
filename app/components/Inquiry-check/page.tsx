@@ -26,7 +26,7 @@ export default function InquiryCheck({ items, isExpanded, onChangeAccordion }: I
         >
           <div className="flex flex-col">
             <div className="w-full flex items-center p-4 text-left text-[18px] font-semibold text-gray-500">
-              <span className="flex-1 text-[#767676] flex items-center justify-between">
+              <span className="flex-1 text-gray800 flex items-center justify-between">
                 <div>
                   Q. <span className="text-black ml-6">{item.title}</span>
                 </div>
@@ -47,12 +47,12 @@ export default function InquiryCheck({ items, isExpanded, onChangeAccordion }: I
                 </svg>
               </span>
             </div>
-            <div className="text-12 text-[#767676] pb-4 px-4 text-left mt-[-16] ml-12">
+            <div className="text-12 text-gray800 pb-4 px-4 text-left mt-[-16] ml-12">
               {item.email}
             </div>
           </div>
           {isExpanded === item.id.toString() && (
-            <div className="text-14 text-[#767676] pb-4 px-4 text-left mt-[16] ml-12">
+            <div className="text-14 text-gray800 pb-4 px-4 text-left mt-[16] ml-12">
               {item.content}
             </div>
           )}
