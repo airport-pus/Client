@@ -100,7 +100,7 @@ const ParkingCongestion = () => {
             const dataIndex = context.dataIndex
             const dataset = context.dataset
             const parkingInfo = dataset.parkingInfo[dataIndex]
-            return [`주차된 차량 수: ${parkingInfo.current}대`, `주차 가능 차량 수: ${parkingInfo.total}대`, `남은 공간: ${parkingInfo.remaining}대`, `혼잡도: ${parkingInfo.congestion}`]
+            return [`전체 주차면: ${parkingInfo.total}대`, `주차된 차량 수: ${parkingInfo.current}대`, `주차 가능 차량 수: ${parkingInfo.remaining}대`, `혼잡도: ${parkingInfo.congestion}`]
           },
         },
       },
