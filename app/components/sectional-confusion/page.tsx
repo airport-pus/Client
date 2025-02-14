@@ -13,6 +13,8 @@ import {
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
 import Image from 'next/image';
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
@@ -42,17 +44,76 @@ const TrafficStatus = () => {
   const [selectedSection, setSelectedSection] = useState("1구간");
   const [selectedDate, setSelectedDate] = useState<DateType>("오늘");
   const [apiData, setApiData] = useState<ApiResponse | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/congestions/real`)
       .then((res) => res.json())
       .then((data: ApiResponse) => {
         setApiData(data);
+        setIsLoading(false);
       })
       .catch((error) => {
         console.error("Error fetching congestion data:", error);
+        setIsLoading(false);
       });
   }, []);
+
+  if (isLoading) {
+    return (
+      <div className="relative flex">
+        <div>
+          <div className="mb-2 w-[460px] text-[22px] text-black font-bold mt-2 ml-2 mb-[-3]">
+            <Skeleton height={28} />
+          </div>
+          <div className="mb-4 w-[480px] text-[14px] text-gray400 ml-2 mb-7">
+            <Skeleton height={20} />
+          </div>
+          <div className="w-[420px] ml-2">
+            <div className="mt-6 grid grid-cols-2 bg-gray300 p-2 text-center text-grayCustom font-regular text-[14px]">
+              <div>
+                <Skeleton height={20} />
+              </div>
+              <div>
+                <Skeleton height={20} />
+              </div>
+            </div>
+            <div className="border-b border-gray-200">
+              {[...Array(4)].map((_, index) => (
+                <div
+                  key={index}
+                  className="grid grid-cols-2 p-4 border-b last:border-b-0 text-center"
+                >
+                  <div className="font-medium text-black">
+                    <Skeleton height={20} />
+                  </div>
+                  <div>
+                    <Skeleton height={20} />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+        <div className="ml-4 w-[670px] h-[324px] p-4 mt-14">
+          <div className="mb-2 text-[22px] text-black font-bold ml-2 mt-[-68] mb-[32] flex justify-between items-center">
+            <div>
+              <Skeleton height={28} width={200} />
+            </div>
+            <div className="flex items-center">
+              <button className="px-4 py-2 text-[14px] font-medium border bg-lightBlueBackground text-lightBlueText border-lightBlueBorder rounded-md flex items-center mr-2">
+                <Skeleton height={20} width={50} />
+              </button>
+              <button className="px-4 py-2 text-[14px] font-medium border bg-gray200 text-gray700 border-grayBorder rounded-md flex items-center">
+                <Skeleton height={20} width={50} />
+              </button>
+            </div>
+          </div>
+          <Skeleton height={250} />
+        </div>
+      </div>
+    );
+  }
 
   if (!apiData) {
     return <div>Loading...</div>;
