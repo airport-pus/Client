@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import useSWR from 'swr';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -39,27 +40,22 @@ interface ApiResponse {
   cgdrCLvl: number;
 }
 
+const fetcher = (url: string) => fetch(url).then((res) => res.json());
 const TrafficStatus = () => {
   const message = "실시간 공항 구간별 혼잡도 확인";
   const [selectedSection, setSelectedSection] = useState("1구간");
   const [selectedDate, setSelectedDate] = useState<DateType>("오늘");
-  const [apiData, setApiData] = useState<ApiResponse | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/congestions/real`)
-      .then((res) => res.json())
-      .then((data: ApiResponse) => {
-        setApiData(data);
-        setIsLoading(false);
-      })
-      .catch((error) => {
-        console.error("error:", error);
-        setIsLoading(false);
-      });
-  }, []);
+  const { data: apiData, error } = useSWR<ApiResponse>(
+    `${process.env.NEXT_PUBLIC_API_BASE_URL}/congestions/real`,
+    fetcher
+  );
 
-  if (isLoading) {
+  if (error) {
+    return <div>Error loading data...</div>;
+  }
+
+  if (!apiData) {
     return (
       <div className="relative flex">
         <div>
@@ -111,10 +107,6 @@ const TrafficStatus = () => {
     );
   }
 
-  if (!apiData) {
-    return <div>Loading...</div>;
-  }
-
   const statusMap: { [key: number]: { text: string; color: string } } = {
     1: { text: "원활", color: "bg-green100 text-green500" },
     2: { text: "보통", color: "bg-yellow100 text-yellow500" },
@@ -161,17 +153,12 @@ const TrafficStatus = () => {
   };
 
   const sizeClass = "px-2 py-1 text-[12px] rounded-md";
-
   const labels = Array.from({ length: 24 }, (_, index) =>
     `${String(index).padStart(2, "0")}~${String(index + 1).padStart(2, "0")}시`
   );
-
   const yLabels = ["원활", "보통", "혼잡", "매우혼잡"];
 
-  const getStatusText = (value: number) => {
-    return yLabels[value - 1] || "";
-  };
-
+  const getStatusText = (value: number) => yLabels[value - 1] || "";
   const selectedData = statusData[selectedDate][selectedSection];
 
   const chartData = {
@@ -200,17 +187,13 @@ const TrafficStatus = () => {
         ticks: {
           maxRotation: 45,
           minRotation: 45,
-          font: {
-            size: 11,
-          },
+          font: { size: 11 },
         },
         grid: { display: false },
       },
       y: {
         ticks: {
-          callback: function (tickValue: string | number) {
-            return yLabels[Number(tickValue) - 1];
-          },
+          callback: (tickValue: string | number) => yLabels[Number(tickValue) - 1],
           stepSize: 1,
           min: 1,
           max: 4,
@@ -226,10 +209,7 @@ const TrafficStatus = () => {
     plugins: {
       tooltip: {
         callbacks: {
-          label: function (context: any) {
-            const value = context.raw;
-            return `혼잡도: ${getStatusText(value)}`;
-          },
+          label: (context: any) => `혼잡도: ${getStatusText(context.raw)}`,
         },
       },
     },
