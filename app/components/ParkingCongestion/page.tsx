@@ -40,6 +40,14 @@ const ParkingCongestion = () => {
         <div className="h-6 bg-gray-200 rounded w-48 mb-2"></div>
         <div className="flex items-center mb-2">
           <div className="h-4 bg-gray-200 rounded w-32"></div>
+          <div className="flex items-center ml-20">
+            <div className="w-3 h-3 rounded-full bg-gray-200"></div>
+            <div className="w-8 h-3 bg-gray-200 rounded ml-1"></div>
+            <div className="w-3 h-3 rounded-full bg-gray-200 ml-4"></div>
+            <div className="w-8 h-3 bg-gray-200 rounded ml-1"></div>
+            <div className="w-3 h-3 rounded-full bg-gray-200 ml-4"></div>
+            <div className="w-8 h-3 bg-gray-200 rounded ml-1"></div>
+          </div>
         </div>
         <div className="h-[170px] w-full bg-gray-200 rounded"></div>
       </div>
@@ -136,4 +144,4 @@ const ParkingCongestion = () => {
   )
 }
 
-export default ParkingCongestion
+export default ParkingCongestion    
