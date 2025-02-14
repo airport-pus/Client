@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import useSWR from "swr"
 import { Line } from "react-chartjs-2"
 import {
   Chart as ChartJS,
@@ -15,58 +15,57 @@ import {
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend)
 
+const fetcher = (url: string) => fetch(url).then(res => res.json())
+
+const getColorByValue = (value: number) => {
+  if (value <= 30) return "#16A34A"
+  if (value <= 70) return "#FABE00"
+  return "#EF0000"
+}
+
+const getCongestionLabel = (value: number) => {
+  if (value <= 30) return "원활"
+  if (value <= 70) return "보통"
+  return "혼잡"
+}
+
 const ParkingCongestion = () => {
-  const [parkingData, setParkingData] = useState<{ name: string; congestion: string; degree: number; current: number; total: number; remaining: number }[]>([])
-  const [bestParkingName, setBestParkingName] = useState<string>('')
-  const [isLoading, setIsLoading] = useState(true)
+  const { data, error } = useSWR(`${process.env.NEXT_PUBLIC_API_BASE_URL}/parking`, fetcher, {
+    refreshInterval: 3000, 
+  })
 
-  useEffect(() => {
-    const fetchParkingData = async () => {
-      try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/parking`)
-        const data = await response.json()
-        const maxRemainingLot = data.reduce((maxLot: any, lot: any) => 
-          lot.remainingSpace > maxLot.remainingSpace ? lot : maxLot, data[0])
-
-        setBestParkingName(maxRemainingLot.parkingAirportCodeName)
-        
-        setParkingData(
-          data.map((lot: any) => ({
-            name: lot.parkingAirportCodeName,
-            congestion: lot.parkingCongestionDegree === "100%" || lot.remainingSpace === 0 ? "만차" : getCongestionLabel(parseFloat(lot.parkingCongestionDegree)),
-            degree: parseFloat(lot.parkingCongestionDegree),
-            current: lot.parkingOccupiedSpace,
-            total: lot.parkingTotalSpace,
-            remaining: lot.remainingSpace,
-          }))
-        )
-      } catch (error) {
-        console.error("Failed to fetch parking data", error)
-      } finally {
-        setIsLoading(false)
-      }
-    }
-    fetchParkingData()
-  }, [])
-
-  const getColorByValue = (value: number) => {
-    if (value <= 30) return "#16A34A"
-    if (value <= 70) return "#FABE00"
-    return "#EF0000"
+  if (!data) {
+    return (
+      <div className="col-span-12 xl:col-span-8 bg-white rounded-[8px] h-[260px] xl:w-[530px] w-[700px] p-6 relative animate-pulse">
+        <div className="h-6 bg-gray-200 rounded w-48 mb-2"></div>
+        <div className="flex items-center mb-2">
+          <div className="h-4 bg-gray-200 rounded w-32"></div>
+        </div>
+        <div className="h-[170px] w-full bg-gray-200 rounded"></div>
+      </div>
+    )
   }
 
-  const getCongestionLabel = (value: number) => {
-    if (value <= 30) return "원활"
-    if (value <= 70) return "보통"
-    return "혼잡"
-  }
+  const maxRemainingLot = data.reduce((maxLot: any, lot: any) => 
+    lot.remainingSpace > maxLot.remainingSpace ? lot : maxLot, data[0])
+
+  const bestParkingName = maxRemainingLot.parkingAirportCodeName
+
+  const parkingData = data.map((lot: any) => ({
+    name: lot.parkingAirportCodeName,
+    congestion: lot.parkingCongestionDegree === "100%" || lot.remainingSpace === 0 ? "만차" : getCongestionLabel(parseFloat(lot.parkingCongestionDegree)),
+    degree: parseFloat(lot.parkingCongestionDegree),
+    current: lot.parkingOccupiedSpace,
+    total: lot.parkingTotalSpace,
+    remaining: lot.remainingSpace,
+  }))
 
   const chartData = {
-    labels: parkingData.map((lot) => lot.name), 
+    labels: parkingData.map((lot: { name: any }) => lot.name), 
     datasets: [
       {
         label: "주차장 혼잡도",
-        data: parkingData.map((lot) => lot.degree),
+        data: parkingData.map((lot: { degree: any }) => lot.degree),
         borderColor: "#215DCE",
         backgroundColor: (context: any) => {
           const value = context.raw
@@ -114,26 +113,6 @@ const ParkingCongestion = () => {
         },
       },
     },
-  }
-
-  if (isLoading) {
-    return (
-      <div className="col-span-12 xl:col-span-8 bg-white rounded-[8px] h-[260px] xl:w-[530px] w-[700px] p-6 relative animate-pulse">
-        <div className="h-6 bg-gray-200 rounded w-48 mb-2"></div>
-        <div className="flex items-center mb-2">
-          <div className="h-4 bg-gray-200 rounded w-32"></div>
-          <div className="flex items-center ml-20">
-            <div className="w-3 h-3 rounded-full bg-gray-200"></div>
-            <div className="w-8 h-3 bg-gray-200 rounded ml-1"></div>
-            <div className="w-3 h-3 rounded-full bg-gray-200 ml-4"></div>
-            <div className="w-8 h-3 bg-gray-200 rounded ml-1"></div>
-            <div className="w-3 h-3 rounded-full bg-gray-200 ml-4"></div>
-            <div className="w-8 h-3 bg-gray-200 rounded ml-1"></div>
-          </div>
-        </div>
-        <div className="h-[170px] w-full bg-gray-200 rounded"></div>
-      </div>
-    )
   }
 
   return (
