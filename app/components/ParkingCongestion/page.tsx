@@ -1,5 +1,6 @@
 "use client"
 
+import { useEffect, useState } from "react"
 import { Line } from "react-chartjs-2"
 import {
   Chart as ChartJS,
@@ -15,18 +16,48 @@ import {
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend)
 
 const ParkingCongestion = () => {
+  const [parkingData, setParkingData] = useState<{ name: string; congestion: string; degree: number; current: number; total: number; remaining: number }[]>([])
+  
+  useEffect(() => {
+    const fetchParkingData = async () => {
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/parking`)
+        const data = await response.json()
+        setParkingData(
+          data.map((lot: any) => ({
+            name: lot.parkingAirportCodeName,
+            congestion: lot.parkingCongestionDegree === "100%" || lot.remainingSpace === 0 ? "만차" : getCongestionLabel(parseFloat(lot.parkingCongestionDegree)),
+            degree: parseFloat(lot.parkingCongestionDegree),
+            current: lot.parkingOccupiedSpace,
+            total: lot.parkingTotalSpace,
+            remaining: lot.remainingSpace,
+          }))
+        )
+      } catch (error) {
+        console.error("Failed to fetch parking data", error)
+      }
+    }
+    fetchParkingData()
+  }, [])
+
   const getColorByValue = (value: number) => {
     if (value <= 30) return "#16A34A"
     if (value <= 70) return "#FABE00"
     return "#EF0000"
   }
 
+  const getCongestionLabel = (value: number) => {
+    if (value <= 30) return "원활"
+    if (value <= 70) return "보통"
+    return "혼잡"
+  }
+
   const chartData = {
-    labels: ["P1 여객주차장", "P2 여객주차장", "P3 여객(화물)"],
+    labels: parkingData.map((lot) => lot.name),
     datasets: [
       {
         label: "주차장 혼잡도",
-        data: [80, 60, 30],
+        data: parkingData.map((lot) => lot.degree),
         borderColor: "#215DCE",
         backgroundColor: (context: any) => {
           const value = context.raw
@@ -42,11 +73,7 @@ const ParkingCongestion = () => {
         },
         pointBorderColor: "#FFFFFF",
         pointBorderWidth: 2,
-        parkingInfo: [
-          { current: 200, total: 500 },
-          { current: 300, total: 500 },
-          { current: 70, total: 500 },
-        ],
+        parkingInfo: parkingData,
       },
     ],
   }
@@ -64,7 +91,7 @@ const ParkingCongestion = () => {
             const dataIndex = context.dataIndex
             const dataset = context.dataset
             const parkingInfo = dataset.parkingInfo[dataIndex]
-            return [`주차된 차량 수: ${parkingInfo.current}대`, `주차 가능 차량 수: ${parkingInfo.total}대`]
+            return [`주차된 차량 수: ${parkingInfo.current}대`, `주차 가능 차량 수: ${parkingInfo.total}대`, `남은 공간: ${parkingInfo.remaining}대`, `혼잡도: ${parkingInfo.congestion}`]
           },
         },
       },
@@ -84,17 +111,16 @@ const ParkingCongestion = () => {
     <div className="col-span-12 xl:col-span-8 bg-white rounded-[8px] h-[260px] xl:w-[530px] w-[700px] p-6 relative">
       <h2 className="text-xl font-bold mb-2 text-black text-[20px]">공항 주차장 혼잡도</h2>
       <div className="text-gray400 mb-2 mt-[-8px] text-[14px] flex items-center">
-        <span className="text-blue500 underline">P1 여객주차장</span>을 이용하는게 좋겠어요.
+        <span className="text-blue500 underline">{parkingData[0]?.name}</span>을 이용하는게 좋겠어요.
         <div className="flex items-center ml-20">
-            <span className="w-3 h-3 rounded-full bg-green500"></span>
+          <span className="w-3 h-3 rounded-full bg-green500"></span>
           <span className="xl:text-xs text-sm ml-1">원활</span>
-          <span className="w-3 h-3 rounded-full bg-yellow500 ml-4"></span>
+          <span className="w-3 h-3 rounded-full bg-yellow300 ml-4"></span>
           <span className="xl:text-xs text-sm ml-1">보통</span>
           <span className="w-3 h-3 rounded-full bg-red500 ml-4"></span>
           <span className="xl:text-xs text-sm ml-1">혼잡</span>
         </div>
       </div>
-
       <div className="h-[170px] w-full">
         <Line data={chartData} options={chartOptions} />
       </div>
