@@ -54,7 +54,7 @@ const TrafficStatus = () => {
         setIsLoading(false);
       })
       .catch((error) => {
-        console.error("Error fetching congestion data:", error);
+        console.error("error:", error);
         setIsLoading(false);
       });
   }, []);
@@ -101,12 +101,8 @@ const TrafficStatus = () => {
               <Skeleton height={28} width={200} />
             </div>
             <div className="flex items-center">
-              <button className="px-4 py-2 text-[14px] font-medium border bg-lightBlueBackground text-lightBlueText border-lightBlueBorder rounded-md flex items-center mr-2">
-                <Skeleton height={20} width={50} />
-              </button>
-              <button className="px-4 py-2 text-[14px] font-medium border bg-gray200 text-gray700 border-grayBorder rounded-md flex items-center">
-                <Skeleton height={20} width={50} />
-              </button>
+              <Skeleton height={28} width={60} className="mr-2" />
+              <Skeleton height={28} width={60} />
             </div>
           </div>
           <Skeleton height={250} />
