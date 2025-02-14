@@ -43,7 +43,6 @@ const TrafficStatus = () => {
   const [selectedDate, setSelectedDate] = useState<DateType>("오늘");
   const [apiData, setApiData] = useState<ApiResponse | null>(null);
 
-  // API 호출 (NEXT_PUBLIC_API_BASE_URL/env에 설정되어 있음)
   useEffect(() => {
     fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/congestions/real`)
       .then((res) => res.json())
@@ -55,7 +54,10 @@ const TrafficStatus = () => {
       });
   }, []);
 
-  // 상태값에 따른 텍스트와 색상 매핑
+  if (!apiData) {
+    return <div>Loading...</div>;
+  }
+
   const statusMap: { [key: number]: { text: string; color: string } } = {
     1: { text: "원활", color: "bg-green100 text-green500" },
     2: { text: "보통", color: "bg-yellow100 text-yellow500" },
@@ -63,52 +65,28 @@ const TrafficStatus = () => {
     4: { text: "매우혼잡", color: "bg-red100 text-red500" },
   };
 
-  // API 데이터가 있으면 해당 값으로, 없으면 기본값으로 표를 구성 (순서: 1구간, 2구간, 3구간, 전체 구간)
-  const sectionStatuses: SectionStatus[] = apiData
-    ? [
-        {
-          section: "1구간",
-          status: statusMap[apiData.cgdrALvl]?.text || "",
-          statusColor: statusMap[apiData.cgdrALvl]?.color || "",
-        },
-        {
-          section: "2구간",
-          status: statusMap[apiData.cgdrBLvl]?.text || "",
-          statusColor: statusMap[apiData.cgdrBLvl]?.color || "",
-        },
-        {
-          section: "3구간",
-          status: statusMap[apiData.cgdrCLvl]?.text || "",
-          statusColor: statusMap[apiData.cgdrCLvl]?.color || "",
-        },
-        {
-          section: "전체 구간",
-          status: statusMap[apiData.cgdrAllLvl]?.text || "",
-          statusColor: statusMap[apiData.cgdrAllLvl]?.color || "",
-        },
-      ]
-    : [
-        {
-          section: "1구간",
-          status: "원활",
-          statusColor: "bg-green100 text-green500",
-        },
-        {
-          section: "2구간",
-          status: "보통",
-          statusColor: "bg-yellow100 text-yellow500",
-        },
-        {
-          section: "3구간",
-          status: "혼잡",
-          statusColor: "bg-red100 text-red500",
-        },
-        {
-          section: "전체 구간",
-          status: "매우혼잡",
-          statusColor: "bg-red100 text-red500",
-        },
-      ];
+  const sectionStatuses: SectionStatus[] = [
+    {
+      section: "1구간",
+      status: statusMap[apiData.cgdrALvl]?.text || "",
+      statusColor: statusMap[apiData.cgdrALvl]?.color || "",
+    },
+    {
+      section: "2구간",
+      status: statusMap[apiData.cgdrBLvl]?.text || "",
+      statusColor: statusMap[apiData.cgdrBLvl]?.color || "",
+    },
+    {
+      section: "3구간",
+      status: statusMap[apiData.cgdrCLvl]?.text || "",
+      statusColor: statusMap[apiData.cgdrCLvl]?.color || "",
+    },
+    {
+      section: "전체 구간",
+      status: statusMap[apiData.cgdrAllLvl]?.text || "",
+      statusColor: statusMap[apiData.cgdrAllLvl]?.color || "",
+    },
+  ];
 
   const statusData: StatusData = {
     어제: {
