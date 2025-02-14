@@ -17,12 +17,21 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, T
 
 const ParkingCongestion = () => {
   const [parkingData, setParkingData] = useState<{ name: string; congestion: string; degree: number; current: number; total: number; remaining: number }[]>([])
-  
+  const [bestParkingName, setBestParkingName] = useState<string>('')
+
   useEffect(() => {
     const fetchParkingData = async () => {
       try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/parking`)
         const data = await response.json()
+        
+        // 가장 남은 공간이 많은 주차장 찾기 (순서는 유지한 채)
+        const maxRemainingLot = data.reduce((maxLot: any, lot: any) => 
+          lot.remainingSpace > maxLot.remainingSpace ? lot : maxLot, data[0])
+
+        setBestParkingName(maxRemainingLot.parkingAirportCodeName)
+
+        // 원본 순서 유지한 채 데이터 변환
         setParkingData(
           data.map((lot: any) => ({
             name: lot.parkingAirportCodeName,
@@ -53,7 +62,7 @@ const ParkingCongestion = () => {
   }
 
   const chartData = {
-    labels: parkingData.map((lot) => lot.name),
+    labels: parkingData.map((lot) => lot.name), // 원본 순서 유지
     datasets: [
       {
         label: "주차장 혼잡도",
@@ -111,7 +120,7 @@ const ParkingCongestion = () => {
     <div className="col-span-12 xl:col-span-8 bg-white rounded-[8px] h-[260px] xl:w-[530px] w-[700px] p-6 relative">
       <h2 className="text-xl font-bold mb-2 text-black text-[20px]">공항 주차장 혼잡도</h2>
       <div className="text-gray400 mb-2 mt-[-8px] text-[14px] flex items-center">
-        <span className="text-blue500 underline">{parkingData[0]?.name}</span>을 이용하는게 좋겠어요.
+        <span className="text-blue500 underline">{bestParkingName}</span>을 이용하는게 좋겠어요.
         <div className="flex items-center ml-20">
           <span className="w-3 h-3 rounded-full bg-green500"></span>
           <span className="xl:text-xs text-sm ml-1">원활</span>
