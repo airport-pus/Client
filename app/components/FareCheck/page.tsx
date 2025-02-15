@@ -372,7 +372,7 @@ function ResultSkeleton() {
   )
 }
 
-// -------------------- 입력 필드 컴포넌트 --------------------
+// -------------------- 입력 필드 api --------------------
 
 export default function ParkingFeeCalculator() {
   const [dates, setDates] = useState({
