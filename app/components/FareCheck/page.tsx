@@ -135,8 +135,8 @@ export default function ParkingFeeCalculator() {
       );
 
       const parkingFeeRequest: ParkingFeeRequest = {
-        holidayMinutes,
-        weekdayMinutes,
+        holidayMinutes: weekdayMinutes,
+        weekdayMinutes: holidayMinutes,
         parkingLot: selectedParking === "P1P2" ? "P1" : "P3",
         isLargeCar: selectedSize === "large",
         discountType: getDiscountType(selectedDiscount)
