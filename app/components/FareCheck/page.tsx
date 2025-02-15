@@ -113,10 +113,10 @@ const createParkingFeeRequest = (
 
 export default function ParkingFeeCalculator() {
   const [dates, setDates] = useState({
-    startDate: "",
-    startTime: "",
-    endDate: "",
-    endTime: ""
+    startDate: "2023-03-13",
+    startTime: "00:00",
+    endDate: "2023-03-13",
+    endTime: "00:00"
   })
   const [parkingOptions, setParkingOptions] = useState({
     parkingLot: "P1P2" as ParkingLot,
