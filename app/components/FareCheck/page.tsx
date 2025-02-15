@@ -111,6 +111,269 @@ const createParkingFeeRequest = (
   discountType: DISCOUNT_TYPE_MAP[discountType]
 })
 
+// -------------------- 입력 선택 컴포넌트트 --------------------
+
+interface ParkingOptionsProps {
+  parkingOptions: {
+    parkingLot: ParkingLot
+    vehicleSize: VehicleSize
+    discountType: DiscountType
+  }
+  onOptionChange: (field: keyof ParkingOptionsProps["parkingOptions"]) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void
+}
+function ParkingOptions({ parkingOptions, onOptionChange }: ParkingOptionsProps) {
+  return (
+    <div className="flex mb-4 mt-[20px]">
+      <div className="flex-1">
+        <span className="text-sm font-semibold text-gray600">주차장 선택</span>
+        <div className="flex items-center mt-2">
+          {[
+            { value: "P1P2", label: "P1·P2 주차장" },
+            { value: "P3", label: "P3 (화물)" }
+          ].map(({ value, label }) => (
+            <label key={value} className="flex items-center mr-4 cursor-pointer">
+              <input
+                type="radio"
+                name="parking"
+                checked={parkingOptions.parkingLot === value}
+                onChange={onOptionChange("parkingLot")}
+                value={value}
+                className="mr-2"
+              />
+              <span className={parkingOptions.parkingLot === value ? "font-medium text-black" : "text-gray575"}>
+                {label}
+              </span>
+            </label>
+          ))}
+        </div>
+      </div>
+      <div className="mb-4 ml-[40px]">
+        <span className="text-sm font-semibold text-gray600">차량 크기 선택</span>
+        <div className="flex items-center mt-2">
+          {[
+            { value: "small", label: "소형" },
+            { value: "large", label: "대형" }
+          ].map(({ value, label }) => (
+            <label key={value} className="flex items-center mr-4 cursor-pointer">
+              <input
+                type="radio"
+                name="size"
+                checked={parkingOptions.vehicleSize === value}
+                onChange={onOptionChange("vehicleSize")}
+                value={value}
+                className="mr-2"
+              />
+              <span className={parkingOptions.vehicleSize === value ? "font-medium text-black" : "text-gray575"}>
+                {label}
+              </span>
+            </label>
+          ))}
+        </div>
+      </div>
+      <div className="mb-4 mt-[-3px] ml-[120px]">
+        <span className="text-sm font-semibold text-gray600 ml-[-40px]">할인</span>
+        <div className="flex items-center mt-[2]">
+          <select
+            className="border px-3 py-1 rounded-md text-gray500 bg-blue100 border-blue200 appearance-none"
+            value={parkingOptions.discountType}
+            onChange={onOptionChange("discountType")}
+            style={{ transform: "translateX(-40px) translateY(3px)" }}
+          >
+            <option value="normal">일반</option>
+            <option value="veteran">국가유공자(상이)</option>
+            <option value="disabled">장애인 차량</option>
+            <option value="eco3">저공해 3종</option>
+            <option value="eco12">저공해 1,2종</option>
+            <option value="compact">경차</option>
+            <option value="children">다자녀</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+interface TimeSelectionProps {
+  dates: {
+    startDate: string
+    startTime: string
+    endDate: string
+    endTime: string
+  }
+  onDateChange: (field: keyof TimeSelectionProps["dates"]) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void
+}
+function TimeSelection({ dates, onDateChange }: TimeSelectionProps) {
+  return (
+    <div className="mb-4 mt-[-8px] flex items-center">
+      <div className="flex-1">
+        <span className="text-sm font-semibold text-gray600">입·출차 시간 선택</span>
+        <div className="flex items-center mt-2">
+          <input
+            type="date"
+            className="border px-2 py-1 rounded-md mr-2 text-gray500 bg-blue100 border-blue200"
+            value={dates.startDate}
+            onChange={onDateChange("startDate")}
+          />
+          <select
+            className="border px-2 py-1 rounded-md mr-4 text-gray500 bg-blue100 border-blue200 appearance-none"
+            value={dates.startTime}
+            onChange={onDateChange("startTime")}
+          >
+            {TIME_OPTIONS.map(time => (
+              <option key={time} value={time}>
+                {time}
+              </option>
+            ))}
+          </select>
+          <span className="text-gray500">~</span>
+          <input
+            type="date"
+            className="border px-2 py-1 rounded-md ml-4 mr-2 text-gray500 bg-blue100 border-blue200"
+            value={dates.endDate}
+            onChange={onDateChange("endDate")}
+          />
+          <select
+            className="border px-2 py-1 rounded-md text-gray500 bg-blue100 border-blue200 appearance-none"
+            value={dates.endTime}
+            onChange={onDateChange("endTime")}
+          >
+            {TIME_OPTIONS.map(time => (
+              <option key={time} value={time}>
+                {time}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+      <button
+        className="h-[36px] w-[96px] bg-blue500 text-white px-2 rounded-[8px] ml-2 mt-8 transition-all duration-200 ease-in-out"
+        style={{ transform: "translateX(-36px)" }}
+        onClick={() => {}}
+      >
+        🚗 조회
+      </button>
+    </div>
+  )
+}
+
+interface ParkingFormProps {
+  dates: TimeSelectionProps["dates"]
+  parkingOptions: ParkingOptionsProps["parkingOptions"]
+  onOptionChange: ParkingOptionsProps["onOptionChange"]
+  onDateChange: TimeSelectionProps["onDateChange"]
+  onCalculate: () => void
+}
+function ParkingForm({ dates, parkingOptions, onOptionChange, onDateChange, onCalculate }: ParkingFormProps) {
+  return (
+    <>
+      <h2 className="text-xl font-bold mb-4 text-black">예상 주차요금 조회</h2>
+      <ParkingOptions parkingOptions={parkingOptions} onOptionChange={onOptionChange} />
+      <div className="mb-4 mt-[-8px] flex items-center">
+        <div className="flex-1">
+          <span className="text-sm font-semibold text-gray600">입·출차 시간 선택</span>
+          <div className="flex items-center mt-2">
+            <input
+              type="date"
+              className="border px-2 py-1 rounded-md mr-2 text-gray500 bg-blue100 border-blue200"
+              value={dates.startDate}
+              onChange={onDateChange("startDate")}
+            />
+            <select
+              className="border px-2 py-1 rounded-md mr-4 text-gray500 bg-blue100 border-blue200 appearance-none"
+              value={dates.startTime}
+              onChange={onDateChange("startTime")}
+            >
+              {TIME_OPTIONS.map(time => (
+                <option key={time} value={time}>
+                  {time}
+                </option>
+              ))}
+            </select>
+            <span className="text-gray500">~</span>
+            <input
+              type="date"
+              className="border px-2 py-1 rounded-md ml-4 mr-2 text-gray500 bg-blue100 border-blue200"
+              value={dates.endDate}
+              onChange={onDateChange("endDate")}
+            />
+            <select
+              className="border px-2 py-1 rounded-md text-gray500 bg-blue100 border-blue200 appearance-none"
+              value={dates.endTime}
+              onChange={onDateChange("endTime")}
+            >
+              {TIME_OPTIONS.map(time => (
+                <option key={time} value={time}>
+                  {time}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+        <button
+          className="h-[36px] w-[96px] bg-blue500 text-white px-2 rounded-[8px] ml-2 mt-8 transition-all duration-200 ease-in-out"
+          style={{ transform: "translateX(-36px)" }}
+          onClick={onCalculate}
+        >
+          🚗 조회
+        </button>
+      </div>
+    </>
+  )
+}
+
+interface ResultViewProps {
+  fee: number
+  onReset: () => void
+}
+function ResultView({ fee, onReset }: ResultViewProps) {
+  return (
+    <div className="flex items-center flex-col justify-center h-full gap-1">
+      <Image src="/Payment.svg" alt="payment" width={180} height={50} />
+      <p className="text-[20px] font-bold text-black mb-4 mt-2">
+        예상 주차 요금은{" "}
+        <span className="text-[24px] relative inline-block">
+          <span className="relative z-10 mix-blend-multiply text-blue500">
+            {fee.toLocaleString()}원
+          </span>
+          <span className="absolute -bottom-[0] left-0 h-[60%] bg-yellow-200 origin-left animate-marker" />
+        </span>{" "}
+        입니다
+      </p>
+      <button
+        className="h-[36px] w-[115px] bg-lightBlueBackground text-lightBlueText border-lightBlueBorder text-[14px] border-2 rounded-[8px] transition-all duration-200 ease-in-out mb-[-32px]"
+        onClick={onReset}
+      >
+        다시 조회하기
+      </button>
+    </div>
+  )
+}
+
+function FormSkeleton() {
+  return (
+    <div className="flex flex-col justify-center items-start h-full animate-pulse">
+      <div className="bg-gray-300 h-8 w-56 mb-6 rounded"></div>
+      <div className="w-full space-y-4">
+        <div className="bg-gray-300 h-10 w-full rounded"></div>
+        <div className="bg-gray-300 h-10 w-full rounded"></div>
+        <div className="bg-gray-300 h-10 w-full rounded"></div>
+      </div>
+    </div>
+  )
+}
+
+function ResultSkeleton() {
+  return (
+    <div className="flex items-center flex-col justify-center h-full gap-1 animate-pulse">
+      <div className="bg-gray-300 w-[180px] h-[50px] mb-4 rounded-md"></div>
+      <div className="bg-gray-300 w-[240px] h-[24px] mb-4 rounded-md"></div>
+      <div className="bg-gray-300 w-[115px] h-[36px] rounded-md"></div>
+    </div>
+  )
+}
+
+// -------------------- 입력 필드 컴포넌트 --------------------
+
 export default function ParkingFeeCalculator() {
   const [dates, setDates] = useState({
     startDate: "2023-03-13",
@@ -162,7 +425,7 @@ export default function ParkingFeeCalculator() {
       const startDateTime = new Date(`${dates.startDate}T${dates.startTime}`)
       const endDateTime = new Date(`${dates.endDate}T${dates.endTime}`)
       if (endDateTime <= startDateTime) {
-        alert('출차 시간은 입차 시간보다 늦어야 합니다.')
+        alert("출차 시간은 입차 시간보다 늦어야 합니다.")
         return
       }
       setLoading(true)
@@ -179,9 +442,9 @@ export default function ParkingFeeCalculator() {
         parkingOptions.discountType
       )
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/parking`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(request),
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(request)
       })
       if (!response.ok) {
         throw new Error(`Failed to calculate parking fee: ${response.status}`)
@@ -190,187 +453,32 @@ export default function ParkingFeeCalculator() {
       setResult({ fee, isVisible: true })
       setLoading(false)
     } catch (error) {
-      console.error('Error calculating parking fee:', error)
-      alert('주차 요금 계산 중 오류가 발생했습니다.')
+      console.error("Error calculating parking fee:", error)
+      alert("주차 요금 계산 중 오류가 발생했습니다.")
       setLoading(false)
     }
   }
 
-  const renderParkingOptions = () => (
-    <div className="flex mb-4 mt-[20px]">
-      <div className="flex-1">
-        <span className="text-sm font-semibold text-gray600">주차장 선택</span>
-        <div className="flex items-center mt-2">
-          {[
-            { value: "P1P2", label: "P1·P2 주차장" },
-            { value: "P3", label: "P3 (화물)" }
-          ].map(({ value, label }) => (
-            <label key={value} className="flex items-center mr-4 cursor-pointer">
-              <input
-                type="radio"
-                name="parking"
-                checked={parkingOptions.parkingLot === value}
-                onChange={handleOptionChange('parkingLot')}
-                value={value}
-                className="mr-2"
-              />
-              <span className={parkingOptions.parkingLot === value ? "font-medium text-black" : "text-gray575"}>
-                {label}
-              </span>
-            </label>
-          ))}
-        </div>
-      </div>
-      <div className="mb-4 ml-[40px]">
-        <span className="text-sm font-semibold text-gray600">차량 크기 선택</span>
-        <div className="flex items-center mt-2">
-          {[
-            { value: "small", label: "소형" },
-            { value: "large", label: "대형" }
-          ].map(({ value, label }) => (
-            <label key={value} className="flex items-center mr-4 cursor-pointer">
-              <input
-                type="radio"
-                name="size"
-                checked={parkingOptions.vehicleSize === value}
-                onChange={handleOptionChange('vehicleSize')}
-                value={value}
-                className="mr-2"
-              />
-              <span className={parkingOptions.vehicleSize === value ? "font-medium text-black" : "text-gray575"}>
-                {label}
-              </span>
-            </label>
-          ))}
-        </div>
-      </div>
-      <div className="mb-4 mt-[-3px] ml-[120px]">
-        <span className="text-sm font-semibold text-gray600 ml-[-40px]">할인</span>
-        <div className="flex items-center mt-[2]">
-          <select
-            className="border px-3 py-1 rounded-md text-gray500 bg-blue100 border-blue200 appearance-none"
-            value={parkingOptions.discountType}
-            onChange={handleOptionChange('discountType')}
-            style={{ transform: 'translateX(-40px) translateY(3px)' }}
-          >
-            <option value="normal">일반</option>
-            <option value="veteran">국가유공자(상이)</option>
-            <option value="disabled">장애인 차량</option>
-            <option value="eco3">저공해 3종</option>
-            <option value="eco12">저공해 1,2종</option>
-            <option value="compact">경차</option>
-            <option value="children">다자녀</option>
-          </select>
-        </div>
-      </div>
-    </div>
-  )
-
-  const renderTimeSelection = () => (
-    <div className="mb-4 mt-[-8px] flex items-center">
-      <div className="flex-1">
-        <span className="text-sm font-semibold text-gray600">입·출차 시간 선택</span>
-        <div className="flex items-center mt-2">
-          <input
-            type="date"
-            className="border px-2 py-1 rounded-md mr-2 text-gray500 bg-blue100 border-blue200"
-            value={dates.startDate}
-            onChange={handleDateChange('startDate')}
-          />
-          <select
-            className="border px-2 py-1 rounded-md mr-4 text-gray500 bg-blue100 border-blue200 appearance-none"
-            style={{ WebkitAppearance: "none", MozAppearance: "none" }}
-            value={dates.startTime}
-            onChange={handleDateChange('startTime')}
-          >
-            {TIME_OPTIONS.map((time) => (
-              <option key={time} value={time}>{time}</option>
-            ))}
-          </select>
-          <span className="text-gray500">~</span>
-          <input
-            type="date"
-            className="border px-2 py-1 rounded-md ml-4 mr-2 text-gray500 bg-blue100 border-blue200"
-            value={dates.endDate}
-            onChange={handleDateChange('endDate')}
-          />
-          <select
-            className="border px-2 py-1 rounded-md text-gray500 bg-blue100 border-blue200 appearance-none"
-            style={{ WebkitAppearance: "none", MozAppearance: "none" }}
-            value={dates.endTime}
-            onChange={handleDateChange('endTime')}
-          >
-            {TIME_OPTIONS.map((time) => (
-              <option key={time} value={time}>{time}</option>
-            ))}
-          </select>
-        </div>
-      </div>
-      <button 
-        className="h-[36px] w-[96px] bg-blue500 text-white px-2 rounded-[8px] ml-2 mt-8 transition-all duration-200 ease-in-out"
-        style={{ transform: 'translateX(-36px)' }}
-        onClick={calculateParkingFee}
-      >
-        🚗 조회
-      </button>
-    </div>
-  )
-
-  const renderResult = () => (
-    <div className="flex items-center flex-col justify-center h-full gap-1">
-      <Image src="/Payment.svg" alt="payment" width={180} height={50} />
-      <p className="text-[20px] font-bold text-black mb-4 mt-2">
-        예상 주차 요금은{" "}
-        <span className="text-[24px] relative inline-block">
-          <span className="relative z-10 mix-blend-multiply text-blue500">
-            {result.fee?.toLocaleString()}원
-          </span>
-          <span className="absolute -bottom-[0] left-0 h-[60%] bg-yellow-200 origin-left animate-marker" />
-        </span>{" "}
-        입니다
-      </p>
-      <button
-        className="h-[36px] w-[115px] bg-lightBlueBackground text-lightBlueText border-lightBlueBorder text-[14px] border-2 rounded-[8px] transition-all duration-200 ease-in-out mb-[-32px]"
-        onClick={() => setResult(prev => ({ ...prev, isVisible: false }))}
-      >
-        다시 조회하기
-      </button>
-    </div>
-  )
-
-  const renderResultSkeleton = () => (
-    <div className="flex items-center flex-col justify-center h-full gap-1 animate-pulse">
-      <div className="bg-gray-300 w-[180px] h-[50px] mb-4 rounded-md"></div>
-      <div className="bg-gray-300 w-[240px] h-[24px] mb-4 rounded-md"></div>
-      <div className="bg-gray-300 w-[115px] h-[36px] rounded-md"></div>
-    </div>
-  )
-
-  const renderFormSkeleton = () => (
-    <div className="flex flex-col justify-center items-start h-full animate-pulse">
-      <div className="bg-gray-300 h-8 w-56 mb-6 rounded"></div>
-      <div className="w-full space-y-4">
-        <div className="bg-gray-300 h-10 w-full rounded"></div>
-        <div className="bg-gray-300 h-10 w-full rounded"></div>
-        <div className="bg-gray-300 h-10 w-full rounded"></div>
-      </div>
-    </div>
-  )
+  const resetResult = () => {
+    setResult({ fee: null, isVisible: false })
+  }
 
   return (
     <div className="col-span-12 sm:col-span-4 bg-white rounded-[8px] h-[260px] p-6 relative w-[700px] absolute xl:left-[-300px]">
       {initialLoading ? (
-        renderFormSkeleton()
+        <FormSkeleton />
       ) : loading ? (
-        renderResultSkeleton()
+        <ResultSkeleton />
+      ) : !result.isVisible ? (
+        <ParkingForm
+          dates={dates}
+          parkingOptions={parkingOptions}
+          onOptionChange={handleOptionChange}
+          onDateChange={handleDateChange}
+          onCalculate={calculateParkingFee}
+        />
       ) : (
-        !result.isVisible ? (
-          <>
-            <h2 className="text-xl font-bold mb-4 text-black">예상 주차요금 조회</h2>
-            {renderParkingOptions()}
-            {renderTimeSelection()}
-          </>
-        ) : renderResult()
+        <ResultView fee={result.fee!} onReset={resetResult} />
       )}
     </div>
   )
