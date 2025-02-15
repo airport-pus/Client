@@ -43,9 +43,6 @@ const formatDate = (date: Date): string => {
   return `${year}-${month}-${day}`
 }
 
-/**
- * holidayDates: ["2025-01-01", "2025-01-27", ...] 형식의 배열
- */
 const isHoliday = (date: Date, holidayDates: string[]): boolean => {
   const isWeekend = date.getDay() === 0 || date.getDay() === 6
   return isWeekend || holidayDates.includes(formatDate(date))
@@ -87,8 +84,6 @@ const createParkingFeeRequest = (
   vehicleSize: VehicleSize,
   discountType: DiscountType
 ): ParkingFeeRequest => ({
-  // 주의: 기존 코드에서 holidayMinutes와 weekdayMinutes가 반대로 전달되고 있었는데
-  // 원래 의도에 맞게 수정하거나 그대로 사용하시면 됩니다.
   holidayMinutes: timeRange.weekdayMinutes,
   weekdayMinutes: timeRange.holidayMinutes,
   parkingLot: parkingLot === "P1P2" ? "P1" : "P3",
