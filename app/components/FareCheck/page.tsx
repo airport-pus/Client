@@ -127,6 +127,8 @@ export default function ParkingFeeCalculator() {
     fee: null as number | null,
     isVisible: false
   })
+  const [loading, setLoading] = useState(false)
+  const [isFirstLoad, setIsFirstLoad] = useState(true)
 
   useEffect(() => {
     const today = new Date()
@@ -162,6 +164,9 @@ export default function ParkingFeeCalculator() {
         return
       }
 
+      setLoading(true)
+      const startTimeStamp = Date.now()
+
       const timeRange = calculateTimeRange(
         dates.startDate,
         dates.startTime,
@@ -187,10 +192,21 @@ export default function ParkingFeeCalculator() {
       }
 
       const fee = Number(await response.text())
+
+      if (isFirstLoad) {
+        const elapsed = Date.now() - startTimeStamp
+        if (elapsed < 2000) {
+          await new Promise(resolve => setTimeout(resolve, 2000 - elapsed))
+        }
+        setIsFirstLoad(false)
+      }
+
       setResult({ fee, isVisible: true })
+      setLoading(false)
     } catch (error) {
       console.error('Error calculating parking fee:', error)
       alert('주차 요금 계산 중 오류가 발생했습니다.')
+      setLoading(false)
     }
   }
 
@@ -338,17 +354,29 @@ export default function ParkingFeeCalculator() {
     </div>
   )
 
+  const renderSkeleton = () => (
+    <div className="flex items-center flex-col justify-center h-full gap-1 animate-pulse">
+      <div className="bg-gray-300 w-[180px] h-[50px] mb-4 rounded-md"></div>
+      <div className="bg-gray-300 w-[240px] h-[24px] mb-4 rounded-md"></div>
+      <div className="bg-gray-300 w-[115px] h-[36px] rounded-md"></div>
+    </div>
+  )
+
   return (
     <div className="col-span-12 sm:col-span-4 bg-white rounded-[8px] h-[260px] p-6 relative w-[700px] absolute xl:left-[-300px]">
-      {!result.isVisible ? (
-        <>
-          <h2 className="text-xl font-bold mb-4 text-black">
-            예상 주차요금 조회
-          </h2>
-          {renderParkingOptions()}
-          {renderTimeSelection()}
-        </>
-      ) : renderResult()}
+      {loading ? (
+        renderSkeleton()
+      ) : (
+        !result.isVisible ? (
+          <>
+            <h2 className="text-xl font-bold mb-4 text-black">
+              예상 주차요금 조회
+            </h2>
+            {renderParkingOptions()}
+            {renderTimeSelection()}
+          </>
+        ) : renderResult()
+      )}
     </div>
   )
 }
