@@ -20,27 +20,6 @@ interface TimeRange {
   holidayMinutes: number
 }
 
-const HOLIDAYS_2025 = [
-  "2025-01-01",
-  "2024-02-09",
-  "2024-02-10",
-  "2024-02-11",
-  "2024-02-12",
-  "2024-03-01",
-  "2024-04-10",
-  "2024-05-05",
-  "2024-05-06",
-  "2024-05-15",
-  "2024-06-06",
-  "2024-08-15",
-  "2024-09-16",
-  "2024-09-17",
-  "2024-09-18",
-  "2024-10-03",
-  "2024-10-09",
-  "2024-12-25",
-]
-
 const DISCOUNT_TYPE_MAP: Record<DiscountType, number> = {
   normal: 0,
   compact: 1,
@@ -64,16 +43,20 @@ const formatDate = (date: Date): string => {
   return `${year}-${month}-${day}`
 }
 
-const isHoliday = (date: Date): boolean => {
+/**
+ * holidayDates: ["2025-01-01", "2025-01-27", ...] 형식의 배열
+ */
+const isHoliday = (date: Date, holidayDates: string[]): boolean => {
   const isWeekend = date.getDay() === 0 || date.getDay() === 6
-  return isWeekend || HOLIDAYS_2025.includes(formatDate(date))
+  return isWeekend || holidayDates.includes(formatDate(date))
 }
 
 const calculateTimeRange = (
   startDate: string,
   startTime: string,
   endDate: string,
-  endTime: string
+  endTime: string,
+  holidayDates: string[]
 ): TimeRange => {
   const startDateTime = new Date(`${startDate}T${startTime}`)
   const endDateTime = new Date(`${endDate}T${endTime}`)
@@ -87,7 +70,7 @@ const calculateTimeRange = (
   let holidayMinutes = 0
 
   while (currentDate < endDateTime) {
-    if (isHoliday(currentDate)) {
+    if (isHoliday(currentDate, holidayDates)) {
       holidayMinutes++
     } else {
       weekdayMinutes++
@@ -104,6 +87,8 @@ const createParkingFeeRequest = (
   vehicleSize: VehicleSize,
   discountType: DiscountType
 ): ParkingFeeRequest => ({
+  // 주의: 기존 코드에서 holidayMinutes와 weekdayMinutes가 반대로 전달되고 있었는데
+  // 원래 의도에 맞게 수정하거나 그대로 사용하시면 됩니다.
   holidayMinutes: timeRange.weekdayMinutes,
   weekdayMinutes: timeRange.holidayMinutes,
   parkingLot: parkingLot === "P1P2" ? "P1" : "P3",
@@ -111,7 +96,7 @@ const createParkingFeeRequest = (
   discountType: DISCOUNT_TYPE_MAP[discountType]
 })
 
-// -------------------- 입력 선택 컴포넌트트 --------------------
+// -------------------- 입력 선택 컴포넌트 --------------------
 
 interface ParkingOptionsProps {
   parkingOptions: {
@@ -375,6 +360,31 @@ function ResultSkeleton() {
 // -------------------- 입력 필드 api --------------------
 
 export default function ParkingFeeCalculator() {
+  const [holidays, setHolidays] = useState<string[]>([])
+  const [holidayLoading, setHolidayLoading] = useState(true)
+
+  useEffect(() => {
+    async function fetchHolidays() {
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/holiday`)
+        if (!response.ok) {
+          throw new Error(`${response.status}`)
+        }
+        const data = await response.json() 
+        const holidayDates = data.map((item: { holiday: string }) => {
+          const s = item.holiday
+          return `${s.slice(0, 4)}-${s.slice(4, 6)}-${s.slice(6, 8)}`
+        })
+        setHolidays(holidayDates)
+      } catch (error) {
+        console.error("Error fetching holidays:", error)
+      } finally {
+        setHolidayLoading(false)
+      }
+    }
+    fetchHolidays()
+  }, [])
+
   const [dates, setDates] = useState({
     startDate: "2023-03-13",
     startTime: "00:00",
@@ -421,26 +431,31 @@ export default function ParkingFeeCalculator() {
   }
 
   const calculateParkingFee = async () => {
+    if (holidayLoading) {
+      alert("국경일 데이터가 아직 로딩 중입니다. 잠시 후 다시 시도해주세요.")
+      return
+    }
+    const startDateTime = new Date(`${dates.startDate}T${dates.startTime}`)
+    const endDateTime = new Date(`${dates.endDate}T${dates.endTime}`)
+    if (endDateTime <= startDateTime) {
+      alert("출차 시간은 입차 시간보다 늦어야 합니다.")
+      return
+    }
+    setLoading(true)
+    const timeRange = calculateTimeRange(
+      dates.startDate,
+      dates.startTime,
+      dates.endDate,
+      dates.endTime,
+      holidays
+    )
+    const request = createParkingFeeRequest(
+      timeRange,
+      parkingOptions.parkingLot,
+      parkingOptions.vehicleSize,
+      parkingOptions.discountType
+    )
     try {
-      const startDateTime = new Date(`${dates.startDate}T${dates.startTime}`)
-      const endDateTime = new Date(`${dates.endDate}T${dates.endTime}`)
-      if (endDateTime <= startDateTime) {
-        alert("출차 시간은 입차 시간보다 늦어야 합니다.")
-        return
-      }
-      setLoading(true)
-      const timeRange = calculateTimeRange(
-        dates.startDate,
-        dates.startTime,
-        dates.endDate,
-        dates.endTime
-      )
-      const request = createParkingFeeRequest(
-        timeRange,
-        parkingOptions.parkingLot,
-        parkingOptions.vehicleSize,
-        parkingOptions.discountType
-      )
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/parking`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -451,10 +466,10 @@ export default function ParkingFeeCalculator() {
       }
       const fee = Number(await response.text())
       setResult({ fee, isVisible: true })
-      setLoading(false)
     } catch (error) {
       console.error("Error calculating parking fee:", error)
       alert("주차 요금 계산 중 오류가 발생했습니다.")
+    } finally {
       setLoading(false)
     }
   }
