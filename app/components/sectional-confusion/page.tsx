@@ -108,6 +108,7 @@ const TrafficStatus = () => {
   }
 
   const statusMap: { [key: number]: { text: string; color: string } } = {
+    0: { text: "원활", color: "bg-green100 text-green500" },
     1: { text: "원활", color: "bg-green100 text-green500" },
     2: { text: "보통", color: "bg-yellow100 text-yellow500" },
     3: { text: "혼잡", color: "bg-red100 text-red500" },
