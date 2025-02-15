@@ -21,34 +21,34 @@ interface TimeRange {
 }
 
 const HOLIDAYS_2025 = [
-  "2025-01-01", // 신정
-  "2024-02-09", // 설날
-  "2024-02-10", // 설날
-  "2024-02-11", // 설날
-  "2024-02-12", // 대체공휴일
-  "2024-03-01", // 삼일절
-  "2024-04-10", // 21대 총선
-  "2024-05-05", // 어린이날
-  "2024-05-06", // 대체공휴일
-  "2024-05-15", // 부처님오신날
-  "2024-06-06", // 현충일
-  "2024-08-15", // 광복절
-  "2024-09-16", // 추석
-  "2024-09-17", // 추석
-  "2024-09-18", // 추석
-  "2024-10-03", // 개천절
-  "2024-10-09", // 한글날
-  "2024-12-25", // 성탄절
+  "2025-01-01",
+  "2024-02-09",
+  "2024-02-10",
+  "2024-02-11",
+  "2024-02-12",
+  "2024-03-01",
+  "2024-04-10",
+  "2024-05-05",
+  "2024-05-06",
+  "2024-05-15",
+  "2024-06-06",
+  "2024-08-15",
+  "2024-09-16",
+  "2024-09-17",
+  "2024-09-18",
+  "2024-10-03",
+  "2024-10-09",
+  "2024-12-25",
 ]
 
 const DISCOUNT_TYPE_MAP: Record<DiscountType, number> = {
-  'normal': 0,
-  'compact': 1,
-  'eco12': 2,
-  'eco3': 3,
-  'disabled': 4,
-  'children': 5,
-  'veteran': 6
+  normal: 0,
+  compact: 1,
+  eco12: 2,
+  eco3: 3,
+  disabled: 4,
+  children: 5,
+  veteran: 6
 }
 
 const TIME_OPTIONS = Array.from({ length: 48 }, (_, i) => {
@@ -128,18 +128,21 @@ export default function ParkingFeeCalculator() {
     isVisible: false
   })
   const [loading, setLoading] = useState(false)
-  const [isFirstLoad, setIsFirstLoad] = useState(true)
+  const [initialLoading, setInitialLoading] = useState(true)
 
   useEffect(() => {
     const today = new Date()
     const startDate = new Date(today)
     startDate.setDate(today.getDate() - 7)
-
     setDates(prev => ({
       ...prev,
       startDate: formatDate(startDate),
       endDate: formatDate(today)
     }))
+    const timer = setTimeout(() => {
+      setInitialLoading(false)
+    }, 550)
+    return () => clearTimeout(timer)
   }, [])
 
   const handleDateChange = (field: keyof typeof dates) => (
@@ -158,49 +161,32 @@ export default function ParkingFeeCalculator() {
     try {
       const startDateTime = new Date(`${dates.startDate}T${dates.startTime}`)
       const endDateTime = new Date(`${dates.endDate}T${dates.endTime}`)
-      
       if (endDateTime <= startDateTime) {
         alert('출차 시간은 입차 시간보다 늦어야 합니다.')
         return
       }
-
       setLoading(true)
-      const startTimeStamp = Date.now()
-
       const timeRange = calculateTimeRange(
         dates.startDate,
         dates.startTime,
         dates.endDate,
         dates.endTime
       )
-
       const request = createParkingFeeRequest(
         timeRange,
         parkingOptions.parkingLot,
         parkingOptions.vehicleSize,
         parkingOptions.discountType
       )
-
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/parking`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(request),
       })
-
       if (!response.ok) {
         throw new Error(`Failed to calculate parking fee: ${response.status}`)
       }
-
       const fee = Number(await response.text())
-
-      if (isFirstLoad) {
-        const elapsed = Date.now() - startTimeStamp
-        if (elapsed < 2000) {
-          await new Promise(resolve => setTimeout(resolve, 2000 - elapsed))
-        }
-        setIsFirstLoad(false)
-      }
-
       setResult({ fee, isVisible: true })
       setLoading(false)
     } catch (error) {
@@ -235,7 +221,6 @@ export default function ParkingFeeCalculator() {
           ))}
         </div>
       </div>
-
       <div className="mb-4 ml-[40px]">
         <span className="text-sm font-semibold text-gray600">차량 크기 선택</span>
         <div className="flex items-center mt-2">
@@ -259,7 +244,6 @@ export default function ParkingFeeCalculator() {
           ))}
         </div>
       </div>
-
       <div className="mb-4 mt-[-3px] ml-[120px]">
         <span className="text-sm font-semibold text-gray600 ml-[-40px]">할인</span>
         <div className="flex items-center mt-[2]">
@@ -354,7 +338,7 @@ export default function ParkingFeeCalculator() {
     </div>
   )
 
-  const renderSkeleton = () => (
+  const renderResultSkeleton = () => (
     <div className="flex items-center flex-col justify-center h-full gap-1 animate-pulse">
       <div className="bg-gray-300 w-[180px] h-[50px] mb-4 rounded-md"></div>
       <div className="bg-gray-300 w-[240px] h-[24px] mb-4 rounded-md"></div>
@@ -362,16 +346,27 @@ export default function ParkingFeeCalculator() {
     </div>
   )
 
+  const renderFormSkeleton = () => (
+    <div className="flex flex-col justify-center items-start h-full animate-pulse">
+      <div className="bg-gray-300 h-8 w-56 mb-6 rounded"></div>
+      <div className="w-full space-y-4">
+        <div className="bg-gray-300 h-10 w-full rounded"></div>
+        <div className="bg-gray-300 h-10 w-full rounded"></div>
+        <div className="bg-gray-300 h-10 w-full rounded"></div>
+      </div>
+    </div>
+  )
+
   return (
     <div className="col-span-12 sm:col-span-4 bg-white rounded-[8px] h-[260px] p-6 relative w-[700px] absolute xl:left-[-300px]">
-      {loading ? (
-        renderSkeleton()
+      {initialLoading ? (
+        renderFormSkeleton()
+      ) : loading ? (
+        renderResultSkeleton()
       ) : (
         !result.isVisible ? (
           <>
-            <h2 className="text-xl font-bold mb-4 text-black">
-              예상 주차요금 조회
-            </h2>
+            <h2 className="text-xl font-bold mb-4 text-black">예상 주차요금 조회</h2>
             {renderParkingOptions()}
             {renderTimeSelection()}
           </>
