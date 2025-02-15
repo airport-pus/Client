@@ -20,8 +20,8 @@ interface TimeRange {
   holidayMinutes: number
 }
 
-const HOLIDAYS_2024 = [
-  "2024-01-01", // 신정
+const HOLIDAYS_2025 = [
+  "2025-01-01", // 신정
   "2024-02-09", // 설날
   "2024-02-10", // 설날
   "2024-02-11", // 설날
@@ -66,7 +66,7 @@ const formatDate = (date: Date): string => {
 
 const isHoliday = (date: Date): boolean => {
   const isWeekend = date.getDay() === 0 || date.getDay() === 6
-  return isWeekend || HOLIDAYS_2024.includes(formatDate(date))
+  return isWeekend || HOLIDAYS_2025.includes(formatDate(date))
 }
 
 const calculateTimeRange = (
@@ -113,10 +113,10 @@ const createParkingFeeRequest = (
 
 export default function ParkingFeeCalculator() {
   const [dates, setDates] = useState({
-    startDate: "2023-03-13",
-    startTime: "00:00",
-    endDate: "2023-03-13",
-    endTime: "00:00"
+    startDate: "",
+    startTime: "",
+    endDate: "",
+    endTime: ""
   })
   const [parkingOptions, setParkingOptions] = useState({
     parkingLot: "P1P2" as ParkingLot,
