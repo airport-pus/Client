@@ -1,9 +1,21 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
+import useSWR from 'swr';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+} from 'chart.js';
 import { Line } from 'react-chartjs-2';
 import Image from 'next/image';
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
@@ -21,16 +33,108 @@ type SectionStatus = {
   statusColor: string;
 };
 
+interface ApiResponse {
+  cgdrAllLvl: number;
+  cgdrALvl: number;
+  cgdrBLvl: number;
+  cgdrCLvl: number;
+}
+
+const fetcher = (url: string) => fetch(url).then((res) => res.json());
 const TrafficStatus = () => {
   const message = "실시간 공항 구간별 혼잡도 확인";
   const [selectedSection, setSelectedSection] = useState("1구간");
   const [selectedDate, setSelectedDate] = useState<DateType>("오늘");
 
+  const { data: apiData, error } = useSWR<ApiResponse>(
+    `${process.env.NEXT_PUBLIC_API_BASE_URL}/congestions/real`,
+    fetcher
+  );
+
+  if (error) {
+    return <div>Error loading data...</div>;
+  }
+
+  if (!apiData) {
+    return (
+      <div className="relative flex">
+        <div>
+          <div className="mb-2 w-[460px] text-[22px] text-black font-bold mt-2 ml-2 mb-[-3]">
+            <Skeleton height={28} />
+          </div>
+          <div className="mb-4 w-[480px] text-[14px] text-gray400 ml-2 mb-7">
+            <Skeleton height={20} />
+          </div>
+          <div className="w-[420px] ml-2">
+            <div className="mt-6 grid grid-cols-2 bg-gray300 p-2 text-center text-grayCustom font-regular text-[14px]">
+              <div>
+                <Skeleton height={20} />
+              </div>
+              <div>
+                <Skeleton height={20} />
+              </div>
+            </div>
+            <div className="border-b border-gray-200">
+              {[...Array(4)].map((_, index) => (
+                <div
+                  key={index}
+                  className="grid grid-cols-2 p-4 border-b last:border-b-0 text-center"
+                >
+                  <div className="font-medium text-black">
+                    <Skeleton height={20} />
+                  </div>
+                  <div>
+                    <Skeleton height={20} />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+        <div className="ml-4 w-[670px] h-[324px] p-4 mt-14">
+          <div className="mb-2 text-[22px] text-black font-bold ml-2 mt-[-68] mb-[32] flex justify-between items-center">
+            <div>
+              <Skeleton height={28} width={200} />
+            </div>
+            <div className="flex items-center">
+              <Skeleton height={28} width={60} className="mr-2" />
+              <Skeleton height={28} width={60} />
+            </div>
+          </div>
+          <Skeleton height={250} />
+        </div>
+      </div>
+    );
+  }
+
+  const statusMap: { [key: number]: { text: string; color: string } } = {
+    1: { text: "원활", color: "bg-green100 text-green500" },
+    2: { text: "보통", color: "bg-yellow100 text-yellow500" },
+    3: { text: "혼잡", color: "bg-red100 text-red500" },
+    4: { text: "매우혼잡", color: "bg-red100 text-red500" },
+  };
+
   const sectionStatuses: SectionStatus[] = [
-    { section: "1구간", status: "원활", statusColor: "bg-green100 text-green500" },
-    { section: "2구간", status: "보통", statusColor: "bg-yellow100 text-yellow500" },
-    { section: "3구간", status: "혼잡", statusColor: "bg-red100 text-red500" },
-    { section: "전체 구간", status: "매우혼잡", statusColor: "bg-red100 text-red500" }
+    {
+      section: "1구간",
+      status: statusMap[apiData.cgdrALvl]?.text || "",
+      statusColor: statusMap[apiData.cgdrALvl]?.color || "",
+    },
+    {
+      section: "2구간",
+      status: statusMap[apiData.cgdrBLvl]?.text || "",
+      statusColor: statusMap[apiData.cgdrBLvl]?.color || "",
+    },
+    {
+      section: "3구간",
+      status: statusMap[apiData.cgdrCLvl]?.text || "",
+      statusColor: statusMap[apiData.cgdrCLvl]?.color || "",
+    },
+    {
+      section: "전체 구간",
+      status: statusMap[apiData.cgdrAllLvl]?.text || "",
+      statusColor: statusMap[apiData.cgdrAllLvl]?.color || "",
+    },
   ];
 
   const statusData: StatusData = {
@@ -45,19 +149,16 @@ const TrafficStatus = () => {
       "2구간": [2, 2, 3, 3, 3, 3, 3, 2, 3, 3, 2, 2, 3, 3, 2, 3, 2, 3, 3, 4, 3, 2, 2, 2],
       "3구간": [3, 3, 4, 4, 4, 4, 3, 4, 4, 4, 3, 3, 3, 4, 3, 4, 3, 3, 3, 2, 3, 3, 3, 3],
       "전체 구간": [4, 4, 4, 4, 4, 4, 3, 3, 3, 3, 3, 3, 3, 3, 4, 3, 3, 4, 4, 3, 3, 4, 4, 4],
-    }
+    },
   };
 
   const sizeClass = "px-2 py-1 text-[12px] rounded-md";
-  
-  const labels = Array.from({ length: 24 }, (_, index) => `${String(index).padStart(2, '0')}~${String(index + 1).padStart(2, '0')}시`);
-
+  const labels = Array.from({ length: 24 }, (_, index) =>
+    `${String(index).padStart(2, "0")}~${String(index + 1).padStart(2, "0")}시`
+  );
   const yLabels = ["원활", "보통", "혼잡", "매우혼잡"];
 
-  const getStatusText = (value: number) => {
-    return yLabels[value - 1] || '';
-  };
-
+  const getStatusText = (value: number) => yLabels[value - 1] || "";
   const selectedData = statusData[selectedDate][selectedSection];
 
   const chartData = {
@@ -73,9 +174,9 @@ const TrafficStatus = () => {
         pointBackgroundColor: "#215DCE",
         pointBorderColor: "#FFFFFF",
         pointBorderWidth: 2,
-        tension: 0.4, 
-      }
-    ]
+        tension: 0.4,
+      },
+    ],
   };
 
   const options = {
@@ -86,39 +187,32 @@ const TrafficStatus = () => {
         ticks: {
           maxRotation: 45,
           minRotation: 45,
-          font: {
-            size: 11
-          }
+          font: { size: 11 },
         },
-        grid: { display: false }
+        grid: { display: false },
       },
       y: {
         ticks: {
-          callback: function (tickValue: string | number) {
-            return yLabels[Number(tickValue) - 1];
-          },
+          callback: (tickValue: string | number) => yLabels[Number(tickValue) - 1],
           stepSize: 1,
           min: 1,
-          max: 4
+          max: 4,
         },
         grid: {
           display: true,
-          color: 'rgba(0, 0, 0, 0.1)',
+          color: "rgba(0, 0, 0, 0.1)",
           borderDash: [5, 5],
-          lineWidth: 1
-        }
-      }
+          lineWidth: 1,
+        },
+      },
     },
     plugins: {
       tooltip: {
         callbacks: {
-          label: function(context: any) {
-            const value = context.raw;
-            return `혼잡도: ${getStatusText(value)}`;
-          }
-        }
-      }
-    }
+          label: (context: any) => `혼잡도: ${getStatusText(context.raw)}`,
+        },
+      },
+    },
   };
 
   return (
@@ -137,8 +231,11 @@ const TrafficStatus = () => {
           </div>
           <div className="border-b border-gray-200">
             {sectionStatuses.map((sectionStatus, index) => (
-              <div key={index} onClick={() => setSelectedSection(sectionStatus.section)}
-                className="grid grid-cols-2 p-4 border-b last:border-b-0 text-center hover:bg-gray350 transition-colors duration-200 cursor-pointer">
+              <div
+                key={index}
+                onClick={() => setSelectedSection(sectionStatus.section)}
+                className="grid grid-cols-2 p-4 border-b last:border-b-0 text-center hover:bg-gray350 transition-colors duration-200 cursor-pointer"
+              >
                 <div className="font-medium text-black">{sectionStatus.section}</div>
                 <div>
                   <span className={`${sizeClass} ${sectionStatus.statusColor}`}>
@@ -154,28 +251,42 @@ const TrafficStatus = () => {
         <div className="mb-2 text-[22px] text-black font-bold ml-2 mt-[-68] mb-[32] flex justify-between items-center">
           <div>{`${selectedSection} 혼잡도 그래프`}</div>
           <div className="flex items-center">
-            <button 
+            <button
               onClick={() => setSelectedDate("어제")}
-              className={`px-4 py-2 text-[14px] font-medium border ${selectedDate === "어제" ? 'bg-lightBlueBackground text-lightBlueText border-lightBlueBorder' : 'bg-gray200 text-gray700 border-grayBorder'} rounded-md flex items-center mr-2`}>
+              className={`px-4 py-2 text-[14px] font-medium border ${
+                selectedDate === "어제"
+                  ? "bg-lightBlueBackground text-lightBlueText border-lightBlueBorder"
+                  : "bg-gray200 text-gray700 border-grayBorder"
+              } rounded-md flex items-center mr-2`}
+            >
               어제
-              <Image 
-                src="/date.svg" 
-                width={16} 
-                height={16} 
-                alt="date" 
-                className={`ml-2 ${selectedDate === "어제" ? 'text-gray500' : 'text-gray700'}`}
+              <Image
+                src="/date.svg"
+                width={16}
+                height={16}
+                alt="date"
+                className={`ml-2 ${
+                  selectedDate === "어제" ? "text-gray500" : "text-gray700"
+                }`}
               />
             </button>
-            <button 
+            <button
               onClick={() => setSelectedDate("오늘")}
-              className={`px-4 py-2 text-[14px] font-medium border ${selectedDate === "오늘" ? 'bg-lightBlueBackground text-lightBlueText border-lightBlueBorder' : 'bg-gray200 text-gray700 border-grayBorder'} rounded-md flex items-center`}>
+              className={`px-4 py-2 text-[14px] font-medium border ${
+                selectedDate === "오늘"
+                  ? "bg-lightBlueBackground text-lightBlueText border-lightBlueBorder"
+                  : "bg-gray200 text-gray700 border-grayBorder"
+              } rounded-md flex items-center`}
+            >
               오늘
-              <Image 
-                src="/date.svg" 
-                width={16} 
-                height={16} 
-                alt="date" 
-                className={`ml-2 ${selectedDate === "오늘" ? 'text-gray500' : 'text-gray700'}`}
+              <Image
+                src="/date.svg"
+                width={16}
+                height={16}
+                alt="date"
+                className={`ml-2 ${
+                  selectedDate === "오늘" ? "text-gray500" : "text-gray700"
+                }`}
               />
             </button>
           </div>
