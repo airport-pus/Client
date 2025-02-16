@@ -39,10 +39,11 @@ type CongestionRecord = {
   cgdrALvl: number;
   cgdrBLvl: number;
   cgdrCLvl: number;
-  date: string; 
+  date: string;
 };
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
+
 const transformStatusValue = (value: number) => {
   if (value === 0 || value === 1) return 1;
   if (value === 2) return 2;
@@ -157,7 +158,6 @@ const TrafficStatus = () => {
       statusColor: statusMap[apiData.cgdrAllLvl]?.color || "",
     },
   ];
-
 
   const extractDateAndHour = (dateStr: string) => {
     const [datePart, hourPart] = dateStr.split(" ");
@@ -295,7 +295,7 @@ const TrafficStatus = () => {
       </div>
 
       <div className="ml-4 w-[670px] h-[324px] p-4 mt-14">
-        <div className="mb-2 text-[22px] text-black font-bold ml-2 mt-[-68] mb-[32] flex justify-between items-center">
+        <div className="mb-2 text-[22px] text-black font-bold ml-2 mt-[-68] mb-[32px] flex justify-between items-center">
           <div>{`${selectedSection} 혼잡도 그래프`}</div>
           <div className="flex items-center">
             <button
