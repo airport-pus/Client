@@ -21,41 +21,48 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, T
 
 type DateType = "어제" | "오늘";
 
-type StatusData = {
-  [key in DateType]: {
-    [key: string]: number[];
-  };
-};
-
 type SectionStatus = {
   section: string;
   status: string;
   statusColor: string;
 };
 
-interface ApiResponse {
+interface RealTimeApiResponse {
   cgdrAllLvl: number;
   cgdrALvl: number;
   cgdrBLvl: number;
   cgdrCLvl: number;
 }
 
+type CongestionRecord = {
+  cgdrAllLvl: number;
+  cgdrALvl: number;
+  cgdrBLvl: number;
+  cgdrCLvl: number;
+  date: string; 
+};
+
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
+
 const TrafficStatus = () => {
   const message = "실시간 공항 구간별 혼잡도 확인";
   const [selectedSection, setSelectedSection] = useState("1구간");
   const [selectedDate, setSelectedDate] = useState<DateType>("오늘");
 
-  const { data: apiData, error } = useSWR<ApiResponse>(
+  const { data: apiData, error } = useSWR<RealTimeApiResponse>(
     `${process.env.NEXT_PUBLIC_API_BASE_URL}/congestions/real`,
     fetcher
   );
+  const { data: congestionHistory, error: historyError } = useSWR<CongestionRecord[]>(
+    `${process.env.NEXT_PUBLIC_API_BASE_URL}/congestions`,
+    fetcher
+  );
 
-  if (error) {
+  if (error || historyError) {
     return <div>Error loading data...</div>;
   }
 
-  if (!apiData) {
+  if (!apiData || !congestionHistory) {
     return (
       <div className="relative flex">
         <div>
@@ -138,36 +145,63 @@ const TrafficStatus = () => {
     },
   ];
 
-  const statusData: StatusData = {
-    어제: {
-      "1구간": [1, 2, 2, 3, 2, 1, 1, 2, 3, 4, 3, 2, 2, 1, 2, 3, 3, 4, 4, 3, 3, 2, 1, 1],
-      "2구간": [2, 2, 3, 3, 4, 4, 3, 2, 3, 3, 2, 2, 3, 4, 3, 3, 2, 3, 4, 4, 3, 2, 2, 2],
-      "3구간": [3, 3, 3, 4, 4, 4, 4, 3, 3, 4, 3, 3, 4, 4, 3, 4, 4, 4, 3, 3, 2, 2, 3, 3],
-      "전체 구간": [4, 4, 4, 4, 4, 4, 4, 4, 3, 3, 3, 3, 4, 4, 4, 3, 4, 4, 4, 3, 3, 3, 2, 2],
-    },
-    오늘: {
-      "1구간": [1, 1, 2, 3, 3, 2, 1, 2, 2, 3, 3, 4, 4, 3, 2, 2, 1, 1, 2, 3, 3, 2, 2, 2],
-      "2구간": [2, 2, 3, 3, 3, 3, 3, 2, 3, 3, 2, 2, 3, 3, 2, 3, 2, 3, 3, 4, 3, 2, 2, 2],
-      "3구간": [3, 3, 4, 4, 4, 4, 3, 4, 4, 4, 3, 3, 3, 4, 3, 4, 3, 3, 3, 2, 3, 3, 3, 3],
-      "전체 구간": [4, 4, 4, 4, 4, 4, 3, 3, 3, 3, 3, 3, 3, 3, 4, 3, 3, 4, 4, 3, 3, 4, 4, 4],
-    },
+  const extractDateAndHour = (dateStr: string) => {
+    const [datePart, hourPart] = dateStr.split(" ");
+    const hour = hourPart.replace("시", ""); 
+    return { date: datePart, hour };
+  };
+  const todayDateStr = new Date().toISOString().split("T")[0];
+  const yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
+  const yesterdayDateStr = yesterday.toISOString().split("T")[0];
+
+  const todayRecords = congestionHistory
+    .filter((record) => {
+      const { date } = extractDateAndHour(record.date);
+      return date === todayDateStr;
+    })
+    .sort((a, b) => {
+      const { hour: hourA } = extractDateAndHour(a.date);
+      const { hour: hourB } = extractDateAndHour(b.date);
+      return Number(hourA) - Number(hourB);
+    });
+
+  const yesterdayRecords = congestionHistory
+    .filter((record) => {
+      const { date } = extractDateAndHour(record.date);
+      return date === yesterdayDateStr;
+    })
+    .sort((a, b) => {
+      const { hour: hourA } = extractDateAndHour(a.date);
+      const { hour: hourB } = extractDateAndHour(b.date);
+      return Number(hourA) - Number(hourB);
+    });
+
+  const recordsForSelectedDate = selectedDate === "오늘" ? todayRecords : yesterdayRecords;
+
+  const generateChartData = (records: CongestionRecord[], section: string) => {
+    const labels = records.map((record) => {
+      const { hour } = extractDateAndHour(record.date);
+      return `${hour}시`;
+    });
+    const data = records.map((record) => {
+      if (section === "1구간") return record.cgdrALvl;
+      if (section === "2구간") return record.cgdrBLvl;
+      if (section === "3구간") return record.cgdrCLvl;
+      if (section === "전체 구간") return record.cgdrAllLvl;
+      return 0;
+    });
+    return { labels, data };
   };
 
-  const sizeClass = "px-2 py-1 text-[12px] rounded-md";
-  const labels = Array.from({ length: 24 }, (_, index) =>
-    `${String(index).padStart(2, "0")}~${String(index + 1).padStart(2, "0")}시`
-  );
-  const yLabels = ["원활", "보통", "혼잡", "매우혼잡"];
-
-  const getStatusText = (value: number) => yLabels[value - 1] || "";
-  const selectedData = statusData[selectedDate][selectedSection];
+  const { labels: dynamicLabels, data: dynamicData } = generateChartData(recordsForSelectedDate, selectedSection);
 
   const chartData = {
-    labels,
+    labels: dynamicLabels,
     datasets: [
       {
         label: `${selectedSection} 시간별 혼잡도`,
-        data: selectedData || [],
+        data: dynamicData,
         borderColor: "#215DCE",
         backgroundColor: "rgba(33, 93, 206, 0.2)",
         borderWidth: 2,
@@ -179,6 +213,8 @@ const TrafficStatus = () => {
       },
     ],
   };
+
+  const yLabels = ["원활", "보통", "혼잡", "매우혼잡"];
 
   const options = {
     responsive: true,
@@ -210,7 +246,7 @@ const TrafficStatus = () => {
     plugins: {
       tooltip: {
         callbacks: {
-          label: (context: any) => `혼잡도: ${getStatusText(context.raw)}`,
+          label: (context: any) => `혼잡도: ${yLabels[Number(context.raw) - 1]}`,
         },
       },
     },
@@ -239,7 +275,7 @@ const TrafficStatus = () => {
               >
                 <div className="font-medium text-black">{sectionStatus.section}</div>
                 <div>
-                  <span className={`${sizeClass} ${sectionStatus.statusColor}`}>
+                  <span className={`px-2 py-1 text-[12px] rounded-md ${sectionStatus.statusColor}`}>
                     {sectionStatus.status}
                   </span>
                 </div>
@@ -248,6 +284,7 @@ const TrafficStatus = () => {
           </div>
         </div>
       </div>
+
       <div className="ml-4 w-[670px] h-[324px] p-4 mt-14">
         <div className="mb-2 text-[22px] text-black font-bold ml-2 mt-[-68] mb-[32] flex justify-between items-center">
           <div>{`${selectedSection} 혼잡도 그래프`}</div>
@@ -266,9 +303,7 @@ const TrafficStatus = () => {
                 width={16}
                 height={16}
                 alt="date"
-                className={`ml-2 ${
-                  selectedDate === "어제" ? "text-gray500" : "text-gray700"
-                }`}
+                className={`ml-2 ${selectedDate === "어제" ? "text-gray500" : "text-gray700"}`}
               />
             </button>
             <button
@@ -285,9 +320,7 @@ const TrafficStatus = () => {
                 width={16}
                 height={16}
                 alt="date"
-                className={`ml-2 ${
-                  selectedDate === "오늘" ? "text-gray500" : "text-gray700"
-                }`}
+                className={`ml-2 ${selectedDate === "오늘" ? "text-gray500" : "text-gray700"}`}
               />
             </button>
           </div>
