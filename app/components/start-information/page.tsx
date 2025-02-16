@@ -1,41 +1,122 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import StartData from "../start-data/page";
+import airlineDictionary, { getLogo } from './logoList';
+
+interface FlightData {
+  flightNumber: string;
+  airlineEnglish: string;
+  airlineKorean: string;
+  arrivedEng: string;
+  arrivedKor: string;
+  baggageClaim: string;
+  boardingEng: string;
+  boardingKor: string;
+  std: string | null;
+  etd: string | null;
+  io: string;
+  line: string;
+  remarkEng: string;
+  remarkKor: string;
+}
+
+interface DisplayFlight {
+  airline: string;
+  flightNumber: string;
+  destination: string;
+  gate: number;
+  status: string;
+  scheduledTime: string;
+  modifiedTime: string;
+  delay: string | null;
+  logo: string;
+}
 
 export default function StartInformation() {
-  const allFlightData = Array.from({ length: 40 }, (_, i) => ({
-    airline: "대한항공",
-    flightNumber: `KE44${i}`,
-    destination: "제주",
-    gate: (i % 5) + 1,
-    status: i % 3 === 0 ? "지연" : "마감 예정",
-    scheduledTime: `2025-02-12 08:${30 + (i % 10)}`,
-    modifiedTime: `2025-02-12 08:${35 + (i % 10)}`,
-    delay: i % 3 === 0 ? `${i % 10}분` : null,
-    logo: "/logos/korean-air.webp",
-  }));
-
-  const [displayedFlights, setDisplayedFlights] = useState(allFlightData.slice(0, 10));
+  const [allFlightData, setAllFlightData] = useState<DisplayFlight[]>([]);
+  const [displayedFlights, setDisplayedFlights] = useState<DisplayFlight[]>([]);
   const [hasMore, setHasMore] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const observer = useRef<IntersectionObserver | null>(null);
+
+  useEffect(() => {
+    const fetchFlights = async () => {
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/apron?io=I`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch flight data');
+        }
+        const data: FlightData[] = await response.json();
+        
+        const transformedData: DisplayFlight[] = data.map((flight, index) => ({
+          airline: flight.airlineKorean,
+          flightNumber: flight.flightNumber,
+          destination: flight.boardingKor,
+          gate: parseInt(flight.baggageClaim) || (index % 5) + 1,
+          status: flight.remarkKor || "-",
+          scheduledTime: formatTime(flight.std),
+          modifiedTime: formatTime(flight.etd),
+          delay: calculateDelay(flight.std, flight.etd),
+          logo: `/logos/${getLogo(flight.airlineEnglish)}`,
+        }));
+
+        setAllFlightData(transformedData);
+        setDisplayedFlights(transformedData.slice(0, 10));
+        setIsLoading(false);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An error occurred');
+        setIsLoading(false);
+      }
+    };
+
+    fetchFlights();
+  }, []);
+
+  const formatTime = (time: string | null): string => {
+    if (!time) return "시간 미정";
+    
+    try {
+      const hours = time.substring(0, 2);
+      const minutes = time.substring(2, 4);
+      if (hours && minutes) {
+        return `2025-02-12 ${hours}:${minutes}`;
+      }
+      return "시간 미정";
+    } catch (error) {
+      return "시간 미정";
+    }
+  };
+
+  const calculateDelay = (std: string | null, etd: string | null): string | null => {
+    if (!std || !etd) return null;
+    
+    try {
+      const stdMinutes = parseInt(std.substring(0, 2)) * 60 + parseInt(std.substring(2, 4));
+      const etdMinutes = parseInt(etd.substring(0, 2)) * 60 + parseInt(etd.substring(2, 4));
+      
+      if (isNaN(stdMinutes) || isNaN(etdMinutes)) return null;
+      
+      const delayMinutes = etdMinutes - stdMinutes;
+      return delayMinutes > 0 ? `${delayMinutes}분` : null;
+    } catch (error) {
+      return null;
+    }
+  };
 
   const lastFlightElementRef = (node: HTMLElement | null) => {
     if (!node || !hasMore) return;
-
     if (observer.current) observer.current.disconnect();
-
     observer.current = new IntersectionObserver((entries) => {
       if (entries[0].isIntersecting) {
         loadMoreFlights();
       }
     });
-
     observer.current.observe(node);
   };
 
   const loadMoreFlights = () => {
     const nextFlights = allFlightData.slice(displayedFlights.length, displayedFlights.length + 10);
-
     setDisplayedFlights((prev) => {
       const updatedFlights = [...prev, ...nextFlights];
       if (updatedFlights.length >= allFlightData.length) {
@@ -45,11 +126,13 @@ export default function StartInformation() {
     });
   };
 
-  useEffect(() => {
-    if (displayedFlights.length >= allFlightData.length) {
-      setHasMore(false);
-    }
-  }, [displayedFlights]);
+  if (isLoading) {
+    return <div className="text-center py-4">데이터를 불러오는 중...</div>;
+  }
+
+  if (error) {
+    return <div className="text-center py-4 text-red500">오류가 발생했습니다: {error}</div>;
+  }
 
   return (
     <>
@@ -67,7 +150,6 @@ export default function StartInformation() {
           </div>
         </div>
       </div>
-
       <div className="mt-6 grid grid-cols-5 bg-grayHover p-2 text-center text-gray600 font-regular text-[14px]">
         <div>항공사 및 항공편명</div>
         <div>도착지</div>
@@ -75,7 +157,6 @@ export default function StartInformation() {
         <div>항공편 상태</div>
         <div>시간</div>
       </div>
-
       <StartData displayedFlights={displayedFlights} lastFlightElementRef={lastFlightElementRef} />
     </>
   );
