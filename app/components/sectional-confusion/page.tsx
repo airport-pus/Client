@@ -21,41 +21,62 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, T
 
 type DateType = "어제" | "오늘";
 
-type StatusData = {
-  [key in DateType]: {
-    [key: string]: number[];
-  };
-};
-
 type SectionStatus = {
   section: string;
   status: string;
   statusColor: string;
 };
 
-interface ApiResponse {
+interface RealTimeApiResponse {
   cgdrAllLvl: number;
   cgdrALvl: number;
   cgdrBLvl: number;
   cgdrCLvl: number;
 }
 
+type CongestionRecord = {
+  cgdrAllLvl: number;
+  cgdrALvl: number;
+  cgdrBLvl: number;
+  cgdrCLvl: number;
+  date: string;
+};
+
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
+
+const transformStatusValue = (value: number) => {
+  if (value === 0 || value === 1) return 1;
+  if (value === 2) return 2;
+  if (value === 3 || value === 4) return 3;
+  return value;
+};
+
+const getStatusText = (value: number) => {
+  if (value === 1) return "원활";
+  if (value === 2) return "보통";
+  if (value === 3) return "혼잡";
+  return "";
+};
+
 const TrafficStatus = () => {
   const message = "실시간 공항 구간별 혼잡도 확인";
   const [selectedSection, setSelectedSection] = useState("1구간");
   const [selectedDate, setSelectedDate] = useState<DateType>("오늘");
 
-  const { data: apiData, error } = useSWR<ApiResponse>(
+  const { data: apiData, error } = useSWR<RealTimeApiResponse>(
     `${process.env.NEXT_PUBLIC_API_BASE_URL}/congestions/real`,
     fetcher
   );
+  const { data: congestionHistory, error: historyError } = useSWR<CongestionRecord[]>(
+    `${process.env.NEXT_PUBLIC_API_BASE_URL}/congestions`,
+    fetcher
+  );
 
-  if (error) {
+  if (error || historyError) {
     return <div>Error loading data...</div>;
   }
 
-  if (!apiData) {
+  if (!apiData || !congestionHistory) {
     return (
       <div className="relative flex">
         <div>
@@ -112,7 +133,7 @@ const TrafficStatus = () => {
     1: { text: "원활", color: "bg-green100 text-green500" },
     2: { text: "보통", color: "bg-yellow100 text-yellow500" },
     3: { text: "혼잡", color: "bg-red100 text-red500" },
-    4: { text: "매우혼잡", color: "bg-red100 text-red500" },
+    4: { text: "혼잡", color: "bg-red100 text-red500" },
   };
 
   const sectionStatuses: SectionStatus[] = [
@@ -138,36 +159,60 @@ const TrafficStatus = () => {
     },
   ];
 
-  const statusData: StatusData = {
-    어제: {
-      "1구간": [1, 2, 2, 3, 2, 1, 1, 2, 3, 4, 3, 2, 2, 1, 2, 3, 3, 4, 4, 3, 3, 2, 1, 1],
-      "2구간": [2, 2, 3, 3, 4, 4, 3, 2, 3, 3, 2, 2, 3, 4, 3, 3, 2, 3, 4, 4, 3, 2, 2, 2],
-      "3구간": [3, 3, 3, 4, 4, 4, 4, 3, 3, 4, 3, 3, 4, 4, 3, 4, 4, 4, 3, 3, 2, 2, 3, 3],
-      "전체 구간": [4, 4, 4, 4, 4, 4, 4, 4, 3, 3, 3, 3, 4, 4, 4, 3, 4, 4, 4, 3, 3, 3, 2, 2],
-    },
-    오늘: {
-      "1구간": [1, 1, 2, 3, 3, 2, 1, 2, 2, 3, 3, 4, 4, 3, 2, 2, 1, 1, 2, 3, 3, 2, 2, 2],
-      "2구간": [2, 2, 3, 3, 3, 3, 3, 2, 3, 3, 2, 2, 3, 3, 2, 3, 2, 3, 3, 4, 3, 2, 2, 2],
-      "3구간": [3, 3, 4, 4, 4, 4, 3, 4, 4, 4, 3, 3, 3, 4, 3, 4, 3, 3, 3, 2, 3, 3, 3, 3],
-      "전체 구간": [4, 4, 4, 4, 4, 4, 3, 3, 3, 3, 3, 3, 3, 3, 4, 3, 3, 4, 4, 3, 3, 4, 4, 4],
-    },
+  const extractDateAndHour = (dateStr: string) => {
+    const [datePart, hourPart] = dateStr.split(" ");
+    const hour = hourPart.replace("시", "");
+    return { date: datePart, hour };
   };
 
-  const sizeClass = "px-2 py-1 text-[12px] rounded-md";
-  const labels = Array.from({ length: 24 }, (_, index) =>
-    `${String(index).padStart(2, "0")}~${String(index + 1).padStart(2, "0")}시`
-  );
-  const yLabels = ["원활", "보통", "혼잡", "매우혼잡"];
+  const todayDateStr = new Date().toISOString().split("T")[0];
+  const yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
+  const yesterdayDateStr = yesterday.toISOString().split("T")[0];
 
-  const getStatusText = (value: number) => yLabels[value - 1] || "";
-  const selectedData = statusData[selectedDate][selectedSection];
+  const recordsForSelectedDate = congestionHistory.filter((record) => {
+    const { date } = extractDateAndHour(record.date);
+    return selectedDate === "오늘" ? date === todayDateStr : date === yesterdayDateStr;
+  });
+
+  const dedupedRecordsObj = recordsForSelectedDate.reduce((acc, record) => {
+    const { hour } = extractDateAndHour(record.date);
+    if (!acc[hour]) {
+      acc[hour] = record;
+    }
+    return acc;
+  }, {} as Record<string, CongestionRecord>);
+
+  const dedupedRecords = Object.values(dedupedRecordsObj).sort((a, b) => {
+    const { hour: hourA } = extractDateAndHour(a.date);
+    const { hour: hourB } = extractDateAndHour(b.date);
+    return Number(hourA) - Number(hourB);
+  });
+
+  const generateChartData = (records: CongestionRecord[], section: string) => {
+    const labels = records.map((record) => {
+      const { hour } = extractDateAndHour(record.date);
+      return `${hour}시`;
+    });
+    const data = records.map((record) => {
+      let rawValue = 0;
+      if (section === "1구간") rawValue = record.cgdrALvl;
+      else if (section === "2구간") rawValue = record.cgdrBLvl;
+      else if (section === "3구간") rawValue = record.cgdrCLvl;
+      else if (section === "전체 구간") rawValue = record.cgdrAllLvl;
+      return transformStatusValue(rawValue);
+    });
+    return { labels, data };
+  };
+
+  const { labels: dynamicLabels, data: dynamicData } = generateChartData(dedupedRecords, selectedSection);
 
   const chartData = {
-    labels,
+    labels: dynamicLabels,
     datasets: [
       {
         label: `${selectedSection} 시간별 혼잡도`,
-        data: selectedData || [],
+        data: dynamicData,
         borderColor: "#215DCE",
         backgroundColor: "rgba(33, 93, 206, 0.2)",
         borderWidth: 2,
@@ -194,10 +239,10 @@ const TrafficStatus = () => {
       },
       y: {
         ticks: {
-          callback: (tickValue: string | number) => yLabels[Number(tickValue) - 1],
+          callback: (tickValue: string | number) => getStatusText(Number(tickValue)),
           stepSize: 1,
           min: 1,
-          max: 4,
+          max: 3,
         },
         grid: {
           display: true,
@@ -210,7 +255,7 @@ const TrafficStatus = () => {
     plugins: {
       tooltip: {
         callbacks: {
-          label: (context: any) => `혼잡도: ${getStatusText(context.raw)}`,
+          label: (context: any) => `혼잡도: ${getStatusText(Number(context.raw))}`,
         },
       },
     },
@@ -239,7 +284,7 @@ const TrafficStatus = () => {
               >
                 <div className="font-medium text-black">{sectionStatus.section}</div>
                 <div>
-                  <span className={`${sizeClass} ${sectionStatus.statusColor}`}>
+                  <span className={`px-2 py-1 text-[12px] rounded-md ${sectionStatus.statusColor}`}>
                     {sectionStatus.status}
                   </span>
                 </div>
@@ -248,8 +293,9 @@ const TrafficStatus = () => {
           </div>
         </div>
       </div>
+
       <div className="ml-4 w-[670px] h-[324px] p-4 mt-14">
-        <div className="mb-2 text-[22px] text-black font-bold ml-2 mt-[-68] mb-[32] flex justify-between items-center">
+        <div className="mb-2 text-[22px] text-black font-bold ml-2 mt-[-68] mb-[32px] flex justify-between items-center">
           <div>{`${selectedSection} 혼잡도 그래프`}</div>
           <div className="flex items-center">
             <button
@@ -266,9 +312,7 @@ const TrafficStatus = () => {
                 width={16}
                 height={16}
                 alt="date"
-                className={`ml-2 ${
-                  selectedDate === "어제" ? "text-gray500" : "text-gray700"
-                }`}
+                className={`ml-2 ${selectedDate === "어제" ? "text-gray500" : "text-gray700"}`}
               />
             </button>
             <button
@@ -285,9 +329,7 @@ const TrafficStatus = () => {
                 width={16}
                 height={16}
                 alt="date"
-                className={`ml-2 ${
-                  selectedDate === "오늘" ? "text-gray500" : "text-gray700"
-                }`}
+                className={`ml-2 ${selectedDate === "오늘" ? "text-gray500" : "text-gray700"}`}
               />
             </button>
           </div>
