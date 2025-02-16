@@ -43,6 +43,19 @@ type CongestionRecord = {
 };
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
+const transformStatusValue = (value: number) => {
+  if (value === 0 || value === 1) return 1;
+  if (value === 2) return 2;
+  if (value === 3 || value === 4) return 3;
+  return value;
+};
+
+const getStatusText = (value: number) => {
+  if (value === 1) return "원활";
+  if (value === 2) return "보통";
+  if (value === 3) return "혼잡";
+  return "";
+};
 
 const TrafficStatus = () => {
   const message = "실시간 공항 구간별 혼잡도 확인";
@@ -119,7 +132,7 @@ const TrafficStatus = () => {
     1: { text: "원활", color: "bg-green100 text-green500" },
     2: { text: "보통", color: "bg-yellow100 text-yellow500" },
     3: { text: "혼잡", color: "bg-red100 text-red500" },
-    4: { text: "매우혼잡", color: "bg-red100 text-red500" },
+    4: { text: "혼잡", color: "bg-red100 text-red500" },
   };
 
   const sectionStatuses: SectionStatus[] = [
@@ -145,39 +158,36 @@ const TrafficStatus = () => {
     },
   ];
 
+
   const extractDateAndHour = (dateStr: string) => {
     const [datePart, hourPart] = dateStr.split(" ");
-    const hour = hourPart.replace("시", ""); 
+    const hour = hourPart.replace("시", "");
     return { date: datePart, hour };
   };
+
   const todayDateStr = new Date().toISOString().split("T")[0];
   const yesterday = new Date();
   yesterday.setDate(yesterday.getDate() - 1);
   const yesterdayDateStr = yesterday.toISOString().split("T")[0];
 
-  const todayRecords = congestionHistory
-    .filter((record) => {
-      const { date } = extractDateAndHour(record.date);
-      return date === todayDateStr;
-    })
-    .sort((a, b) => {
-      const { hour: hourA } = extractDateAndHour(a.date);
-      const { hour: hourB } = extractDateAndHour(b.date);
-      return Number(hourA) - Number(hourB);
-    });
+  const recordsForSelectedDate = congestionHistory.filter((record) => {
+    const { date } = extractDateAndHour(record.date);
+    return selectedDate === "오늘" ? date === todayDateStr : date === yesterdayDateStr;
+  });
 
-  const yesterdayRecords = congestionHistory
-    .filter((record) => {
-      const { date } = extractDateAndHour(record.date);
-      return date === yesterdayDateStr;
-    })
-    .sort((a, b) => {
-      const { hour: hourA } = extractDateAndHour(a.date);
-      const { hour: hourB } = extractDateAndHour(b.date);
-      return Number(hourA) - Number(hourB);
-    });
+  const dedupedRecordsObj = recordsForSelectedDate.reduce((acc, record) => {
+    const { hour } = extractDateAndHour(record.date);
+    if (!acc[hour]) {
+      acc[hour] = record;
+    }
+    return acc;
+  }, {} as Record<string, CongestionRecord>);
 
-  const recordsForSelectedDate = selectedDate === "오늘" ? todayRecords : yesterdayRecords;
+  const dedupedRecords = Object.values(dedupedRecordsObj).sort((a, b) => {
+    const { hour: hourA } = extractDateAndHour(a.date);
+    const { hour: hourB } = extractDateAndHour(b.date);
+    return Number(hourA) - Number(hourB);
+  });
 
   const generateChartData = (records: CongestionRecord[], section: string) => {
     const labels = records.map((record) => {
@@ -185,16 +195,17 @@ const TrafficStatus = () => {
       return `${hour}시`;
     });
     const data = records.map((record) => {
-      if (section === "1구간") return record.cgdrALvl;
-      if (section === "2구간") return record.cgdrBLvl;
-      if (section === "3구간") return record.cgdrCLvl;
-      if (section === "전체 구간") return record.cgdrAllLvl;
-      return 0;
+      let rawValue = 0;
+      if (section === "1구간") rawValue = record.cgdrALvl;
+      else if (section === "2구간") rawValue = record.cgdrBLvl;
+      else if (section === "3구간") rawValue = record.cgdrCLvl;
+      else if (section === "전체 구간") rawValue = record.cgdrAllLvl;
+      return transformStatusValue(rawValue);
     });
     return { labels, data };
   };
 
-  const { labels: dynamicLabels, data: dynamicData } = generateChartData(recordsForSelectedDate, selectedSection);
+  const { labels: dynamicLabels, data: dynamicData } = generateChartData(dedupedRecords, selectedSection);
 
   const chartData = {
     labels: dynamicLabels,
@@ -214,8 +225,6 @@ const TrafficStatus = () => {
     ],
   };
 
-  const yLabels = ["원활", "보통", "혼잡", "매우혼잡"];
-
   const options = {
     responsive: true,
     maintainAspectRatio: false,
@@ -230,10 +239,10 @@ const TrafficStatus = () => {
       },
       y: {
         ticks: {
-          callback: (tickValue: string | number) => yLabels[Number(tickValue) - 1],
+          callback: (tickValue: string | number) => getStatusText(Number(tickValue)),
           stepSize: 1,
           min: 1,
-          max: 4,
+          max: 3,
         },
         grid: {
           display: true,
@@ -246,7 +255,7 @@ const TrafficStatus = () => {
     plugins: {
       tooltip: {
         callbacks: {
-          label: (context: any) => `혼잡도: ${yLabels[Number(context.raw) - 1]}`,
+          label: (context: any) => `혼잡도: ${getStatusText(Number(context.raw))}`,
         },
       },
     },
