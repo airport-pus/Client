@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import Image from "next/image"
 
 interface Flight {
   airline: string;
@@ -28,7 +29,7 @@ const StartData: React.FC<StartDataProps> = ({ displayedFlights, lastFlightEleme
           className="grid grid-cols-5 border-b p-4 items-center"
         >
           <div className="flex items-center gap-2 ml-14">
-            <img src={flight.logo} alt={flight.airline} className="w-8 h-8" />
+            <Image src={flight.logo} alt={flight.airline} width={24} height={24} className="w-8 h-8"/>
             <div>
               <div className="text-black">{flight.flightNumber}</div>
               <div className="text-grayCustom text-sm">{flight.airline}</div>

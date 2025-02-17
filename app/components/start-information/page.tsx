@@ -149,8 +149,8 @@ export default function StartInformation() {
             <Image 
                 src="/search.svg" 
                 alt="검색 아이콘" 
-                width={16}
-                height={16}
+                width={24}
+                height={24}
                 className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray700" 
             />
             <input type="text" placeholder="항공편명 검색" className="pl-10 p-2 border border-blue500 rounded w-[320px]" />
