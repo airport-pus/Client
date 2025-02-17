@@ -44,7 +44,7 @@ export default function StartInformation() {
   useEffect(() => {
     const fetchFlights = async () => {
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/apron?io=O`);
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/apron?io=I`);
         if (!response.ok) {
           throw new Error('Failed to fetch flight data');
         }

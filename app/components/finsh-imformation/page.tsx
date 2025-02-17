@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
-import StartData from "../start-data/page";
+import StartData from "../finsh-data/page";
 import airlineDictionary, { getLogo } from './logoList';
 import Image from "next/image"
 
@@ -25,7 +25,7 @@ interface DisplayFlight {
   airline: string;
   flightNumber: string;
   destination: string;
-  gate: number;
+  gate: string;
   status: string;
   scheduledTime: string;
   modifiedTime: string;
@@ -59,11 +59,11 @@ export default function StartInformation() {
         }
         const data: FlightData[] = await response.json();
         
-        const transformedData: DisplayFlight[] = data.map((flight, index) => ({
+        const transformedData: DisplayFlight[] = data.map((flight) => ({
           airline: flight.airlineKorean,
           flightNumber: flight.flightNumber,
           destination: flight.boardingKor,
-          gate: parseInt(flight.baggageClaim) || (index % 5) + 1,
+          gate: flight.baggageClaim || "-",
           status: getRemarkKor(flight) || "-",
           scheduledTime: formatTime(flight.std),
           modifiedTime: formatTime(flight.etd),
@@ -173,7 +173,10 @@ export default function StartInformation() {
         <div>항공편 상태</div>
         <div>시간</div>
       </div>
-      <StartData displayedFlights={displayedFlights} lastFlightElementRef={lastFlightElementRef} />
+      <StartData 
+        displayedFlights={displayedFlights}
+        lastFlightElementRef={lastFlightElementRef} 
+      />
     </>
   );
 }

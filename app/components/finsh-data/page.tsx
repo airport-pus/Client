@@ -6,7 +6,7 @@ interface Flight {
   airline: string;
   flightNumber: string;
   destination: string;
-  gate: number;
+  gate: string;
   status: string;
   scheduledTime: string;
   modifiedTime: string;
