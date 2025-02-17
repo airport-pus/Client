@@ -168,7 +168,7 @@ export default function StartInformation() {
       </div>
       <div className="mt-6 grid grid-cols-5 bg-grayHover p-2 text-center text-gray600 font-regular text-[14px]">
         <div>항공사 및 항공편명</div>
-        <div>도착지</div>
+        <div>출발지</div>
         <div>탑승구</div>
         <div>항공편 상태</div>
         <div>시간</div>
