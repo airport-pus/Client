@@ -7,7 +7,7 @@ const airlineDictionary: LogoMapping = {
     '': 'alitalia.svg',
     'ASIANA AIRLINE': 'asiana-air.png',
     '': 'cathay-pacific.png',
-    'CHINA AIRLINES': 'china-airlines.png',
+    'CHINA AIRLINES': 'china-airlines.svg',
     'CHINA EASTERN AIRLINES': 'china-eastern.webp',
     '': 'delta-airlines.png',
     'EASTAR JET': 'e-star.png',
