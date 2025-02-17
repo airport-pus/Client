@@ -32,6 +32,15 @@ interface DisplayFlight {
   logo: string;
 }
 
+function getRemarkKor(f:any): string | null {
+  if (!f.etd  || !f.std) return null;
+  else if (f.etd > f.std) return "지연"; 
+  else if (f.etd === f.std) return "출발";
+  else if (f.etd < f.std) return "연착";  
+  return null; // 그 외에는 상태 없음
+}
+
+
 export default function StartInformation() {
   const [allFlightData, setAllFlightData] = useState<DisplayFlight[]>([]);
   const [displayedFlights, setDisplayedFlights] = useState<DisplayFlight[]>([]);
@@ -54,7 +63,7 @@ export default function StartInformation() {
           flightNumber: flight.flightNumber,
           destination: flight.boardingKor,
           gate: parseInt(flight.baggageClaim) || (index % 5) + 1,
-          status: flight.remarkKor || "-",
+          status: getRemarkKor(flight) || "-",
           scheduledTime: formatTime(flight.std),
           modifiedTime: formatTime(flight.etd),
           delay: calculateDelay(flight.std, flight.etd),
