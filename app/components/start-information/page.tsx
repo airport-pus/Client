@@ -166,5 +166,5 @@ export default function StartInformation() {
       </div>
       <StartData displayedFlights={displayedFlights} lastFlightElementRef={lastFlightElementRef} />
     </>
-  );
+  ); 
 }
