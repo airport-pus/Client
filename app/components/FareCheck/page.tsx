@@ -62,7 +62,7 @@ const calculateTimeRange = (
     return { weekdayMinutes: 0, holidayMinutes: 0 }
   }
 
-  let currentDate = new Date(startDateTime)
+  const currentDate = new Date(startDateTime)
   let weekdayMinutes = 0
   let holidayMinutes = 0
 
