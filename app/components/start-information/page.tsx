@@ -1,8 +1,8 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import StartData from "../start-data/page";
-import airlineDictionary, { getLogo } from './logoList';
-import Image from "next/image"
+import airlineDictionary, { getLogo } from "./logoList";
+import Image from "next/image";
 
 interface FlightData {
   flightNumber: string;
@@ -33,11 +33,10 @@ interface DisplayFlight {
   logo: string;
 }
 
-function getRemarkKor(f:any): string | null {
-  if (!f.etd  || !f.std) return null;
-  return f.remarkKor; // 그 외에는 상태 없음
+function getRemarkKor(f: any): string | null {
+  if (!f.etd || !f.std) return null;
+  return f.remarkKor;
 }
-
 
 export default function StartInformation() {
   const [allFlightData, setAllFlightData] = useState<DisplayFlight[]>([]);
@@ -50,12 +49,14 @@ export default function StartInformation() {
   useEffect(() => {
     const fetchFlights = async () => {
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/apron?io=O`);
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/apron?io=O`
+        );
         if (!response.ok) {
-          throw new Error('Failed to fetch flight data');
+          throw new Error("Failed to fetch flight data");
         }
         const data: FlightData[] = await response.json();
-        
+
         const transformedData: DisplayFlight[] = data.map((flight, index) => ({
           airline: flight.airlineKorean,
           flightNumber: flight.flightNumber,
@@ -72,7 +73,7 @@ export default function StartInformation() {
         setDisplayedFlights(transformedData.slice(0, 10));
         setIsLoading(false);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'An error occurred');
+        setError(err instanceof Error ? err.message : "An error occurred");
         setIsLoading(false);
       }
     };
@@ -82,7 +83,7 @@ export default function StartInformation() {
 
   const formatTime = (time: string | null): string => {
     if (!time) return "시간 미정";
-    
+
     try {
       const hours = time.substring(0, 2);
       const minutes = time.substring(2, 4);
@@ -95,15 +96,20 @@ export default function StartInformation() {
     }
   };
 
-  const calculateDelay = (std: string | null, etd: string | null): string | null => {
+  const calculateDelay = (
+    std: string | null,
+    etd: string | null
+  ): string | null => {
     if (!std || !etd) return null;
-    
+
     try {
-      const stdMinutes = parseInt(std.substring(0, 2)) * 60 + parseInt(std.substring(2, 4));
-      const etdMinutes = parseInt(etd.substring(0, 2)) * 60 + parseInt(etd.substring(2, 4));
-      
+      const stdMinutes =
+        parseInt(std.substring(0, 2)) * 60 + parseInt(std.substring(2, 4));
+      const etdMinutes =
+        parseInt(etd.substring(0, 2)) * 60 + parseInt(etd.substring(2, 4));
+
       if (isNaN(stdMinutes) || isNaN(etdMinutes)) return null;
-      
+
       const delayMinutes = etdMinutes - stdMinutes;
       return delayMinutes > 0 ? `${delayMinutes}분` : null;
     } catch (error) {
@@ -123,7 +129,10 @@ export default function StartInformation() {
   };
 
   const loadMoreFlights = () => {
-    const nextFlights = allFlightData.slice(displayedFlights.length, displayedFlights.length + 10);
+    const nextFlights = allFlightData.slice(
+      displayedFlights.length,
+      displayedFlights.length + 10
+    );
     setDisplayedFlights((prev) => {
       const updatedFlights = [...prev, ...nextFlights];
       if (updatedFlights.length >= allFlightData.length) {
@@ -134,35 +143,105 @@ export default function StartInformation() {
   };
 
   if (isLoading) {
-    return <div className="text-center py-4">데이터를 불러오는 중...</div>;
+    return (
+      <>
+        <div className="mt-14 p-4 border-l-4 border-blue500 bg-blue100 text-black mt-5 animate-pulse">
+          <div className="mb-2">
+            <div className="h-6 w-60 bg-gray-300 rounded"></div>
+          </div>
+          <div className="space-y-1">
+            <div className="h-4 w-full bg-gray-300 rounded"></div>
+            <div className="h-4 w-full bg-gray-300 rounded"></div>
+            <div className="h-4 w-full bg-gray-300 rounded"></div>
+            <div className="h-4 w-full bg-gray-300 rounded"></div>
+            <div className="h-4 w-full bg-gray-300 rounded"></div>
+          </div>
+          <div className="mt-4 relative">
+            <div className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 bg-gray-300 rounded"></div>
+            <div className="pl-10 p-2 border border-blue500 rounded w-[320px] bg-gray-300"></div>
+          </div>
+        </div>
+
+        <div className="mt-6 grid grid-cols-5 bg-grayHover p-2 text-center text-gray600 font-regular text-[14px] animate-pulse">
+          <div className="h-4 bg-gray-300 rounded"></div>
+          <div className="h-4 bg-gray-300 rounded"></div>
+          <div className="h-4 bg-gray-300 rounded"></div>
+          <div className="h-4 bg-gray-300 rounded"></div>
+          <div className="h-4 bg-gray-300 rounded"></div>
+        </div>
+
+        {Array.from({ length: 10 }).map((_, i) => (
+          <div
+            key={i}
+            className="grid grid-cols-5 p-4 border-b border-gray-200 animate-pulse"
+          >
+            <div className="flex items-center space-x-2">
+              <div className="w-6 h-6 bg-gray-300 rounded"></div>
+              <div className="h-4 w-20 bg-gray-300 rounded"></div>
+            </div>
+            <div className="flex justify-center">
+              <div className="h-4 w-16 bg-gray-300 rounded"></div>
+            </div>
+            <div className="flex justify-center">
+              <div className="h-4 w-8 bg-gray-300 rounded"></div>
+            </div>
+            <div className="flex justify-center">
+              <div className="h-4 w-20 bg-gray-300 rounded"></div>
+            </div>
+            <div className="flex justify-center">
+              <div className="h-4 w-24 bg-gray-300 rounded"></div>
+            </div>
+          </div>
+        ))}
+      </>
+    );
   }
 
   if (error) {
-    return <div className="text-center py-4 text-red500">오류가 발생했습니다: {error}</div>;
+    return (
+      <div className="text-center py-4 text-red500">
+        오류가 발생했습니다: {error}
+      </div>
+    );
   }
 
   return (
     <>
       <div className="mt-14 p-4 border-l-4 border-blue500 bg-blue100 text-black mt-5">
         <p className="font-bold text-[19px]">출발 주기장 이용 안내</p>
-        <p className="text-[16px] mt-2">• 이 주기장은 김해국제공항에서 출발하는 항공기의 주기장입니다.</p>
-        <p className="text-[16px] mt-1">• 항공편명을 검색하여 원하는 항공편 정보를 쉽게 확인할 수 있습니다.</p>
-        <p className="text-[16px] mt-1">• <strong>예정</strong>: 계획된 출발 시간</p>
-        <p className="text-[16px] mt-1">• <strong>변경</strong>: 변경된 출발 시간</p>
-        <p className="text-[16px] text-red500 mt-1">• <strong>빨간색 표시</strong>: 항공편이 지연된 경우, 지연 시간을 함께 표시합니다.</p>
+        <p className="text-[16px] mt-2">
+          • 이 주기장은 김해국제공항에서 출발하는 항공기의 주기장입니다.
+        </p>
+        <p className="text-[16px] mt-1">
+          • 항공편명을 검색하여 원하는 항공편 정보를 쉽게 확인할 수 있습니다.
+        </p>
+        <p className="text-[16px] mt-1">
+          • <strong>예정</strong>: 계획된 출발 시간
+        </p>
+        <p className="text-[16px] mt-1">
+          • <strong>변경</strong>: 변경된 출발 시간
+        </p>
+        <p className="text-[16px] text-red500 mt-1">
+          • <strong>빨간색 표시</strong>: 항공편이 지연된 경우, 지연 시간을 함께 표시합니다.
+        </p>
         <div className="mt-4">
           <div className="relative">
-            <Image 
-                src="/search.svg" 
-                alt="검색 아이콘" 
-                width={16}
-                height={16}
-                className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray700" 
+            <Image
+              src="/search.svg"
+              alt="검색 아이콘"
+              width={16}
+              height={16}
+              className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray700"
             />
-            <input type="text" placeholder="항공편명 검색" className="pl-10 p-2 border border-blue500 rounded w-[320px]" />
+            <input
+              type="text"
+              placeholder="항공편명 검색"
+              className="pl-10 p-2 border border-blue500 rounded w-[320px]"
+            />
           </div>
         </div>
       </div>
+
       <div className="mt-6 grid grid-cols-5 bg-grayHover p-2 text-center text-gray600 font-regular text-[14px]">
         <div>항공사 및 항공편명</div>
         <div>도착지</div>
@@ -170,7 +249,11 @@ export default function StartInformation() {
         <div>항공편 상태</div>
         <div>시간</div>
       </div>
-      <StartData displayedFlights={displayedFlights} lastFlightElementRef={lastFlightElementRef} />
+
+      <StartData
+        displayedFlights={displayedFlights}
+        lastFlightElementRef={lastFlightElementRef}
+      />
     </>
   );
 }
