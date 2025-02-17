@@ -152,7 +152,13 @@ export default function StartInformation() {
         <p className="text-[16px] text-red500 mt-1">• <strong>빨간색 표시</strong>: 항공편이 지연된 경우, 지연 시간을 함께 표시합니다.</p>
         <div className="mt-4">
           <div className="relative">
-            <Image src="/search.svg" alt="검색 아이콘" className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray700" />
+            <Image 
+                src="/search.svg" 
+                alt="검색 아이콘" 
+                width={16}
+                height={16}
+                className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray700" 
+            />
             <input type="text" placeholder="항공편명 검색" className="pl-10 p-2 border border-blue500 rounded w-[320px]" />
           </div>
         </div>
