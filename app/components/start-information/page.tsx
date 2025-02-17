@@ -25,7 +25,7 @@ interface DisplayFlight {
   airline: string;
   flightNumber: string;
   destination: string;
-  gate: number;
+  gate: string;
   status: string;
   scheduledTime: string;
   modifiedTime: string;
@@ -44,17 +44,17 @@ export default function StartInformation() {
   useEffect(() => {
     const fetchFlights = async () => {
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/apron?io=O`);
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/apron?io=I`);
         if (!response.ok) {
           throw new Error('Failed to fetch flight data');
         }
         const data: FlightData[] = await response.json();
         
-        const transformedData: DisplayFlight[] = data.map((flight, index) => ({
+        const transformedData: DisplayFlight[] = data.map((flight) => ({
           airline: flight.airlineKorean,
           flightNumber: flight.flightNumber,
           destination: flight.boardingKor,
-          gate: parseInt(flight.baggageClaim) || (index % 5) + 1,
+          gate: flight.baggageClaim || "-",
           status: flight.remarkKor || "-",
           scheduledTime: formatTime(flight.std),
           modifiedTime: formatTime(flight.etd),
