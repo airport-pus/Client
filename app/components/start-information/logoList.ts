@@ -10,7 +10,7 @@ const airlineDictionary: LogoMapping = {
     'CHINA AIRLINES': 'china-airlines.png',
     'CHINA EASTERN AIRLINES': 'china-eastern.webp',
     '': 'delta-airlines.png',
-    'EASTAR JET': 'eastar-jet.svg',
+    'EASTAR JET': 'e-star.png',
     '': 'hawaiian-airlines.png',
     'HONGKONGEXPRESS': 'hk-express.png',
     '': 'japan-airlines.svg',
@@ -19,13 +19,14 @@ const airlineDictionary: LogoMapping = {
     '': 'klm.svg',
     'KOREAN AIR': 'korean-air.webp',
     'PHILIPPINE AIRLINES': 'philippine-airlines.svg',
-    '': 'shanghai-airlines.webp',
+    'SHANGHAI AIRLINES': 'shanghai-airlines.webp',
     '': 'singapore-airlines.svg',
     '': 'spring-airlines.webp',
-    '': 'tigerair-taiwan.webp',
-    '': 'tway-air.png',
+    'TIGER AIR TAIWAN': 'tigerair-taiwan.webp',
+    "T'WAY AIR CO.LTD": 'tway-air.png',
     'VIETJET AIR': 'vietjet-air.webp',
-    'VIETNAM AIRLINES': 'vietnam-airlines.webp'
+    'VIETNAM AIRLINES': 'vietnam-airlines.webp',
+    'AIR BUSAN' : 'air-busan.jpg' 
   };
 
   export default airlineDictionary;
