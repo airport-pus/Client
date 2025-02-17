@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef } from "react";
 import StartData from "../start-data/page";
 import airlineDictionary, { getLogo } from './logoList';
+import Image from "next/image"
 
 interface FlightData {
   flightNumber: string;
@@ -32,6 +33,12 @@ interface DisplayFlight {
   logo: string;
 }
 
+function getRemarkKor(f:any): string | null {
+  if (!f.etd  || !f.std) return null;
+  return f.remarkKor; // 그 외에는 상태 없음
+}
+
+
 export default function StartInformation() {
   const [allFlightData, setAllFlightData] = useState<DisplayFlight[]>([]);
   const [displayedFlights, setDisplayedFlights] = useState<DisplayFlight[]>([]);
@@ -43,7 +50,7 @@ export default function StartInformation() {
   useEffect(() => {
     const fetchFlights = async () => {
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/apron?io=I`);
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/apron?io=O`);
         if (!response.ok) {
           throw new Error('Failed to fetch flight data');
         }
@@ -54,7 +61,7 @@ export default function StartInformation() {
           flightNumber: flight.flightNumber,
           destination: flight.boardingKor,
           gate: parseInt(flight.baggageClaim) || (index % 5) + 1,
-          status: flight.remarkKor || "-",
+          status: getRemarkKor(flight) || "-",
           scheduledTime: formatTime(flight.std),
           modifiedTime: formatTime(flight.etd),
           delay: calculateDelay(flight.std, flight.etd),
@@ -145,7 +152,7 @@ export default function StartInformation() {
         <p className="text-[16px] text-red500 mt-1">• <strong>빨간색 표시</strong>: 항공편이 지연된 경우, 지연 시간을 함께 표시합니다.</p>
         <div className="mt-4">
           <div className="relative">
-            <img src="/search.svg" alt="검색 아이콘" className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray700" />
+            <Image src="/search.svg" alt="검색 아이콘" className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray700" />
             <input type="text" placeholder="항공편명 검색" className="pl-10 p-2 border border-blue500 rounded w-[320px]" />
           </div>
         </div>
