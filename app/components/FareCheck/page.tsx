@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import Image from "next/image"
-
+import { formatDate, isHoliday, TIME_OPTIONS } from "@/utils"
 type ParkingLot = 'P1P2' | 'P3'
 type VehicleSize = 'small' | 'large'
 type DiscountType = 'normal' | 'compact' | 'eco12' | 'eco3' | 'disabled' | 'children' | 'veteran'
@@ -30,23 +30,6 @@ const DISCOUNT_TYPE_MAP: Record<DiscountType, number> = {
   veteran: 6
 }
 
-const TIME_OPTIONS = Array.from({ length: 48 }, (_, i) => {
-  const hour = Math.floor(i / 2).toString().padStart(2, "0")
-  const minute = i % 2 === 0 ? "00" : "30"
-  return `${hour}:${minute}`
-})
-
-const formatDate = (date: Date): string => {
-  const year = date.getFullYear()
-  const month = String(date.getMonth() + 1).padStart(2, "0")
-  const day = String(date.getDate()).padStart(2, "0")
-  return `${year}-${month}-${day}`
-}
-
-const isHoliday = (date: Date, holidayDates: string[]): boolean => {
-  const isWeekend = date.getDay() === 0 || date.getDay() === 6
-  return isWeekend || holidayDates.includes(formatDate(date))
-}
 
 const calculateTimeRange = (
   startDate: string,
@@ -474,7 +457,7 @@ export default function ParkingFeeCalculator() {
   }
 
   return (
-    <div className="col-span-12 sm:col-span-4 bg-white rounded-[8px] h-[260px] p-6 relative w-[700px] absolute xl:left-[-300px]">
+    <div className="col-span-12 xl:col-span-4 bg-white rounded-[8px] h-[260px] p-6 relative xl:w-[700px] xl:left-[-300px]">
       {initialLoading ? (
         <FormSkeleton />
       ) : loading ? (

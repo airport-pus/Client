@@ -22,7 +22,7 @@ export default function Home() {
         <div className="max-w-[1280px] mx-auto px-5">
           <Header />
 
-          <div className="grid xl:grid-cols-12 gap-5 mb-5">
+          <div className="grid grid-cols-12 gap-5 mb-5">
             <ParkingCongestion />
             <FareCheck />
           </div>
