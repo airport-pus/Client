@@ -11,7 +11,7 @@ interface FlightData {
   airlineKorean: string;
   arrivedEng: string;
   arrivedKor: string;
-  baggageClaim: string;
+  gate: string;
   boardingEng: string;
   boardingKor: string;
   std: string | null;
@@ -88,7 +88,7 @@ export default function StartInformation() {
       airline: flight.airlineKorean,
       flightNumber: flight.flightNumber,
       destination: flight.boardingKor,
-      gate: flight.baggageClaim || "-",
+      gate: flight.gate || "-",
       status: flight.remarkKor || "-",
       scheduledTime: formatTime(flight.std),
       modifiedTime: formatTime(flight.etd),
