@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import useSWR from 'swr';
 import {
   Chart as ChartJS,
@@ -18,6 +18,9 @@ import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
+
+ChartJS.defaults.font.family = 'Pretendard, sans-serif';
+
 
 type DateType = "어제" | "오늘";
 
@@ -59,6 +62,25 @@ const getStatusText = (value: number) => {
 };
 
 const TrafficStatus = () => {
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 768) {
+        ChartJS.defaults.font.weight = 500;
+        ChartJS.defaults.font.size = 13;
+      } else {
+        ChartJS.defaults.font.weight = 400;
+        ChartJS.defaults.font.size = 11;
+      }
+    };
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
   const message = "실시간 공항 구간별 혼잡도 확인";
   const [selectedSection, setSelectedSection] = useState("1구간");
   const [selectedDate, setSelectedDate] = useState<DateType>("오늘");
