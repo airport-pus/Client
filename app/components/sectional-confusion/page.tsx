@@ -302,7 +302,7 @@ const TrafficStatus = () => {
         <div className="mb-2 w-full lg:w-[460px] text-[22px] text-black font-bold mt-2 ml-2 mb-[-3]">
           {message}
         </div>
-        <div className="mb-4 w-full lg:w-[480px] text-[14px] text-gray400 ml-2 mb-7">
+        <div className="mb-4 w-full lg:w-[480px] text-[14px] text-gray400 ml-2 mb-[-9]">
           <span className="hidden lg:inline">표에서 셀을 클릭하면 시간별 그래프를 보실 수 있습니다.</span>
           <span className="lg:hidden">클릭하면 그래프를 볼 수 있어요.</span>
         </div>
