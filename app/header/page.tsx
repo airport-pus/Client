@@ -29,7 +29,7 @@ export default function Header() {
     <div className="col-span-12 flex items-center gap-4 mb-6">
       <Image src="/logo.svg" alt="PUSAN logo" width={100} height={100} />
       <div className="flex-grow">
-        <h1 className="text-[20px] lg:text-[24px] font-bold text-black">김해국제공항의 모든 정보를 한 곳에서,</h1>
+        <h1 className="text-[20px] 2md:text-[24px] font-bold text-black">김해국제공항의 모든 정보를 한 곳에서,</h1>
         <p className="text-[16px] text-gray600">
           지금까지 <span className="text-blue500 font-semibold">{visitCount}</span>명이 페이지에 방문했어요.
         </p>

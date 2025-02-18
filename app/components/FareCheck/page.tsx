@@ -86,8 +86,8 @@ interface ParkingOptionsProps {
 }
 function ParkingOptions({ parkingOptions, onOptionChange }: ParkingOptionsProps) {
   return (
-    <div className="flex mb-4 mt-[20px]">
-      <div className="flex-1">
+    <div className="flex flex-col 2md:flex-row justify-between mb-4 mt-[20px]">
+      <div className="">
         <span className="text-sm font-semibold text-gray600">주차장 선택</span>
         <div className="flex items-center mt-2">
           {[
@@ -110,7 +110,7 @@ function ParkingOptions({ parkingOptions, onOptionChange }: ParkingOptionsProps)
           ))}
         </div>
       </div>
-      <div className="mb-4 ml-[40px]">
+      <div className="">
         <span className="text-sm font-semibold text-gray600">차량 크기 선택</span>
         <div className="flex items-center mt-2">
           {[
@@ -133,24 +133,21 @@ function ParkingOptions({ parkingOptions, onOptionChange }: ParkingOptionsProps)
           ))}
         </div>
       </div>
-      <div className="mb-4 mt-[-3px] ml-[120px]">
-        <span className="text-sm font-semibold text-gray600 ml-[-40px]">할인</span>
-        <div className="flex items-center mt-[2]">
-          <select
-            className="border px-3 py-1 rounded-md text-gray500 bg-blue100 border-blue200 appearance-none"
-            value={parkingOptions.discountType}
-            onChange={onOptionChange("discountType")}
-            style={{ transform: "translateX(-40px) translateY(3px)" }}
-          >
-            <option value="normal">일반</option>
-            <option value="veteran">국가유공자(상이)</option>
-            <option value="disabled">장애인 차량</option>
-            <option value="eco3">저공해 3종</option>
-            <option value="eco12">저공해 1,2종</option>
-            <option value="compact">경차</option>
-            <option value="children">다자녀</option>
-          </select>
-        </div>
+      <div className="">
+        <div className="text-sm  font-semibold text-gray600 2md:ml-[-40px]">할인</div>
+        <select
+          className="border px-3 py-1 mt-2 rounded-md text-gray500 bg-blue100 border-blue200 appearance-none"
+          value={parkingOptions.discountType}
+          onChange={onOptionChange("discountType")}
+        >
+          <option value="normal">일반</option>
+          <option value="veteran">국가유공자(상이)</option>
+          <option value="disabled">장애인 차량</option>
+          <option value="eco3">저공해 3종</option>
+          <option value="eco12">저공해 1,2종</option>
+          <option value="compact">경차</option>
+          <option value="children">다자녀</option>
+        </select>
       </div>
     </div>
   )
@@ -211,7 +208,7 @@ function TimeSelection({ dates, onDateChange }: TimeSelectionProps) {
       <button
         className="h-[36px] w-[96px] bg-blue500 text-white px-2 rounded-[8px] ml-2 mt-8 transition-all duration-200 ease-in-out"
         style={{ transform: "translateX(-36px)" }}
-        onClick={() => {}}
+        onClick={() => { }}
       >
         🚗 조회
       </button>
@@ -348,7 +345,7 @@ export default function ParkingFeeCalculator() {
         if (!response.ok) {
           throw new Error(`${response.status}`)
         }
-        const data = await response.json() 
+        const data = await response.json()
         const holidayDates = data.map((item: { holiday: string }) => {
           const s = item.holiday
           return `${s.slice(0, 4)}-${s.slice(4, 6)}-${s.slice(6, 8)}`
