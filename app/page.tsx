@@ -18,8 +18,8 @@ export default function Home() {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <main className="flex-grow p-4 md:p-8 bg-[#F3F4F6] font-pretendard">
-        <div className="max-w-[1280px] mx-auto px-3 md:px-5">
+      <main className="flex-grow 2md:p-8 p-2 bg-[#F3F4F6] font-pretendard">
+        <div className="max-w-[1280px] mx-auto 2md:px-5 px-2">
           <Header />
 
           <div className="grid grid-cols-1 md:grid-cols-12 gap-3 md:gap-5 mb-3 md:mb-5">
