@@ -128,7 +128,47 @@ export default function StartInformation() {
   };
 
   if (isLoading) {
-    return <div className="text-center py-4">데이터를 불러오는 중...</div>;
+    return (
+      <div className="mt-14">
+        <div className="p-4 border-l-4 border-blue500 bg-blue100">
+          <div className="h-7 w-56 bg-gray-200 rounded animate-pulse mb-4"></div>
+          <div className="h-6 w-full bg-gray-200 rounded animate-pulse mb-2"></div>
+          <div className="h-6 w-full bg-gray-200 rounded animate-pulse mb-2"></div>
+          <div className="h-6 w-48 bg-gray-200 rounded animate-pulse mb-2"></div>
+          <div className="h-6 w-48 bg-gray-200 rounded animate-pulse mb-2"></div>
+          <div className="h-6 w-96 bg-gray-200 rounded animate-pulse mb-2"></div>
+          <div className="mt-4">
+            <div className="relative">
+              <div className="h-10 w-[320px] bg-gray-200 rounded animate-pulse"></div>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-6 grid grid-cols-5 bg-grayHover p-2 text-center">
+          <div className="h-5 w-36 bg-gray-200 rounded animate-pulse mx-auto"></div>
+          <div className="h-5 w-24 bg-gray-200 rounded animate-pulse mx-auto"></div>
+          <div className="h-5 w-20 bg-gray-200 rounded animate-pulse mx-auto"></div>
+          <div className="h-5 w-28 bg-gray-200 rounded animate-pulse mx-auto"></div>
+          <div className="h-5 w-16 bg-gray-200 rounded animate-pulse mx-auto"></div>
+        </div>
+
+        {[...Array(5)].map((_, i) => (
+          <div key={i} className="grid grid-cols-5 p-4 border-b text-center">
+            <div className="flex items-center gap-2 justify-center">
+              <div className="h-8 w-8 bg-gray-200 rounded-full animate-pulse"></div>
+              <div className="h-5 w-28 bg-gray-200 rounded animate-pulse"></div>
+            </div>
+            <div className="h-5 w-32 bg-gray-200 rounded animate-pulse mx-auto"></div>
+            <div className="h-5 w-16 bg-gray-200 rounded animate-pulse mx-auto"></div>
+            <div className="h-5 w-24 bg-gray-200 rounded animate-pulse mx-auto"></div>
+            <div className="flex flex-col items-center gap-1">
+              <div className="h-5 w-32 bg-gray-200 rounded animate-pulse"></div>
+              <div className="h-5 w-32 bg-gray-200 rounded animate-pulse"></div>
+            </div>
+          </div>
+        ))}
+      </div>
+    );
   }
 
   if (error) {
