@@ -34,7 +34,8 @@ export default function Home() {
               }`}
               onClick={() => handleButtonClick(1)}
             >
-              실시간 구간별 혼잡도
+              <span className="hidden md:inline">실시간 구간별 혼잡도</span>
+              <span className="md:hidden">혼잡도</span>
             </button>
             <button
               className={`col-span-4 py-2 px-4 rounded-[8px] text-[16px] transition-colors ${
@@ -42,7 +43,8 @@ export default function Home() {
               }`}
               onClick={() => handleButtonClick(2)}
             >
-              실시간 출발 주기장 정보
+              <span className="hidden md:inline">실시간 출발 주기장 정보</span>
+              <span className="md:hidden">출발정보</span>
             </button>
             <button
               className={`col-span-4 py-2 px-4 rounded-[8px] text-[16px] transition-colors ${
@@ -50,7 +52,8 @@ export default function Home() {
               }`}
               onClick={() => handleButtonClick(3)}
             >
-              실시간 도착 주기장 정보
+              <span className="hidden md:inline">실시간 도착 주기장 정보</span>
+              <span className="md:hidden">도착정보</span>
             </button>
           </div>
 
