@@ -26,19 +26,48 @@ export default function Header() {
   }, []);
 
   return (
-    <div className="col-span-12 flex items-center gap-4 mb-6">
-      <Image src="/logo.svg" alt="PUSAN logo" width={100} height={100} />
+    <div className="col-span-12 flex items-center gap-4 mb-6 mt-10 md:mt-0">
+      <Link href="/dataset">
+        <Image 
+          src="/logo.svg" 
+          alt="PUSAN logo" 
+          width={80} 
+          height={80}
+          className="md:w-[100px] md:h-[100px]" 
+        />
+      </Link>
       <div className="flex-grow">
-        <h1 className="text-[20px] lg:text-[24px] font-bold text-black">김해국제공항의 모든 정보를 한 곳에서,</h1>
+        <h1 className="text-[20px] lg:text-[24px] font-bold text-black whitespace-nowrap">
+          <span className="md:hidden">airport-pus</span>
+          <span className="hidden md:inline">김해국제공항의 모든 정보를 한 곳에서,</span>
+        </h1>
         <p className="text-[16px] text-gray600">
-          지금까지 <span className="text-blue500 font-semibold">{visitCount}</span>명이 페이지에 방문했어요.
+          <span className="hidden md:inline">지금까지 </span>
+          <span className="text-blue500 font-semibold">
+            {visitCount.toLocaleString()}
+          </span>
+          <span className="md:hidden">명이 페이지에 방문했어요.</span>
+          <span className="hidden md:inline">명이 페이지에 방문했어요.</span>
         </p>
       </div>
       <div className="flex items-center space-x-4">
-        <Link href="/dataset" className="text-grayCustom text-[14px] ml-4 mt-[-20px] cursor-pointer">
+        <Link 
+          href="/dataset" 
+          className="text-grayCustom text-[14px] ml-4 mt-[-20px] cursor-pointer hidden md:block"
+        >
           데이터셋
         </Link>
-        <span className="text-grayCustom text-[14px] ml-4 mt-[-20px]">문의하기</span>
+
+        <span className="hidden md:inline text-grayCustom text-[14px] ml-4 mt-[-20px]">
+          문의하기
+        </span>
+
+        <span
+          className="md:hidden text-grayCustom text-[14px] ml-4 inline-block relative"
+          style={{ left: "-12px" }}
+        >
+          문의
+        </span>
       </div>
     </div>
   )
