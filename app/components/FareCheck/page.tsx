@@ -250,7 +250,7 @@ function ParkingForm({ dates, parkingOptions, onOptionChange, onDateChange, onCa
           </div>
         </div>
         <button
-          className="h-[36px] w-[96px] bg-blue500 text-white px-2 rounded-[8px] mt-4 xl:mt-8 xl:ml-2 transition-all duration-200 ease-in-out xl:translate-x-[-36px] order-5"
+          className="h-[36px] w-[96px] bg-blue500 text-white px-2 rounded-[8px] mt-10 xl:mt-8 xl:ml-2 transition-all duration-200 ease-in-out xl:translate-x-[-36px] order-5"
           onClick={onCalculate}
         >
           🚗 조회
