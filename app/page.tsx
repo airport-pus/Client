@@ -7,7 +7,7 @@ import ParkingCongestion from "./components/ParkingCongestion/page"
 import FareCheck from "./components/FareCheck/page"
 import SectionalConfusion from "./components/sectional-confusion/page"
 import StartInformation from "./components/start-information/page"
-import FinshInformation from "./components/finsh-imformation/page"
+import FinshInformation from "./components/finsh-information/page"
 
 export default function Home() {
   const [selected, setSelected] = useState<number>(1)
