@@ -21,7 +21,6 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, T
 
 ChartJS.defaults.font.family = 'Pretendard, sans-serif';
 
-
 type DateType = "어제" | "오늘";
 
 type SectionStatus = {
@@ -300,11 +299,11 @@ const TrafficStatus = () => {
     <div className="relative flex flex-col lg:flex-row">
       <div className="w-full lg:w-auto flex flex-col items-center lg:items-start">
         <div className="mb-2 w-full lg:w-[460px] text-[22px] text-black font-bold mt-2 ml-2 mb-[-3]">
-          {message}
+          <h2 className="text-xl font-bold mb-1 text-black">실시간 공항 구간별 혼잡도 확인</h2>
         </div>
         <div className="mb-4 w-full lg:w-[480px] text-[14px] text-gray400 ml-2 mb-[-9]">
           <span className="hidden lg:inline">표에서 셀을 클릭하면 시간별 그래프를 보실 수 있습니다.</span>
-          <span className="lg:hidden">클릭하면 그래프를 볼 수 있어요.</span>
+          <span className="lg:hidden">셀을 클릭하면 그래프를 볼 수 있어요.</span>
         </div>
         <div className="w-full max-w-[420px] lg:w-[420px] ml-2">
           <div className="mt-6 grid grid-cols-2 bg-gray300 p-2 text-center text-grayCustom font-regular text-[14px]">
@@ -331,12 +330,15 @@ const TrafficStatus = () => {
       </div>
 
       <div className="w-full lg:w-[670px] h-auto min-h-[280px] p-4 mt-8 lg:mt-14 lg:ml-4">
-        <div className="mb-2 text-[22px] text-black font-bold ml-[10px] lg:ml-2 lg:mt-[-68] mb-[32px] flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 lg:gap-0">
-          <div className="ml-[-10px] lg:ml-0">{`${selectedSection} 혼잡도 그래프`}</div>
-          <div className="flex items-center ml-[-10px] lg:ml-0">
+        <div className="mb-2 text-[22px] text-black font-bold ml-[10px] lg:ml-2 lg:mt-[-68] mb-[32px] flex flex-row justify-between items-center gap-4">
+          <div className="text-xl font-bold text-black">
+            <span className="lg:hidden ml-[-13px]">{`${selectedSection} 혼잡도`}</span>
+            <span className="hidden lg:inline">{`${selectedSection} 혼잡도 그래프`}</span>
+          </div>
+          <div className="flex items-center">
             <button
               onClick={() => setSelectedDate("어제")}
-              className={`px-4 py-1 lg:py-2 text-[14px] font-medium border ${
+              className={`px-4 py-1 lg:py-2 text-[14px] font-medium border whitespace-nowrap ${
                 selectedDate === "어제"
                   ? "bg-lightBlueBackground text-lightBlueText border-lightBlueBorder"
                   : "bg-gray200 text-gray700 border-grayBorder"
@@ -348,12 +350,14 @@ const TrafficStatus = () => {
                 width={16}
                 height={16}
                 alt="date"
-                className={`ml-2 hidden lg:inline ${selectedDate === "어제" ? "text-gray500" : "text-gray700"}`}
+                className={`ml-2 hidden lg:inline ${
+                  selectedDate === "어제" ? "text-gray500" : "text-gray700"
+                }`}
               />
             </button>
             <button
               onClick={() => setSelectedDate("오늘")}
-              className={`px-4 py-1 lg:py-2 text-[14px] font-medium border ${
+              className={`px-4 py-1 lg:py-2 text-[14px] font-medium border whitespace-nowrap ${
                 selectedDate === "오늘"
                   ? "bg-lightBlueBackground text-lightBlueText border-lightBlueBorder"
                   : "bg-gray200 text-gray700 border-grayBorder"
@@ -365,7 +369,9 @@ const TrafficStatus = () => {
                 width={16}
                 height={16}
                 alt="date"
-                className={`ml-2 hidden lg:inline ${selectedDate === "오늘" ? "text-gray500" : "text-gray700"}`}
+                className={`ml-2 hidden lg:inline ${
+                  selectedDate === "오늘" ? "text-gray500" : "text-gray700"
+                }`}
               />
             </button>
           </div>
@@ -379,4 +385,3 @@ const TrafficStatus = () => {
 };
 
 export default TrafficStatus;
-
