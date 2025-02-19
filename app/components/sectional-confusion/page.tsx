@@ -413,8 +413,8 @@ const TrafficStatus = () => {
             </button>
           </div>
         </div>
-        <div className="mb-4 text-[14px] text-gray400 ml-[10px] lg:ml-2 mt-[-38]">
-        파란색 점을 누르면 세부정보를 볼 수 있어요.
+        <div className="mb-4 text-[14px] text-gray400 ml-[10px] lg:ml-2 mt-[-38] hidden lg:block">
+          파란색 점을 누르면 세부정보를 볼 수 있어요.
         </div>
         <div className="h-[280px]">
           <Line data={chartData} options={options} />
