@@ -1,47 +1,19 @@
 "use client";
+// lib
 import { useState, useEffect, useRef, useMemo } from "react";
 import useSWR from "swr";
 import StartData from "../start-data/page";
-import airlineDictionary, { getLogo } from "./logoList";
 import Image from "next/image";
+// logoList
+import { getLogo } from "./logoList";
+// utils
+import { formatTime, fetcher, calculateDelay } from "@/utils"
+// type
+import { FlightData } from "@/types/FlightData";
+import { DisplayFlight } from "@/types/DisplayFlight";
 
-interface FlightData {
-  flightNumber: string;
-  airlineEnglish: string;
-  airlineKorean: string;
-  arrivedEng: string;
-  arrivedKor: string;
-  gate: string;
-  boardingEng: string;
-  boardingKor: string;
-  std: string | null;
-  etd: string | null;
-  io: string;
-  line: string;
-  remarkEng: string;
-  remarkKor: string;
-}
 
-interface DisplayFlight {
-  airline: string;
-  flightNumber: string;
-  destination: string;
-  gate: string;
-  status: string;
-  scheduledTime: string;
-  modifiedTime: string;
-  delay: string | null;
-  logo: string;
-}
-
-const fetcher = (url: string) =>
-  fetch(url).then((res) => {
-    if (!res.ok) {
-      throw new Error("Failed to fetch flight data");
-    }
-    return res.json();
-  });
-
+// StartInformation
 export default function StartInformation() {
   const { data, error } = useSWR<FlightData[]>(
     `${process.env.NEXT_PUBLIC_API_BASE_URL}/apron?io=O`,
@@ -50,38 +22,7 @@ export default function StartInformation() {
   const [displayedFlights, setDisplayedFlights] = useState<DisplayFlight[]>([]);
   const [hasMore, setHasMore] = useState(true);
   const observer = useRef<IntersectionObserver | null>(null);
-
-  const formatTime = (time: string | null): string => {
-    if (!time) return "시간 미정";
-
-    try {
-      const hours = time.substring(0, 2);
-      const minutes = time.substring(2, 4);
-      if (hours && minutes) {
-        return `2025-02-12 ${hours}:${minutes}`;
-      }
-      return "시간 미정";
-    } catch (error) {
-      return "시간 미정";
-    }
-  };
-
-  const calculateDelay = (std: string | null, etd: string | null): string | null => {
-    if (!std || !etd) return null;
-
-    try {
-      const stdMinutes = parseInt(std.substring(0, 2)) * 60 + parseInt(std.substring(2, 4));
-      const etdMinutes = parseInt(etd.substring(0, 2)) * 60 + parseInt(etd.substring(2, 4));
-
-      if (isNaN(stdMinutes) || isNaN(etdMinutes)) return null;
-
-      const delayMinutes = etdMinutes - stdMinutes;
-      return delayMinutes > 0 ? `${delayMinutes}분` : null;
-    } catch (error) {
-      return null;
-    }
-  };
-
+  
   const allFlightData = useMemo<DisplayFlight[]>(() => {
     if (!data) return [];
     return data.map((flight) => ({
@@ -129,14 +70,14 @@ export default function StartInformation() {
     });
   };
 
+  // 에러가 발생했다면
   if (error) {
     return (
-      <div className="text-center py-4 text-red500">
-        오류가 발생했습니다: {error.message}
-      </div>
+      <div className="text-center py-4 text-red500">오류가 발생했습니다: {error.message}</div>
     );
   }
 
+  // 아직 데이터가 받아와지지 않았다면 (스켈레톤 UI)
   if (!data) {
     return (
       <div className="mt-14">
@@ -181,6 +122,7 @@ export default function StartInformation() {
     );
   }
 
+  // 정상 화면
   return (
     <>
       <div className="mt-14 p-4 border-l-4 border-blue500 bg-blue100 text-black mt-5">
