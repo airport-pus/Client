@@ -205,7 +205,7 @@ function ParkingForm({ dates, parkingOptions, onOptionChange, onDateChange, onCa
           </select>
         </div>
       </div>
-      <div className="mb-4 mt-10 flex flex-col xl:flex-row xl:items-center order-4">
+      <div className="mb-4 mt-8 flex flex-col xl:flex-row xl:items-center xl:-translate-y-5 order-4">
         <div className="flex-1">
           <span className="text-sm font-semibold text-gray600 block">입·출차 시간 선택</span>
           <div className="mt-2 flex flex-col xl:flex-row xl:items-center">
@@ -432,7 +432,7 @@ export default function ParkingFeeCalculator() {
   }
 
   return (
-    <div className="col-span-12 xl:col-span-4 bg-white rounded-[8px] h-auto xl:h-[280px] p-6 relative xl:w-[700px] xl:left-[-300px]">
+    <div className="col-span-12 xl:col-span-4 bg-white rounded-[8px] h-auto xl:h-[250px] p-6 relative xl:w-[700px] xl:left-[-300px]">
       {initialLoading ? (
         <FormSkeleton />
       ) : loading ? (
