@@ -59,7 +59,7 @@ export default function Header() {
         </Link>
 
         <span className="hidden md:inline text-grayCustom text-[14px] ml-4 mt-[-20px]">
-          문의하기
+          문의하기 
         </span>
 
         <span

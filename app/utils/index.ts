@@ -53,3 +53,11 @@ export const calculateDelay = (std: string | null, etd: string | null): string |
         return null;
     }
 };
+
+export const getRemarkKor = (f: any): string | null => {
+    if (!f.etd || !f.std) return null;
+    else if (f.etd > f.std) return "지연";
+    else if (f.etd === f.std) return "출발";
+    else if (f.etd < f.std) return "연착";
+    return null; // 그 외에는 상태 없음
+}

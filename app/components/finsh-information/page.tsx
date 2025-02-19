@@ -3,52 +3,13 @@ import { useState, useEffect, useRef, useMemo } from "react";
 import useSWR from "swr";
 import StartData from "../finsh-data/page";
 import airlineDictionary, { getLogo } from "./logoList";
-import Image from "next/image";
+import Image from 'next/image';
+// utils
+import { formatTime, fetcher, calculateDelay, getRemarkKor } from "@/utils"
+// type
+import { FlightData } from "@/types/OutFlightData";
+import { DisplayFlight } from "@/types/OutDisplayData";
 
-interface FlightData {
-  flightNumber: string;
-  airlineEnglish: string;
-  airlineKorean: string;
-  arrivedEng: string;
-  arrivedKor: string;
-  baggageClaim: string;
-  boardingEng: string;
-  boardingKor: string;
-  std: string | null;
-  etd: string | null;
-  io: string;
-  line: string;
-  remarkEng: string;
-  remarkKor: string;
-}
-
-interface DisplayFlight {
-  airline: string;
-  flightNumber: string;
-  destination: string;
-  gate: string;
-  status: string;
-  scheduledTime: string;
-  modifiedTime: string;
-  delay: string | null;
-  logo: string;
-}
-
-function getRemarkKor(f: any): string | null {
-  if (!f.etd || !f.std) return null;
-  else if (f.etd > f.std) return "지연";
-  else if (f.etd === f.std) return "출발";
-  else if (f.etd < f.std) return "연착";
-  return null; // 그 외에는 상태 없음
-}
-
-const fetcher = (url: string) =>
-  fetch(url).then((res) => {
-    if (!res.ok) {
-      throw new Error("Failed to fetch flight data");
-    }
-    return res.json();
-  });
 
 export default function StartInformation() {
   const { data, error } = useSWR<FlightData[]>(
@@ -59,37 +20,6 @@ export default function StartInformation() {
   const [displayedFlights, setDisplayedFlights] = useState<DisplayFlight[]>([]);
   const [hasMore, setHasMore] = useState(true);
   const observer = useRef<IntersectionObserver | null>(null);
-
-  const formatTime = (time: string | null): string => {
-    if (!time) return "시간 미정";
-
-    try {
-      const hours = time.substring(0, 2);
-      const minutes = time.substring(2, 4);
-      if (hours && minutes) {
-        return `2025-02-12 ${hours}:${minutes}`;
-      }
-      return "시간 미정";
-    } catch (error) {
-      return "시간 미정";
-    }
-  };
-
-  const calculateDelay = (std: string | null, etd: string | null): string | null => {
-    if (!std || !etd) return null;
-
-    try {
-      const stdMinutes = parseInt(std.substring(0, 2)) * 60 + parseInt(std.substring(2, 4));
-      const etdMinutes = parseInt(etd.substring(0, 2)) * 60 + parseInt(etd.substring(2, 4));
-
-      if (isNaN(stdMinutes) || isNaN(etdMinutes)) return null;
-
-      const delayMinutes = etdMinutes - stdMinutes;
-      return delayMinutes > 0 ? `${delayMinutes}분` : null;
-    } catch (error) {
-      return null;
-    }
-  };
 
   const allFlightData = useMemo<DisplayFlight[]>(() => {
     if (!data) return [];
@@ -140,9 +70,7 @@ export default function StartInformation() {
 
   if (error) {
     return (
-      <div className="text-center py-4 text-red500">
-        오류가 발생했습니다: {error.message}
-      </div>
+      <div className="text-center py-4 text-red500">오류가 발생했습니다: {error.message}</div>
     );
   }
 
