@@ -23,8 +23,10 @@ export default function StartInformation() {
 
   // 모든 항공 데이터
   const allFlightData = useMemo(() => {
-    return data
-      ? data.map((flight) => ({
+    const uniqueFlights = new Map();
+    data?.forEach((flight) => {
+      if (!uniqueFlights.has(flight.flightNumber)) {
+        uniqueFlights.set(flight.flightNumber, {
           airline: flight.airlineKorean,
           flightNumber: flight.flightNumber,
           destination: flight.arrivedKor,
@@ -34,8 +36,10 @@ export default function StartInformation() {
           modifiedTime: formatTime(flight.etd),
           delay: calculateDelay(flight.std, flight.etd),
           logo: `/logos/${getLogo(flight.airlineEnglish)}`,
-        }))
-      : [];
+        });
+      }
+    });
+    return Array.from(uniqueFlights.values());
   }, [data]);
 
   // 전체 데이터 초기 로드
@@ -66,46 +70,25 @@ export default function StartInformation() {
     ]);
   };
 
-  // 검색 기능
-  const handleKeyDown = async (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === "Enter") {
-      if (!inputValue.trim()) {
-        alert("검색할 비행기 번호를 입력하세요.");
-        return;
-      }
-
-      const apiUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}/apron/flight?flightNumber=${inputValue}`;
-      try {
-        const response = await fetch(apiUrl);
-        if (!response.ok) {
-          alert(response.status === 404 ? "해당 비행기가 없습니다." : "오류 발생");
-          return;
-        }
-
-        const flight = await response.json();
-        setDisplayedFlights([
-          {
-            airline: flight.airlineKorean,
-            flightNumber: flight.flightNumber,
-            destination: flight.arrivedKor,
-            gate: flight.gate || "-",
-            status: flight.remarkKor || "-",
-            scheduledTime: formatTime(flight.std),
-            modifiedTime: formatTime(flight.etd),
-            delay: calculateDelay(flight.std, flight.etd),
-            logo: `/logos/${getLogo(flight.airlineEnglish)}`,
-          },
-        ]);
-      } catch (error) {
-        console.error("API 요청 중 오류 발생:", error);
-        alert("네트워크 오류 발생");
-      }
+  // 라이브 검색 기능: 입력하는 텍스트에 따라 실시간으로 필터링
+  useEffect(() => {
+    if (inputValue.trim()) {
+      const filteredFlights = allFlightData.filter((flight) =>
+        flight.flightNumber.toLowerCase().includes(inputValue.toLowerCase())
+      );
+      setDisplayedFlights(filteredFlights.slice(0, 10));
+    } else {
+      setDisplayedFlights(allFlightData.slice(0, 10));
     }
-  };
+  }, [inputValue, allFlightData]);
 
   // 에러 발생 시
   if (error) {
-    return <div className="text-center py-4 text-red500">오류 발생: {error.message}</div>;
+    return (
+      <div className="text-center py-4 text-red500">
+        오류 발생: {error.message}
+      </div>
+    );
   }
 
   // 데이터 로딩 중 (스켈레톤 UI)
@@ -114,7 +97,10 @@ export default function StartInformation() {
       <div className="mt-14">
         <div className="p-4 border-l-4 border-blue500 bg-blue100">
           {[...Array(5)].map((_, i) => (
-            <div key={i} className="h-6 w-full bg-gray-200 rounded animate-pulse mb-2"></div>
+            <div
+              key={i}
+              className="h-6 w-full bg-gray-200 rounded animate-pulse mb-2"
+            ></div>
           ))}
         </div>
       </div>
@@ -154,8 +140,8 @@ export default function StartInformation() {
               type="text"
               placeholder="항공편명 검색"
               className="pl-10 p-2 border border-blue500 rounded w-[320px]"
-              onKeyDown={handleKeyDown}
               onChange={(e) => setInputValue(e.target.value)}
+              value={inputValue}
             />
           </div>
         </div>
@@ -169,7 +155,10 @@ export default function StartInformation() {
         <div>시간</div>
       </div>
 
-      <StartData displayedFlights={displayedFlights} lastFlightElementRef={lastFlightElementRef} />
+      <StartData
+        displayedFlights={displayedFlights}
+        lastFlightElementRef={lastFlightElementRef}
+      />
     </>
   );
 }
