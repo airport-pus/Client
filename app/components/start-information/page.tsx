@@ -9,8 +9,8 @@ import { getLogo } from "./logoList";
 // utils
 import { formatTime, fetcher, calculateDelay } from "@/utils"
 // type
-import { FlightData } from "@/types/FlightData";
-import { DisplayFlight } from "@/types/DisplayFlight";
+import { FlightData } from "@/types/In/InFlightData";
+import { DisplayFlight } from "@/types/In/InDisplayFlight";
 
 
 // StartInformation
@@ -22,7 +22,7 @@ export default function StartInformation() {
   const [displayedFlights, setDisplayedFlights] = useState<DisplayFlight[]>([]);
   const [hasMore, setHasMore] = useState(true);
   const observer = useRef<IntersectionObserver | null>(null);
-  
+   
   const allFlightData = useMemo<DisplayFlight[]>(() => {
     if (!data) return [];
     return data.map((flight) => ({
@@ -35,7 +35,7 @@ export default function StartInformation() {
       modifiedTime: formatTime(flight.etd),
       delay: calculateDelay(flight.std, flight.etd),
       logo: `/logos/${getLogo(flight.airlineEnglish)}`,
-    }));
+    })); 
   }, [data]);
 
   useEffect(() => {
