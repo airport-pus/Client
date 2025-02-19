@@ -3,7 +3,7 @@ import { useState, useEffect, useRef, useMemo } from "react";
 import useSWR from "swr";
 import StartData from "../finsh-data/page";
 import airlineDictionary, { getLogo } from "./logoList";
-import Image from "next/image";
+import Image from 'next/image';
 
 interface FlightData {
   flightNumber: string;
@@ -12,7 +12,7 @@ interface FlightData {
   arrivedEng: string;
   arrivedKor: string;
   baggageClaim: string;
-  boardingEng: string;
+  boardingEng: string; 
   boardingKor: string;
   std: string | null;
   etd: string | null;
