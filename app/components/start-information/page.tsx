@@ -1,5 +1,4 @@
 "use client";
-// lib
 import { useState, useEffect, useRef, useMemo } from "react";
 import useSWR from "swr";
 import StartData from "../start-data/page";
@@ -13,10 +12,16 @@ import { FlightData } from "@/types/In/InFlightData";
 import { DisplayFlight } from "@/types/In/InDisplayFlight";
 
 export default function StartInformation() {
+  // useSWR 적용: revalidateOnFocus 옵션을 false로, 60초마다 데이터 새로고침(refreshInterval) 설정
   const { data, error } = useSWR<FlightData[]>(
     `${process.env.NEXT_PUBLIC_API_BASE_URL}/apron?io=O`,
-    fetcher
+    fetcher,
+    {
+      revalidateOnFocus: false,
+      refreshInterval: 60000, // 60초마다 자동으로 데이터를 재요청
+    }
   );
+
   const [displayedFlights, setDisplayedFlights] = useState<DisplayFlight[]>([]);
   const [inputValue, setInputValue] = useState("");
   const [isMobile, setIsMobile] = useState(false);
@@ -203,14 +208,15 @@ export default function StartInformation() {
             <input
               type="text"
               placeholder="항공편명 검색"
-              className="pl-10 p-2 border border-blue500 rounded w-[320px]"
-              onChange={(e) => setInputValue(e.target.value)}
+              className="pl-10 p-2 border border-blue500 rounded w-[280px]"
               value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
             />
           </div>
         </div>
       </div>
 
+      {/* 데스크탑: 테이블 형식 및 무한 스크롤 적용 */}
       <div className="hidden md:block">
         <div className="mt-6 grid grid-cols-5 bg-grayHover p-2 text-center text-gray600 font-regular text-[14px]">
           <div>항공사 및 항공편명</div>
@@ -232,6 +238,7 @@ export default function StartInformation() {
         />
       </div>
 
+      {/* 모바일: 카드 형식으로 전체 항공편 목록 표시 */}
       <div className="md:hidden divide-y divide-gray-300">
         {displayedFlights.length === 0 && inputValue && (
           <div className="text-center text-gray700 mt-8 mb-4">

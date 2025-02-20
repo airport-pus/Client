@@ -22,7 +22,6 @@ export default function StartInformation() {
   const [isMobile, setIsMobile] = useState(false);
   const observer = useRef<IntersectionObserver | null>(null);
 
-  // 반응형 처리: 창 너비가 768px 미만이면 모바일로 판단
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 768);
@@ -32,7 +31,6 @@ export default function StartInformation() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // 중복 제거 후 DisplayFlight 데이터 생성
   const allFlightData = useMemo<DisplayFlight[]>(() => {
     if (!data) return [];
     const uniqueFlights = new Map<string, DisplayFlight>();
@@ -54,7 +52,6 @@ export default function StartInformation() {
     return Array.from(uniqueFlights.values());
   }, [data]);
 
-  // 검색어에 따른 필터링 및 무한 스크롤 초기 데이터 설정 (모바일인 경우 전체 목록 표시)
   useEffect(() => {
     const filtered = allFlightData.filter((flight) =>
       flight.flightNumber.toLowerCase().includes(inputValue.toLowerCase())
@@ -73,7 +70,6 @@ export default function StartInformation() {
     }
   }, [inputValue, allFlightData, isMobile]);
 
-  // 데스크탑일 때만 무한 스크롤을 위한 lastFlightElementRef 설정
   const lastFlightElementRef = (node: HTMLElement | null) => {
     if (isMobile || !node || !hasMore) return;
     if (observer.current) observer.current.disconnect();
@@ -108,11 +104,9 @@ export default function StartInformation() {
     );
   }
 
-  // 데이터 로드 전 스켈레톤 UI (반응형)
   if (!data) {
     return (
       <>
-        {/* 상단 공지 스켈레톤 (양쪽 동일) */}
         <div className="mt-5 p-4 border-l-4 border-blue500 bg-blue100 text-black">
           <div className="mb-4">
             <div className="h-6 w-1/2 bg-gray-200 rounded animate-pulse mb-2"></div>
@@ -130,7 +124,6 @@ export default function StartInformation() {
         </div>
 
         {isMobile ? (
-          // 모바일 스켈레톤: 카드 형식
           <div className="md:hidden divide-y divide-gray-300">
             {Array.from({ length: 10 }).map((_, i) => (
               <div key={i} className="bg-white p-4 animate-pulse">
@@ -154,7 +147,6 @@ export default function StartInformation() {
             ))}
           </div>
         ) : (
-          // 데스크탑 스켈레톤: 테이블 형식
           <div className="hidden md:block">
             <div className="mt-6 grid grid-cols-5 bg-grayHover p-2 text-center text-gray600 font-regular text-[14px]">
               <div className="bg-gray-200 h-8 w-36 rounded animate-pulse mx-auto"></div>
@@ -224,7 +216,7 @@ export default function StartInformation() {
             <input
               type="text"
               placeholder="항공편명 검색"
-              className="pl-10 p-2 border border-blue500 rounded w-[320px]"
+              className="pl-10 p-2 border border-blue500 rounded w-[280px]"
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
             />
@@ -232,7 +224,6 @@ export default function StartInformation() {
         </div>
       </div>
 
-      {/* 데스크탑: 테이블 형식 및 무한 스크롤 적용 */}
       <div className="hidden md:block">
         <div className="mt-6 grid grid-cols-5 bg-grayHover p-2 text-center text-gray600 font-regular text-[14px]">
           <div>항공사 및 항공편명</div>
@@ -252,7 +243,6 @@ export default function StartInformation() {
         />
       </div>
 
-      {/* 모바일: 카드 형식으로 전체 항공편 목록 표시 */}
       <div className="md:hidden divide-y divide-gray-300">
         {displayedFlights.length === 0 && inputValue && (
           <div className="text-center text-gray700 mt-8 mb-4">
