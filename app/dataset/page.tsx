@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import Footer from "../footer/page";
+import Footer from "../footer/test";
 import Header from "../header/page"; 
 
 export default function Home() {

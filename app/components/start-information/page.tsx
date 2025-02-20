@@ -1,15 +1,42 @@
 "use client";
 import { useState, useEffect, useRef, useMemo } from "react";
 import useSWR from "swr";
-import StartData from "../start-data/page";
+import StartData from "../start-data/test";
 import Image from "next/image";
 // logoList
 import { getLogo } from "./logoList";
 // utils
 import { formatTime, fetcher, calculateDelay } from "@/utils";
 // type
-import { FlightData } from "@/types/In/InFlightData";
-import { DisplayFlight } from "@/types/In/InDisplayFlight";
+
+interface FlightData {
+  flightNumber: string;
+  airlineEnglish: string;
+  airlineKorean: string;
+  arrivedEng: string;
+  arrivedKor: string;
+  gate: string;
+  boardingEng: string;
+  boardingKor: string;
+  std: string | null;
+  etd: string | null;
+  io: string;
+  line: string;
+  remarkEng: string;
+  remarkKor: string;
+}
+
+interface DisplayFlight {
+  airline: string;
+  flightNumber: string;
+  destination: string;
+  gate: string;
+  status: string;
+  scheduledTime: string;
+  modifiedTime: string;
+  delay: string | null;
+  logo: string;
+}
 
 export default function StartInformation() {
   const { data, error } = useSWR<FlightData[]>(

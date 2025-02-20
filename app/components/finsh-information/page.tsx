@@ -1,14 +1,40 @@
 "use client";
 import { useState, useEffect, useRef, useMemo } from "react";
 import useSWR from "swr";
-import StartData from "../start-data/page";
+import StartData from "../start-data/test";
 import { getLogo } from "./logoList"; // airlineDictionary를 사용하지 않으므로 제거
 import Image from "next/image";
 // utils
 import { formatTime, fetcher, calculateDelay, getRemarkKor } from "@/utils";
 // type
-import { FlightData } from "@/types/Out/OutFlightData";
-import { DisplayFlight } from "@/types/Out/OutDisplayData";
+interface FlightData {
+  flightNumber: string;
+  airlineEnglish: string;
+  airlineKorean: string;
+  arrivedEng: string;
+  arrivedKor: string;
+  baggageClaim: string;
+  boardingEng: string;
+  boardingKor: string;
+  std: string | null;
+  etd: string | null;
+  io: string;
+  line: string;
+  remarkEng: string;
+  remarkKor: string;
+}
+
+interface DisplayFlight {
+  airline: string;
+  flightNumber: string;
+  destination: string;
+  gate: string;
+  status: string;
+  scheduledTime: string;
+  modifiedTime: string;
+  delay: string | null;
+  logo: string;
+}
 
 export default function StartInformation() {
   const { data, error } = useSWR<FlightData[]>(
