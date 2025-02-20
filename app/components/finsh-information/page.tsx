@@ -19,9 +19,20 @@ export default function StartInformation() {
   const [displayedFlights, setDisplayedFlights] = useState<DisplayFlight[]>([]);
   const [hasMore, setHasMore] = useState(true);
   const [inputValue, setInputValue] = useState("");
+  const [isMobile, setIsMobile] = useState(false);
   const observer = useRef<IntersectionObserver | null>(null);
 
-  // 중복 제거: flightNumber 기준으로 중복된 항공편을 제거한 후 DisplayFlight 객체 생성
+  // 반응형 처리: 창 너비가 768px 미만이면 모바일로 판단
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // 중복 제거 후 DisplayFlight 데이터 생성
   const allFlightData = useMemo<DisplayFlight[]>(() => {
     if (!data) return [];
     const uniqueFlights = new Map<string, DisplayFlight>();
@@ -43,23 +54,28 @@ export default function StartInformation() {
     return Array.from(uniqueFlights.values());
   }, [data]);
 
-  // 필터링 검색: inputValue에 따라 displayedFlights 업데이트
+  // 검색어에 따른 필터링 및 무한 스크롤 초기 데이터 설정 (모바일인 경우 전체 목록 표시)
   useEffect(() => {
+    const filtered = allFlightData.filter((flight) =>
+      flight.flightNumber.toLowerCase().includes(inputValue.toLowerCase())
+    );
     if (inputValue.trim()) {
-      const filtered = allFlightData.filter((flight) =>
-        flight.flightNumber.toLowerCase().includes(inputValue.toLowerCase())
-      );
       setDisplayedFlights(filtered);
-      setHasMore(false); // 검색 중에는 무한 스크롤 비활성화
+      setHasMore(false);
     } else {
-      setDisplayedFlights(allFlightData.slice(0, 10));
-      setHasMore(allFlightData.length > 10);
+      if (isMobile) {
+        setDisplayedFlights(filtered);
+        setHasMore(false);
+      } else {
+        setDisplayedFlights(allFlightData.slice(0, 10));
+        setHasMore(allFlightData.length > 10);
+      }
     }
-  }, [inputValue, allFlightData]);
+  }, [inputValue, allFlightData, isMobile]);
 
-  // 무한 스크롤 처리 (검색 중이 아닐 때만)
+  // 데스크탑일 때만 무한 스크롤을 위한 lastFlightElementRef 설정
   const lastFlightElementRef = (node: HTMLElement | null) => {
-    if (!node || !hasMore) return;
+    if (isMobile || !node || !hasMore) return;
     if (observer.current) observer.current.disconnect();
     observer.current = new IntersectionObserver((entries) => {
       if (entries[0].isIntersecting) {
@@ -194,25 +210,83 @@ export default function StartInformation() {
           </div>
         </div>
       </div>
-      <div className="mt-6 grid grid-cols-5 bg-grayHover p-2 text-center text-gray600 font-regular text-[14px]">
-        <div>항공사 및 항공편명</div>
-        <div>출발지</div>
-        <div>탑승구</div>
-        <div>항공편 상태</div>
-        <div>시간</div>
+
+      {/* 데스크탑: 테이블 형식 및 무한 스크롤 적용 */}
+      <div className="hidden md:block">
+        <div className="mt-6 grid grid-cols-5 bg-grayHover p-2 text-center text-gray600 font-regular text-[14px]">
+          <div>항공사 및 항공편명</div>
+          <div>출발지</div>
+          <div>탑승구</div>
+          <div>항공편 상태</div>
+          <div>시간</div>
+        </div>
+        {displayedFlights.length === 0 && inputValue && (
+          <div className="text-center text-gray700 mt-8 mb-4">
+            검색한 항공편에 대한 정보가 없습니다.
+          </div>
+        )}
+        <StartData
+          displayedFlights={displayedFlights}
+          lastFlightElementRef={lastFlightElementRef}
+        />
       </div>
 
-      
-      {displayedFlights.length === 0 && inputValue && (
-        <div className="text-center text-gray700 mt-8 mb-4">
-          검색한 항공편에 대한 정보가 없습니다.
-        </div>
-      )}
-      
-      <StartData
-        displayedFlights={displayedFlights}
-        lastFlightElementRef={lastFlightElementRef}
-      />
+      {/* 모바일: 카드 형식으로 전체 항공편 목록 표시 */}
+      <div className="md:hidden divide-y divide-gray-300">
+        {displayedFlights.length === 0 && inputValue && (
+          <div className="text-center text-gray700 mt-8 mb-4">
+            검색한 항공편에 대한 정보가 없습니다.
+          </div>
+        )}
+        {displayedFlights.map((flight, index) => (
+          <div key={flight.flightNumber || index} className="bg-white p-4">
+            <div className="flex justify-between items-center mb-2">
+              <div className="font-bold text-lg text-black">
+                {flight.airline} {flight.flightNumber}
+              </div>
+              <Image
+                src={flight.logo}
+                alt={flight.airline}
+                width={40}
+                height={40}
+              />
+            </div>
+            <div className="mb-1 text-gray600">
+              <strong className="font-medium">출발지: </strong>
+              <span className="text-black">{flight.destination}</span>
+            </div>
+            <div className="mb-1 text-gray600">
+              <strong className="font-medium">탑승구: </strong>
+              <span className="text-blue500">{flight.gate}</span>
+            </div>
+            <div className="mb-1 text-gray600">
+              <strong className="font-medium">상태: </strong>
+              <span className={`text-${flight.status === '지연' ? 'red500' : 'blue500'}`}>
+                {flight.status}
+              </span>
+            </div>
+            <div className="text-gray600">
+              {flight.scheduledTime === flight.modifiedTime ? (
+                <span>
+                  <strong className="font-medium">시간: </strong> {flight.modifiedTime}
+                </span>
+              ) : (
+                <span>
+                  <div>
+                    <strong className="font-medium">예정: </strong> {flight.scheduledTime}
+                  </div>
+                  <div>
+                    <strong className="font-medium">변경: </strong> {flight.modifiedTime}
+                    {flight.delay && (
+                      <span className="text-red500"> ({flight.delay})</span>
+                    )}
+                  </div>
+                </span>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
     </>
   );
 }
