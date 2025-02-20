@@ -19,6 +19,17 @@ export default function StartInformation() {
   );
   const [displayedFlights, setDisplayedFlights] = useState<DisplayFlight[]>([]);
   const [inputValue, setInputValue] = useState("");
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const allFlightData = useMemo(() => {
     const uniqueFlights = new Map();
@@ -41,19 +52,15 @@ export default function StartInformation() {
   }, [data]);
 
   useEffect(() => {
-    if (inputValue.trim()) {
-      const filteredFlights = allFlightData.filter((flight) =>
-        flight.flightNumber.toLowerCase().includes(inputValue.toLowerCase())
-      );
-      setDisplayedFlights(filteredFlights);
-    } else {
-      setDisplayedFlights(allFlightData.slice(0, 10));
-    }
-  }, [inputValue, allFlightData]);
+    const filteredFlights = allFlightData.filter((flight) =>
+      flight.flightNumber.toLowerCase().includes(inputValue.toLowerCase())
+    );
+    setDisplayedFlights(inputValue.trim() ? filteredFlights : allFlightData.slice(0, isMobile ? filteredFlights.length : 10));
+  }, [inputValue, allFlightData, isMobile]);
 
-  // 무한 스크롤 처리 (검색 중이 아닐 때만 추가 로드)
   const observer = useRef<IntersectionObserver | null>(null);
   const lastFlightElementRef = (node: HTMLElement | null) => {
+    if (isMobile) return;
     if (!node) return;
     if (observer.current) observer.current.disconnect();
     observer.current = new IntersectionObserver((entries) => {
@@ -208,7 +215,7 @@ export default function StartInformation() {
             검색한 항공편에 대한 정보가 없습니다.
           </div>
         )}
-        {allFlightData.map((flight, index) => (
+        {displayedFlights.map((flight, index) => (
           <div key={flight.flightNumber || index} className="bg-white p-4">
             <div className="flex justify-between items-center mb-2">
               <div className="font-bold text-lg text-black">
