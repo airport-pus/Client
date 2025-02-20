@@ -22,7 +22,7 @@ interface StartDataProps {
 const StartData: React.FC<StartDataProps> = ({ displayedFlights, lastFlightElementRef }) => {
   return (
     <>
-      {displayedFlights.map((flight, index) => (
+      {displayedFlights.map((flight: Flight, index: number) => (
         <div
           key={index}
           ref={index === displayedFlights.length - 1 ? lastFlightElementRef : null}
