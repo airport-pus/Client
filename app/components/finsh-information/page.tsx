@@ -3,13 +3,12 @@ import { useState, useEffect, useRef, useMemo } from "react";
 import useSWR from "swr";
 import StartData from "../finsh-data/page";
 import airlineDictionary, { getLogo } from "./logoList";
-import Image from 'next/image';
+import Image from "next/image";
 // utils
-import { formatTime, fetcher, calculateDelay, getRemarkKor } from "@/utils"
+import { formatTime, fetcher, calculateDelay, getRemarkKor } from "@/utils";
 // type
 import { FlightData } from "@/types/Out/OutFlightData";
 import { DisplayFlight } from "@/types/Out/OutDisplayData";
-
 
 export default function StartInformation() {
   const { data, error } = useSWR<FlightData[]>(
@@ -19,30 +18,46 @@ export default function StartInformation() {
 
   const [displayedFlights, setDisplayedFlights] = useState<DisplayFlight[]>([]);
   const [hasMore, setHasMore] = useState(true);
+  const [inputValue, setInputValue] = useState("");
   const observer = useRef<IntersectionObserver | null>(null);
 
+  // 중복 제거: flightNumber 기준으로 중복된 항공편을 제거한 후 DisplayFlight 객체 생성
   const allFlightData = useMemo<DisplayFlight[]>(() => {
     if (!data) return [];
-    return data.map((flight) => ({
-      airline: flight.airlineKorean,
-      flightNumber: flight.flightNumber,
-      destination: flight.boardingKor,
-      gate: flight.baggageClaim || "-",
-      status: getRemarkKor(flight) || "-",
-      scheduledTime: formatTime(flight.std),
-      modifiedTime: formatTime(flight.etd),
-      delay: calculateDelay(flight.std, flight.etd),
-      logo: `/logos/${getLogo(flight.airlineEnglish)}`,
-    }));
+    const uniqueFlights = new Map<string, DisplayFlight>();
+    data.forEach((flight) => {
+      if (!uniqueFlights.has(flight.flightNumber)) {
+        uniqueFlights.set(flight.flightNumber, {
+          airline: flight.airlineKorean,
+          flightNumber: flight.flightNumber,
+          destination: flight.boardingKor,
+          gate: flight.baggageClaim || "-",
+          status: getRemarkKor(flight) || "-",
+          scheduledTime: formatTime(flight.std),
+          modifiedTime: formatTime(flight.etd),
+          delay: calculateDelay(flight.std, flight.etd),
+          logo: `/logos/${getLogo(flight.airlineEnglish)}`,
+        });
+      }
+    });
+    return Array.from(uniqueFlights.values());
   }, [data]);
 
+  // 필터링 검색: inputValue에 따라 displayedFlights 업데이트
   useEffect(() => {
-    if (allFlightData.length > 0) {
+    if (inputValue.trim()) {
+      const filtered = allFlightData.filter((flight) =>
+        flight.flightNumber.toLowerCase().includes(inputValue.toLowerCase())
+      );
+      setDisplayedFlights(filtered);
+      setHasMore(false); // 검색 중에는 무한 스크롤 비활성화
+    } else {
       setDisplayedFlights(allFlightData.slice(0, 10));
       setHasMore(allFlightData.length > 10);
     }
-  }, [allFlightData]);
+  }, [inputValue, allFlightData]);
 
+  // 무한 스크롤 처리 (검색 중이 아닐 때만)
   const lastFlightElementRef = (node: HTMLElement | null) => {
     if (!node || !hasMore) return;
     if (observer.current) observer.current.disconnect();
@@ -55,66 +70,89 @@ export default function StartInformation() {
   };
 
   const loadMoreFlights = () => {
+    if (inputValue.trim()) return;
     const nextFlights = allFlightData.slice(
       displayedFlights.length,
       displayedFlights.length + 10
     );
     setDisplayedFlights((prev) => {
-      const updatedFlights = [...prev, ...nextFlights];
-      if (updatedFlights.length >= allFlightData.length) {
+      const updated = [...prev, ...nextFlights];
+      if (updated.length >= allFlightData.length) {
         setHasMore(false);
       }
-      return updatedFlights;
+      return updated;
     });
   };
 
   if (error) {
     return (
-      <div className="text-center py-4 text-red500">오류가 발생했습니다: {error.message}</div>
+      <div className="text-center py-4 text-red500">
+        오류가 발생했습니다: {error.message}
+      </div>
     );
   }
 
   if (!data) {
     return (
-      <div className="mt-14">
-        <div className="p-4 border-l-4 border-blue500 bg-blue100">
-          <div className="h-7 w-56 bg-gray-200 rounded animate-pulse mb-4"></div>
-          <div className="h-6 w-full bg-gray-200 rounded animate-pulse mb-2"></div>
-          <div className="h-6 w-full bg-gray-200 rounded animate-pulse mb-2"></div>
-          <div className="h-6 w-48 bg-gray-200 rounded animate-pulse mb-2"></div>
-          <div className="h-6 w-48 bg-gray-200 rounded animate-pulse mb-2"></div>
-          <div className="h-6 w-96 bg-gray-200 rounded animate-pulse mb-2"></div>
-          <div className="mt-4">
-            <div className="relative">
-              <div className="h-10 w-[320px] bg-gray-200 rounded animate-pulse"></div>
+      <>
+        <div className="mt-5 p-4 border-l-4 border-blue500 bg-blue100 text-black">
+          <div className="mb-4">
+            <div className="h-6 w-1/2 bg-gray-200 rounded animate-pulse mb-2"></div>
+            <div className="h-6 w-3/4 bg-gray-200 rounded animate-pulse mb-2"></div>
+            <div className="h-6 w-full bg-gray-200 rounded animate-pulse mb-2"></div>
+            <div className="h-6 w-5/6 bg-gray-200 rounded animate-pulse mb-2"></div>
+            <div className="h-6 w-1/3 bg-gray-200 rounded animate-pulse"></div>
+          </div>
+          <div className="relative">
+            <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
+              <div className="h-4 w-4 bg-gray-200 rounded animate-pulse"></div>
             </div>
+            <div className="h-10 w-[320px] bg-gray-200 rounded animate-pulse pl-10"></div>
           </div>
         </div>
 
-        <div className="mt-6 grid grid-cols-5 bg-grayHover p-2 text-center">
-          <div className="h-5 w-36 bg-gray-200 rounded animate-pulse mx-auto"></div>
-          <div className="h-5 w-24 bg-gray-200 rounded animate-pulse mx-auto"></div>
-          <div className="h-5 w-20 bg-gray-200 rounded animate-pulse mx-auto"></div>
-          <div className="h-5 w-28 bg-gray-200 rounded animate-pulse mx-auto"></div>
-          <div className="h-5 w-16 bg-gray-200 rounded animate-pulse mx-auto"></div>
-        </div>
-
-        {[...Array(5)].map((_, i) => (
-          <div key={i} className="grid grid-cols-5 p-4 border-b text-center">
-            <div className="flex items-center gap-2 justify-center">
-              <div className="h-8 w-8 bg-gray-200 rounded-full animate-pulse"></div>
-              <div className="h-5 w-28 bg-gray-200 rounded animate-pulse"></div>
-            </div>
-            <div className="h-5 w-32 bg-gray-200 rounded animate-pulse mx-auto"></div>
-            <div className="h-5 w-16 bg-gray-200 rounded animate-pulse mx-auto"></div>
-            <div className="h-5 w-24 bg-gray-200 rounded animate-pulse mx-auto"></div>
-            <div className="flex flex-col items-center gap-1">
-              <div className="h-5 w-32 bg-gray-200 rounded animate-pulse"></div>
-              <div className="h-5 w-32 bg-gray-200 rounded animate-pulse"></div>
-            </div>
+        <div className="mt-6 grid grid-cols-5 bg-grayHover p-2 text-center text-gray600 font-regular text-[14px]">
+          <div className="flex justify-center items-center">
+            <div className="bg-gray-200 rounded animate-pulse h-8" style={{ width: "150px" }}></div>
           </div>
-        ))}
-      </div>
+          <div className="flex justify-center items-center">
+            <div className="bg-gray-200 rounded animate-pulse h-5" style={{ width: "100px" }}></div>
+          </div>
+          <div className="flex justify-center items-center">
+            <div className="bg-gray-200 rounded animate-pulse h-5" style={{ width: "40px" }}></div>
+          </div>
+          <div className="flex justify-center items-center">
+            <div className="bg-gray-200 rounded animate-pulse h-5" style={{ width: "50px" }}></div>
+          </div>
+          <div className="flex justify-center items-center">
+            <div className="bg-gray-200 rounded animate-pulse h-5" style={{ width: "50px" }}></div>
+          </div>
+        </div>
+        <div className="mt-2 space-y-2">
+          {[...Array(10)].map((_, i) => (
+            <div
+              key={i}
+              className="grid grid-cols-5 gap-2 p-2 border-b border-gray-300 text-center text-gray600 font-regular text-[14px]"
+            >
+              <div className="flex justify-center items-center">
+                <div className="bg-gray-200 rounded animate-pulse h-8" style={{ width: "150px" }}></div>
+              </div>
+              <div className="flex justify-center items-center">
+                <div className="bg-gray-200 rounded animate-pulse h-5" style={{ width: "100px" }}></div>
+              </div>
+              <div className="flex justify-center items-center">
+                <div className="bg-gray-200 rounded animate-pulse h-5" style={{ width: "40px" }}></div>
+              </div>
+              <div className="flex justify-center items-center">
+                <div className="bg-gray-200 rounded animate-pulse h-5" style={{ width: "50px" }}></div>
+              </div>
+              <div className="flex justify-center items-center">
+                <div className="bg-gray-200 rounded animate-pulse h-5" style={{ width: "50px" }}></div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </>
     );
   }
 
@@ -150,6 +188,8 @@ export default function StartInformation() {
               type="text"
               placeholder="항공편명 검색"
               className="pl-10 p-2 border border-blue500 rounded w-[320px]"
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
             />
           </div>
         </div>
@@ -161,6 +201,14 @@ export default function StartInformation() {
         <div>항공편 상태</div>
         <div>시간</div>
       </div>
+
+      
+      {displayedFlights.length === 0 && inputValue && (
+        <div className="text-center text-gray700 mt-8 mb-4">
+          검색한 항공편에 대한 정보가 없습니다.
+        </div>
+      )}
+      
       <StartData
         displayedFlights={displayedFlights}
         lastFlightElementRef={lastFlightElementRef}
