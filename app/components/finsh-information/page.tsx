@@ -1,8 +1,8 @@
 "use client";
 import { useState, useEffect, useRef, useMemo } from "react";
 import useSWR from "swr";
-import StartData from "../finsh-data/page";
-import airlineDictionary, { getLogo } from "./logoList";
+import StartData from "../start-data/page";
+import { getLogo } from "./logoList"; // airlineDictionary를 사용하지 않으므로 제거
 import Image from "next/image";
 // utils
 import { formatTime, fetcher, calculateDelay, getRemarkKor } from "@/utils";
@@ -13,7 +13,7 @@ import { DisplayFlight } from "@/types/Out/OutDisplayData";
 export default function StartInformation() {
   const { data, error } = useSWR<FlightData[]>(
     `${process.env.NEXT_PUBLIC_API_BASE_URL}/apron?io=I`,
-    fetcher,
+    fetcher,  
     { refreshInterval: 30000 }
   );
 
