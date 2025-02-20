@@ -12,13 +12,12 @@ import { FlightData } from "@/types/In/InFlightData";
 import { DisplayFlight } from "@/types/In/InDisplayFlight";
 
 export default function StartInformation() {
-  // useSWR 적용: revalidateOnFocus 옵션을 false로, 60초마다 데이터 새로고침(refreshInterval) 설정
   const { data, error } = useSWR<FlightData[]>(
     `${process.env.NEXT_PUBLIC_API_BASE_URL}/apron?io=O`,
     fetcher,
     {
       revalidateOnFocus: false,
-      refreshInterval: 60000, // 60초마다 자동으로 데이터를 재요청
+      refreshInterval: 30000, 
     }
   );
 
@@ -95,7 +94,6 @@ export default function StartInformation() {
   if (!data) {
     return (
       <>
-        {/* 공지사항 스켈레톤은 양쪽 동일 */}
         <div className="mt-5 p-4 border-l-4 border-blue500 bg-blue100 text-black">
           <div className="mb-4">
             <div className="h-6 w-1/2 bg-gray-200 rounded animate-pulse mb-2"></div>
@@ -112,9 +110,7 @@ export default function StartInformation() {
           </div>
         </div>
 
-        {/* 반응형 스켈레톤 */}
         {isMobile ? (
-          // 모바일 스켈레톤: 카드 형식
           <div className="md:hidden divide-y divide-gray-300">
             {Array.from({ length: 10 }).map((_, i) => (
               <div key={i} className="bg-white p-4 animate-pulse">
@@ -138,7 +134,6 @@ export default function StartInformation() {
             ))}
           </div>
         ) : (
-          // 데스크탑 스켈레톤: 테이블 형식
           <div className="hidden md:block">
             <div className="mt-6 grid grid-cols-5 bg-grayHover p-2 text-center text-gray600 font-regular text-[14px]">
               <div className="bg-gray-200 h-8 w-36 rounded animate-pulse mx-auto"></div>
@@ -216,7 +211,6 @@ export default function StartInformation() {
         </div>
       </div>
 
-      {/* 데스크탑: 테이블 형식 및 무한 스크롤 적용 */}
       <div className="hidden md:block">
         <div className="mt-6 grid grid-cols-5 bg-grayHover p-2 text-center text-gray600 font-regular text-[14px]">
           <div>항공사 및 항공편명</div>
@@ -238,7 +232,6 @@ export default function StartInformation() {
         />
       </div>
 
-      {/* 모바일: 카드 형식으로 전체 항공편 목록 표시 */}
       <div className="md:hidden divide-y divide-gray-300">
         {displayedFlights.length === 0 && inputValue && (
           <div className="text-center text-gray700 mt-8 mb-4">

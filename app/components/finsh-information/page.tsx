@@ -13,7 +13,8 @@ import { DisplayFlight } from "@/types/Out/OutDisplayData";
 export default function StartInformation() {
   const { data, error } = useSWR<FlightData[]>(
     `${process.env.NEXT_PUBLIC_API_BASE_URL}/apron?io=I`,
-    fetcher
+    fetcher,
+    { refreshInterval: 30000 }
   );
 
   const [displayedFlights, setDisplayedFlights] = useState<DisplayFlight[]>([]);
