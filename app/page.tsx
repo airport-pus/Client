@@ -57,7 +57,7 @@ export default function Home() {
             </button>
           </div>
 
-          <div className="relative col-span-12 bg-white rounded-lg p-3 md:p-4 min-h-[300px] md:min-h-[400px]">
+          <div className="relative bg-white rounded-lg p-3 md:p-4 min-h-[300px] md:min-h-[400px]">
             {selected === 1 && <SectionalConfusion />}
             {selected === 2 && <StartInformation />} 
             {selected === 3 && <FinshInformation />}
