@@ -66,10 +66,7 @@ export default function StartInformation() {
 
   const loadMoreFlights = () => {
     if (inputValue.trim()) return;
-    setDisplayedFlights((prev) => [
-      ...prev,
-      ...allFlightData.slice(prev.length, prev.length + 10),
-    ]);
+    setDisplayedFlights(allFlightData);
   };
 
   // 에러 발생 시
@@ -101,7 +98,6 @@ export default function StartInformation() {
         </div>
 
         <div className="mt-6 grid grid-cols-5 bg-grayHover p-2 text-center text-gray600 font-regular text-[14px]">
-
           <div className="flex justify-center items-center">
             <div className="bg-gray-200 rounded animate-pulse h-8" style={{ width: "150px" }}></div>
           </div>
@@ -146,7 +142,6 @@ export default function StartInformation() {
     );
   }
 
-  // 정상 화면 렌더링
   return (
     <>
       <div className="mt-5 p-4 border-l-4 border-blue500 bg-blue100 text-black">
@@ -186,24 +181,64 @@ export default function StartInformation() {
         </div>
       </div>
 
-      <div className="mt-6 grid grid-cols-5 bg-grayHover p-2 text-center text-gray600 font-regular text-[14px]">
-        <div>항공사 및 항공편명</div>
-        <div>도착지</div>
-        <div>탑승구</div>
-        <div>항공편 상태</div>
-        <div>시간</div>
+      <div className="hidden md:block">
+        <div className="mt-6 grid grid-cols-5 bg-grayHover p-2 text-center text-gray600 font-regular text-[14px]">
+          <div>항공사 및 항공편명</div>
+          <div>도착지</div>
+          <div>탑승구</div>
+          <div>항공편 상태</div>
+          <div>시간</div>
+        </div>
+
+        {displayedFlights.length === 0 && inputValue && (
+          <div className="text-center text-gray700 mt-8 mb-4">
+            검색한 항공편에 대한 정보가 없습니다.
+          </div>
+        )}
+
+        <StartData
+          displayedFlights={displayedFlights}
+          lastFlightElementRef={lastFlightElementRef}
+        />
       </div>
 
-      {displayedFlights.length === 0 && inputValue && (
-        <div className="text-center text-gray700 mt-8 mb-4">
-          검색한 항공편에 대한 정보가 없습니다.
-        </div>
-      )}
-
-      <StartData
-        displayedFlights={displayedFlights}
-        lastFlightElementRef={lastFlightElementRef}
-      />
+      <div className="md:hidden divide-y divide-gray-300">
+        {displayedFlights.length === 0 && inputValue && (
+          <div className="text-center text-gray700 mt-8 mb-4">
+            검색한 항공편에 대한 정보가 없습니다.
+          </div>
+        )}
+        {allFlightData.map((flight, index) => (
+          <div
+            key={flight.flightNumber || index}
+            className="bg-white p-4"
+          >
+            <div className="flex justify-between items-center mb-2">
+              <div className="font-bold text-lg text-black">
+                {flight.airline} {flight.flightNumber}
+              </div>
+              <Image
+                src={flight.logo}
+                alt={flight.airline}
+                width={40}
+                height={40}
+              />
+            </div>
+            <div className="mb-1 text-gray600">
+              <strong>도착지:</strong> {flight.destination}
+            </div>
+            <div className="mb-1 text-gray600">
+              <strong>탑승구:</strong> {flight.gate}
+            </div>
+            <div className="mb-1 text-gray600">
+              <strong>상태:</strong> {flight.status}
+            </div>
+            <div className="text-gray600">
+              <strong>시간:</strong> {flight.modifiedTime}
+            </div>
+          </div>
+        ))}
+      </div>
     </>
-  );  
+  );
 }
