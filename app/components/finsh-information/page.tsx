@@ -94,46 +94,65 @@ export default function StartInformation() {
 
   if (!data) {
     return (
-      <div className="mt-14">
-        {/* 콜아웃 스켈레톤 */}
-        <div className="p-4 border-l-4 border-blue500 bg-blue100">
-          <div className="h-7 w-56 bg-gray-200 rounded animate-pulse mb-4"></div>
-          <div className="h-6 w-full bg-gray-200 rounded animate-pulse mb-2"></div>
-          <div className="h-6 w-full bg-gray-200 rounded animate-pulse mb-2"></div>
-          <div className="h-6 w-48 bg-gray-200 rounded animate-pulse mb-2"></div>
-          <div className="h-6 w-48 bg-gray-200 rounded animate-pulse mb-2"></div>
-          <div className="h-6 w-96 bg-gray-200 rounded animate-pulse mb-2"></div>
-          <div className="mt-4">
-            <div className="relative">
-              <div className="h-10 w-[320px] bg-gray-200 rounded animate-pulse"></div>
+      <>
+        <div className="mt-5 p-4 border-l-4 border-blue500 bg-blue100 text-black">
+          <div className="mb-4">
+            <div className="h-6 w-1/2 bg-gray-200 rounded animate-pulse mb-2"></div>
+            <div className="h-6 w-3/4 bg-gray-200 rounded animate-pulse mb-2"></div>
+            <div className="h-6 w-full bg-gray-200 rounded animate-pulse mb-2"></div>
+            <div className="h-6 w-5/6 bg-gray-200 rounded animate-pulse mb-2"></div>
+            <div className="h-6 w-1/3 bg-gray-200 rounded animate-pulse"></div>
+          </div>
+          <div className="relative">
+            <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
+              <div className="h-4 w-4 bg-gray-200 rounded animate-pulse"></div>
             </div>
+            <div className="h-10 w-[320px] bg-gray-200 rounded animate-pulse pl-10"></div>
           </div>
         </div>
-        {/* 그리드 헤더 스켈레톤 */}
-        <div className="mt-6 grid grid-cols-5 bg-grayHover p-2 text-center">
-          <div className="h-5 w-36 bg-gray-200 rounded animate-pulse mx-auto"></div>
-          <div className="h-5 w-24 bg-gray-200 rounded animate-pulse mx-auto"></div>
-          <div className="h-5 w-20 bg-gray-200 rounded animate-pulse mx-auto"></div>
-          <div className="h-5 w-28 bg-gray-200 rounded animate-pulse mx-auto"></div>
-          <div className="h-5 w-16 bg-gray-200 rounded animate-pulse mx-auto"></div>
-        </div>
-        {/* 항공 데이터 행 스켈레톤 */}
-        {[...Array(5)].map((_, i) => (
-          <div key={i} className="grid grid-cols-5 p-4 border-b text-center">
-            <div className="flex items-center gap-2 justify-center">
-              <div className="h-8 w-8 bg-gray-200 rounded-full animate-pulse"></div>
-              <div className="h-5 w-28 bg-gray-200 rounded animate-pulse"></div>
-            </div>
-            <div className="h-5 w-32 bg-gray-200 rounded animate-pulse mx-auto"></div>
-            <div className="h-5 w-16 bg-gray-200 rounded animate-pulse mx-auto"></div>
-            <div className="h-5 w-24 bg-gray-200 rounded animate-pulse mx-auto"></div>
-            <div className="flex flex-col items-center gap-1">
-              <div className="h-5 w-32 bg-gray-200 rounded animate-pulse"></div>
-              <div className="h-5 w-32 bg-gray-200 rounded animate-pulse"></div>
-            </div>
+
+        <div className="mt-6 grid grid-cols-5 bg-grayHover p-2 text-center text-gray600 font-regular text-[14px]">
+          <div className="flex justify-center items-center">
+            <div className="bg-gray-200 rounded animate-pulse h-8" style={{ width: "150px" }}></div>
           </div>
-        ))}
-      </div>
+          <div className="flex justify-center items-center">
+            <div className="bg-gray-200 rounded animate-pulse h-5" style={{ width: "100px" }}></div>
+          </div>
+          <div className="flex justify-center items-center">
+            <div className="bg-gray-200 rounded animate-pulse h-5" style={{ width: "40px" }}></div>
+          </div>
+          <div className="flex justify-center items-center">
+            <div className="bg-gray-200 rounded animate-pulse h-5" style={{ width: "50px" }}></div>
+          </div>
+          <div className="flex justify-center items-center">
+            <div className="bg-gray-200 rounded animate-pulse h-5" style={{ width: "50px" }}></div>
+          </div>
+        </div>
+        <div className="mt-2 space-y-2">
+          {[...Array(10)].map((_, i) => (
+            <div
+              key={i}
+              className="grid grid-cols-5 gap-2 p-2 border-b border-gray-300 text-center text-gray600 font-regular text-[14px]"
+            >
+              <div className="flex justify-center items-center">
+                <div className="bg-gray-200 rounded animate-pulse h-8" style={{ width: "150px" }}></div>
+              </div>
+              <div className="flex justify-center items-center">
+                <div className="bg-gray-200 rounded animate-pulse h-5" style={{ width: "100px" }}></div>
+              </div>
+              <div className="flex justify-center items-center">
+                <div className="bg-gray-200 rounded animate-pulse h-5" style={{ width: "40px" }}></div>
+              </div>
+              <div className="flex justify-center items-center">
+                <div className="bg-gray-200 rounded animate-pulse h-5" style={{ width: "50px" }}></div>
+              </div>
+              <div className="flex justify-center items-center">
+                <div className="bg-gray-200 rounded animate-pulse h-5" style={{ width: "50px" }}></div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </>
     );
   }
 
