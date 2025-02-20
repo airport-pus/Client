@@ -1,3 +1,23 @@
+import { TimeRange } from "@/types/TimeRange"
+import { ParkingLot } from "@/types/ParkingLot";
+import { VehicleSize } from "@/types/VehicleSize";
+import { DiscountType } from "@/types/DiscountType";
+import { ParkingFeeRequest } from "@/types/ParkingFeeRequest";
+import { DISCOUNT_TYPE_MAP } from "@/constants/DISCOUNT_TYPE_MAP";
+
+export const createParkingFeeRequest = (
+  timeRange: TimeRange,
+  parkingLot: ParkingLot,
+  vehicleSize: VehicleSize,
+  discountType: DiscountType
+): ParkingFeeRequest => ({
+  holidayMinutes: timeRange.weekdayMinutes,
+  weekdayMinutes: timeRange.holidayMinutes,
+  parkingLot: parkingLot === "P1P2" ? "P1" : "P3",
+  isLargeCar: vehicleSize === "large",
+  discountType: DISCOUNT_TYPE_MAP[discountType],
+});
+
 export const TIME_OPTIONS = Array.from({ length: 48 }, (_, i) => {
     const hour = Math.floor(i / 2).toString().padStart(2, "0")
     const minute = i % 2 === 0 ? "00" : "30"
@@ -60,4 +80,34 @@ export const getRemarkKor = (f: any): string | null => {
     else if (f.etd === f.std) return "출발";
     else if (f.etd < f.std) return "연착";
     return null; // 그 외에는 상태 없음
+}
+
+export const calculateTimeRange = (
+    startDate: string,
+    startTime: string,
+    endDate: string,
+    endTime: string,
+    holidayDates: string[]
+): TimeRange => {
+    const startDateTime = new Date(`${startDate}T${startTime}`)
+    const endDateTime = new Date(`${endDate}T${endTime}`)
+
+    if (endDateTime <= startDateTime) {
+        return { weekdayMinutes: 0, holidayMinutes: 0 }
+    }
+
+    const currentDate = new Date(startDateTime)
+    let weekdayMinutes = 0
+    let holidayMinutes = 0
+
+    while (currentDate < endDateTime) {
+        if (isHoliday(currentDate, holidayDates)) {
+            holidayMinutes++
+        } else {
+            weekdayMinutes++
+        }
+        currentDate.setMinutes(currentDate.getMinutes() + 1)
+    }
+
+    return { weekdayMinutes, holidayMinutes }
 }

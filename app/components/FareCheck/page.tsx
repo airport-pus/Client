@@ -2,71 +2,14 @@
 
 import { useState, useEffect } from "react"
 import Image from "next/image"
-import { formatDate, isHoliday, TIME_OPTIONS } from "@/utils"
-import { ParkingFeeRequest } from "@/types/ParkingFeeRequest"
-import { TimeRange } from "@/types/TimeRange"
+import { formatDate, TIME_OPTIONS, calculateTimeRange, createParkingFeeRequest } from "@/utils"
+import { ParkingOptionsProps } from "@/types/ParkingOptionsProps"
+import { ParkingFormProps } from "@/types/ParkingFormProps"
+import { ResultViewProps } from "@/types/ResultViewProps"
 import { ParkingLot } from "@/types/ParkingLot"
 import { VehicleSize } from "@/types/VehicleSize"
 import { DiscountType } from "@/types/DiscountType"
 
-import { DISCOUNT_TYPE_MAP } from "@/constants/DISCOUNT_TYPE_MAP"
-
-
-const calculateTimeRange = (
-  startDate: string,
-  startTime: string,
-  endDate: string,
-  endTime: string,
-  holidayDates: string[]
-): TimeRange => {
-  const startDateTime = new Date(`${startDate}T${startTime}`)
-  const endDateTime = new Date(`${endDate}T${endTime}`)
-
-  if (endDateTime <= startDateTime) {
-    return { weekdayMinutes: 0, holidayMinutes: 0 }
-  }
-
-  const currentDate = new Date(startDateTime)
-  let weekdayMinutes = 0
-  let holidayMinutes = 0
-
-  while (currentDate < endDateTime) {
-    if (isHoliday(currentDate, holidayDates)) {
-      holidayMinutes++
-    } else {
-      weekdayMinutes++
-    }
-    currentDate.setMinutes(currentDate.getMinutes() + 1)
-  }
-
-  return { weekdayMinutes, holidayMinutes }
-}
-
-const createParkingFeeRequest = (
-  timeRange: TimeRange,
-  parkingLot: ParkingLot,
-  vehicleSize: VehicleSize,
-  discountType: DiscountType
-): ParkingFeeRequest => ({
-  holidayMinutes: timeRange.weekdayMinutes,
-  weekdayMinutes: timeRange.holidayMinutes,
-  parkingLot: parkingLot === "P1P2" ? "P1" : "P3",
-  isLargeCar: vehicleSize === "large",
-  discountType: DISCOUNT_TYPE_MAP[discountType]
-})
-
-interface ParkingOptionsProps {
-  parkingOptions: {
-    parkingLot: ParkingLot
-    vehicleSize: VehicleSize
-    discountType: DiscountType
-  }
-  onOptionChange: (
-    field: keyof ParkingOptionsProps["parkingOptions"]
-  ) => (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => void
-}
 function ParkingOptions({ parkingOptions, onOptionChange }: ParkingOptionsProps) {
   return (
     <div className="flex mb-4 mt-[20px] flex-col xl:flex-row">
@@ -139,30 +82,7 @@ function ParkingOptions({ parkingOptions, onOptionChange }: ParkingOptionsProps)
   )
 }
 
-interface ParkingFormProps {
-  dates: {
-    startDate: string
-    startTime: string
-    endDate: string
-    endTime: string
-  }
-  parkingOptions: {
-    parkingLot: ParkingLot
-    vehicleSize: VehicleSize
-    discountType: DiscountType
-  }
-  onOptionChange: (
-    field: keyof ParkingOptionsProps["parkingOptions"]
-  ) => (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => void
-  onDateChange: (
-    field: keyof ParkingFormProps["dates"]
-  ) => (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => void
-  onCalculate: () => void
-}
+
 function ParkingForm({ dates, parkingOptions, onOptionChange, onDateChange, onCalculate }: ParkingFormProps) {
   return (
     <>
@@ -241,10 +161,6 @@ function ParkingForm({ dates, parkingOptions, onOptionChange, onDateChange, onCa
   )
 }
 
-interface ResultViewProps {
-  fee: number
-  onReset: () => void
-}
 function ResultView({ fee, onReset }: ResultViewProps) {
   return (
     <div className="flex items-center flex-col justify-center h-[220px] gap-1">
