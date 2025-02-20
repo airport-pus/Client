@@ -12,7 +12,6 @@ import { formatTime, fetcher, calculateDelay } from "@/utils";
 import { FlightData } from "@/types/In/InFlightData";
 import { DisplayFlight } from "@/types/In/InDisplayFlight";
 
-// StartInformation
 export default function StartInformation() {
   const { data, error } = useSWR<FlightData[]>(
     `${process.env.NEXT_PUBLIC_API_BASE_URL}/apron?io=O`,
@@ -21,7 +20,7 @@ export default function StartInformation() {
   const [displayedFlights, setDisplayedFlights] = useState<DisplayFlight[]>([]);
   const [inputValue, setInputValue] = useState("");
 
-  // 모든 항공 데이터
+  // 모든 항공 데이터 (중복 제거)
   const allFlightData = useMemo(() => {
     const uniqueFlights = new Map();
     data?.forEach((flight) => {
@@ -42,14 +41,18 @@ export default function StartInformation() {
     return Array.from(uniqueFlights.values());
   }, [data]);
 
-  // 전체 데이터 초기 로드
   useEffect(() => {
-    if (allFlightData.length > 0) {
+    if (inputValue.trim()) {
+      const filteredFlights = allFlightData.filter((flight) =>
+        flight.flightNumber.toLowerCase().includes(inputValue.toLowerCase())
+      );
+      setDisplayedFlights(filteredFlights);
+    } else {
       setDisplayedFlights(allFlightData.slice(0, 10));
     }
-  }, [allFlightData]);
+  }, [inputValue, allFlightData]);
 
-  // 무한 스크롤 처리
+  // 무한 스크롤 처리 (검색 중이 아닐 때만 추가 로드)
   const observer = useRef<IntersectionObserver | null>(null);
   const lastFlightElementRef = (node: HTMLElement | null) => {
     if (!node) return;
@@ -62,25 +65,13 @@ export default function StartInformation() {
     observer.current.observe(node);
   };
 
-  // 추가 항공편 로드
   const loadMoreFlights = () => {
+    if (inputValue.trim()) return;
     setDisplayedFlights((prev) => [
       ...prev,
       ...allFlightData.slice(prev.length, prev.length + 10),
     ]);
   };
-
-  // 라이브 검색 기능: 입력하는 텍스트에 따라 실시간으로 필터링
-  useEffect(() => {
-    if (inputValue.trim()) {
-      const filteredFlights = allFlightData.filter((flight) =>
-        flight.flightNumber.toLowerCase().includes(inputValue.toLowerCase())
-      );
-      setDisplayedFlights(filteredFlights.slice(0, 10));
-    } else {
-      setDisplayedFlights(allFlightData.slice(0, 10));
-    }
-  }, [inputValue, allFlightData]);
 
   // 에러 발생 시
   if (error) {
