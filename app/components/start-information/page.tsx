@@ -25,7 +25,6 @@ export default function StartInformation() {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 768);
     };
-
     handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
@@ -55,7 +54,11 @@ export default function StartInformation() {
     const filteredFlights = allFlightData.filter((flight) =>
       flight.flightNumber.toLowerCase().includes(inputValue.toLowerCase())
     );
-    setDisplayedFlights(inputValue.trim() ? filteredFlights : allFlightData.slice(0, isMobile ? filteredFlights.length : 10));
+    setDisplayedFlights(
+      inputValue.trim()
+        ? filteredFlights
+        : allFlightData.slice(0, isMobile ? filteredFlights.length : 10)
+    );
   }, [inputValue, allFlightData, isMobile]);
 
   const observer = useRef<IntersectionObserver | null>(null);
@@ -76,7 +79,6 @@ export default function StartInformation() {
     setDisplayedFlights(allFlightData);
   };
 
-  // 에러 발생 시
   if (error) {
     return (
       <div className="text-center py-4 text-red500">
@@ -88,6 +90,7 @@ export default function StartInformation() {
   if (!data) {
     return (
       <>
+        {/* 공지사항 스켈레톤은 양쪽 동일 */}
         <div className="mt-5 p-4 border-l-4 border-blue500 bg-blue100 text-black">
           <div className="mb-4">
             <div className="h-6 w-1/2 bg-gray-200 rounded animate-pulse mb-2"></div>
@@ -104,47 +107,67 @@ export default function StartInformation() {
           </div>
         </div>
 
-        <div className="mt-6 grid grid-cols-5 bg-grayHover p-2 text-center text-gray600 font-regular text-[14px]">
-          <div className="flex justify-center items-center">
-            <div className="bg-gray-200 rounded animate-pulse h-8" style={{ width: "150px" }}></div>
-          </div>
-          <div className="flex justify-center items-center">
-            <div className="bg-gray-200 rounded animate-pulse h-5" style={{ width: "100px" }}></div>
-          </div>
-          <div className="flex justify-center items-center">
-            <div className="bg-gray-200 rounded animate-pulse h-5" style={{ width: "40px" }}></div>
-          </div>
-          <div className="flex justify-center items-center">
-            <div className="bg-gray-200 rounded animate-pulse h-5" style={{ width: "50px" }}></div>
-          </div>
-          <div className="flex justify-center items-center">
-            <div className="bg-gray-200 rounded animate-pulse h-5" style={{ width: "50px" }}></div>
-          </div>
-        </div>
-        <div className="mt-2 space-y-2">
-          {[...Array(10)].map((_, i) => (
-            <div
-              key={i}
-              className="grid grid-cols-5 gap-2 p-2 border-b border-gray-300 text-center text-gray600 font-regular text-[14px]"
-            >
-              <div className="flex justify-center items-center">
-                <div className="bg-gray-200 rounded animate-pulse h-8" style={{ width: "150px" }}></div>
+        {/* 반응형 스켈레톤 */}
+        {isMobile ? (
+          // 모바일 스켈레톤: 카드 형식
+          <div className="md:hidden divide-y divide-gray-300">
+            {Array.from({ length: 10 }).map((_, i) => (
+              <div key={i} className="bg-white p-4 animate-pulse">
+                <div className="flex justify-between items-center mb-2">
+                  <div className="bg-gray-200 h-6 w-40 rounded"></div>
+                  <div className="bg-gray-200 h-6 w-10 rounded"></div>
+                </div>
+                <div className="mb-1">
+                  <div className="bg-gray-200 h-5 w-24 rounded"></div>
+                </div>
+                <div className="mb-1">
+                  <div className="bg-gray-200 h-5 w-16 rounded"></div>
+                </div>
+                <div className="mb-1">
+                  <div className="bg-gray-200 h-5 w-20 rounded"></div>
+                </div>
+                <div className="mb-1">
+                  <div className="bg-gray-200 h-5 w-24 rounded"></div>
+                </div>
               </div>
-              <div className="flex justify-center items-center">
-                <div className="bg-gray-200 rounded animate-pulse h-5" style={{ width: "100px" }}></div>
-              </div>
-              <div className="flex justify-center items-center">
-                <div className="bg-gray-200 rounded animate-pulse h-5" style={{ width: "40px" }}></div>
-              </div>
-              <div className="flex justify-center items-center">
-                <div className="bg-gray-200 rounded animate-pulse h-5" style={{ width: "50px" }}></div>
-              </div>
-              <div className="flex justify-center items-center">
-                <div className="bg-gray-200 rounded animate-pulse h-5" style={{ width: "50px" }}></div>
-              </div>
+            ))}
+          </div>
+        ) : (
+          // 데스크탑 스켈레톤: 테이블 형식
+          <div className="hidden md:block">
+            <div className="mt-6 grid grid-cols-5 bg-grayHover p-2 text-center text-gray600 font-regular text-[14px]">
+              <div className="bg-gray-200 h-8 w-36 rounded animate-pulse mx-auto"></div>
+              <div className="bg-gray-200 h-5 w-24 rounded animate-pulse mx-auto"></div>
+              <div className="bg-gray-200 h-5 w-12 rounded animate-pulse mx-auto"></div>
+              <div className="bg-gray-200 h-5 w-16 rounded animate-pulse mx-auto"></div>
+              <div className="bg-gray-200 h-5 w-16 rounded animate-pulse mx-auto"></div>
             </div>
-          ))}
-        </div>
+            <div className="mt-2 space-y-2">
+              {Array.from({ length: 10 }).map((_, i) => (
+                <div
+                  key={i}
+                  className="grid grid-cols-5 gap-2 p-2 border-b border-gray-300 text-center text-gray600 font-regular text-[14px]"
+                >
+                  <div className="flex justify-center items-center">
+                    <div className="bg-gray-200 rounded animate-pulse h-8 w-36"></div>
+                  </div>
+                  <div className="flex justify-center items-center">
+                    <div className="bg-gray-200 rounded animate-pulse h-5 w-24"></div>
+                  </div>
+                  <div className="flex justify-center items-center">
+                    <div className="bg-gray-200 rounded animate-pulse h-5 w-12"></div>
+                  </div>
+                  <div className="flex justify-center items-center">
+                    <div className="bg-gray-200 rounded animate-pulse h-5 w-16"></div>
+                  </div>
+                  <div className="flex justify-center items-center">
+                    <div className="bg-gray-200 rounded animate-pulse h-5 w-16"></div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </>
     );
   }
