@@ -7,8 +7,8 @@ import Image from "next/image";
 // utils
 import { formatTime, fetcher, calculateDelay, getRemarkKor } from "@/utils";
 // type
-import { FlightData } from "@/types/Out/OutFlightData";
-import { DisplayFlight } from "@/types/Out/OutDisplayData";
+import { FlightData } from "@/types/OutFlightData";
+import { DisplayFlight } from "@/types/OutDisplayData";
 
 export default function StartInformation() {
   const { data, error } = useSWR<FlightData[]>(

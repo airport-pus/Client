@@ -19,7 +19,7 @@ const StartData: React.FC<StartDataProps> = ({ displayedFlights, lastFlightEleme
               <div className="text-grayCustom text-sm">{flight.airline}</div>
             </div>
           </div>
-          <div className="text-center text-black">{flight.destination}</div>
+          <div className="text-center text-black ml-[-10px]">{flight.destination}</div>
           <div className="text-center text-blue-500">{flight.gate}</div>
           <div className={`text-center ml-2 ${flight.status === "지연" ? "text-red-500" : "text-blue-500"}`}>
             {flight.status}

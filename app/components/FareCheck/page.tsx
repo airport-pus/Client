@@ -3,33 +3,14 @@
 import { useState, useEffect } from "react"
 import Image from "next/image"
 import { formatDate, isHoliday, TIME_OPTIONS } from "@/utils"
+import { ParkingFeeRequest } from "@/types/ParkingFeeRequest"
+import { TimeRange } from "@/types/TimeRange"
+import { ParkingLot } from "@/types/ParkingLot"
+import { VehicleSize } from "@/types/VehicleSize"
+import { DiscountType } from "@/types/DiscountType"
 
-type ParkingLot = 'P1P2' | 'P3'
-type VehicleSize = 'small' | 'large'
-type DiscountType = 'normal' | 'compact' | 'eco12' | 'eco3' | 'disabled' | 'children' | 'veteran'
+import { DISCOUNT_TYPE_MAP } from "@/constants/DISCOUNT_TYPE_MAP"
 
-interface ParkingFeeRequest {
-  holidayMinutes: number
-  weekdayMinutes: number
-  parkingLot: string
-  isLargeCar: boolean
-  discountType: number
-}
-
-interface TimeRange {
-  weekdayMinutes: number
-  holidayMinutes: number
-}
-
-const DISCOUNT_TYPE_MAP: Record<DiscountType, number> = {
-  normal: 0,
-  compact: 1,
-  eco12: 2,
-  eco3: 3,
-  disabled: 4,
-  children: 5,
-  veteran: 6
-}
 
 const calculateTimeRange = (
   startDate: string,
