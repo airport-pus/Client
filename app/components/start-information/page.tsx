@@ -209,10 +209,7 @@ export default function StartInformation() {
           </div>
         )}
         {allFlightData.map((flight, index) => (
-          <div
-            key={flight.flightNumber || index}
-            className="bg-white p-4"
-          >
+          <div key={flight.flightNumber || index} className="bg-white p-4">
             <div className="flex justify-between items-center mb-2">
               <div className="font-bold text-lg text-black">
                 {flight.airline} {flight.flightNumber}
@@ -225,16 +222,37 @@ export default function StartInformation() {
               />
             </div>
             <div className="mb-1 text-gray600">
-              <strong>도착지:</strong> {flight.destination}
+              <strong className="font-medium">도착지: </strong>
+              <span className="text-black">{flight.destination}</span>
             </div>
             <div className="mb-1 text-gray600">
-              <strong>탑승구:</strong> {flight.gate}
+              <strong className="font-medium">탑승구: </strong>
+              <span className="text-blue500">{flight.gate}</span>
             </div>
             <div className="mb-1 text-gray600">
-              <strong>상태:</strong> {flight.status}
+              <strong className="font-medium">상태: </strong>
+              <span className={`text-${flight.status === '지연' ? 'red500' : 'blue500'}`}>
+                {flight.status}
+              </span>
             </div>
             <div className="text-gray600">
-              <strong>시간:</strong> {flight.modifiedTime}
+              {flight.scheduledTime === flight.modifiedTime ? (
+                <span>
+                  <strong className="font-medium">시간: </strong> {flight.modifiedTime}
+                </span>
+              ) : (
+                <span>
+                  <div>
+                    <strong className="font-medium">예정: </strong> {flight.scheduledTime}
+                  </div>
+                  <div>
+                    <strong className="font-medium">변경: </strong> {flight.modifiedTime}
+                    {flight.delay && (
+                      <span className="text-red500"> ({flight.delay})</span>
+                    )}
+                  </div>
+                </span>
+              )}
             </div>
           </div>
         ))}
