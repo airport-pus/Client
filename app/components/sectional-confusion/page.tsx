@@ -11,6 +11,7 @@ import {
   Title,
   Tooltip,
   Legend,
+  TooltipItem,
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
 import Image from 'next/image';
@@ -301,7 +302,8 @@ const TrafficStatus = () => {
     plugins: {
       tooltip: {
         callbacks: {
-          label: (context: any) => `혼잡도: ${getStatusText(Number(context.raw))}`,
+          label: (tooltipItem: TooltipItem<'line'>) =>
+            `혼잡도: ${getStatusText(Number(tooltipItem.raw))}`,
         },
       },
     },

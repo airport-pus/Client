@@ -18,7 +18,7 @@ import {
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend)
 
-const fetcher = (url: string) => fetch(url).then(res => res.json())
+const fetcher = (url: string) => fetch(url).then((res) => res.json())
 
 const getColorByValue = (value: number): string => {
   if (value <= 30) return "#16A34A"
@@ -69,6 +69,10 @@ const ParkingCongestion = () => {
       refreshInterval: 3000,
     }
   )
+
+  if (error) {
+    return <div>데이터를 불러오는데 에러가 발생했습니다.</div>
+  }
 
   if (!data) {
     return (
