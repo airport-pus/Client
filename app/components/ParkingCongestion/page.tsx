@@ -54,6 +54,14 @@ const ParkingCongestion = () => {
     )
   }
 
+  if (error) {
+    return (
+      <div className="text-center py-4 text-red500">
+        오류가 발생했습니다.
+      </div>
+    );
+  }
+
   const maxRemainingLot = data.reduce((maxLot: any, lot: any) => 
     lot.remainingSpace > maxLot.remainingSpace ? lot : maxLot, data[0])
 
