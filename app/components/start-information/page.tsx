@@ -146,6 +146,12 @@ export default function StartInformation() {
         <div>시간</div>
       </div>
 
+      {displayedFlights.length === 0 && inputValue && (
+        <div className="text-center text-gray700 mt-8 mb-4">
+          검색한 항공편에 대한 정보가 없습니다.
+        </div>
+      )}
+
       <StartData
         displayedFlights={displayedFlights}
         lastFlightElementRef={lastFlightElementRef}
