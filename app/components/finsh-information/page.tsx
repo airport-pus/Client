@@ -13,15 +13,25 @@ import { DisplayFlight } from "@/types/Out/OutDisplayData";
 export default function StartInformation() {
   const { data, error } = useSWR<FlightData[]>(
     `${process.env.NEXT_PUBLIC_API_BASE_URL}/apron?io=I`,
-    fetcher
+    fetcher,
+    { refreshInterval: 30000 }
   );
 
   const [displayedFlights, setDisplayedFlights] = useState<DisplayFlight[]>([]);
   const [hasMore, setHasMore] = useState(true);
   const [inputValue, setInputValue] = useState("");
+  const [isMobile, setIsMobile] = useState(false);
   const observer = useRef<IntersectionObserver | null>(null);
 
-  // 중복 제거: flightNumber 기준으로 중복된 항공편을 제거한 후 DisplayFlight 객체 생성
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   const allFlightData = useMemo<DisplayFlight[]>(() => {
     if (!data) return [];
     const uniqueFlights = new Map<string, DisplayFlight>();
@@ -43,23 +53,26 @@ export default function StartInformation() {
     return Array.from(uniqueFlights.values());
   }, [data]);
 
-  // 필터링 검색: inputValue에 따라 displayedFlights 업데이트
   useEffect(() => {
+    const filtered = allFlightData.filter((flight) =>
+      flight.flightNumber.toLowerCase().includes(inputValue.toLowerCase())
+    );
     if (inputValue.trim()) {
-      const filtered = allFlightData.filter((flight) =>
-        flight.flightNumber.toLowerCase().includes(inputValue.toLowerCase())
-      );
       setDisplayedFlights(filtered);
-      setHasMore(false); // 검색 중에는 무한 스크롤 비활성화
+      setHasMore(false);
     } else {
-      setDisplayedFlights(allFlightData.slice(0, 10));
-      setHasMore(allFlightData.length > 10);
+      if (isMobile) {
+        setDisplayedFlights(filtered);
+        setHasMore(false);
+      } else {
+        setDisplayedFlights(allFlightData.slice(0, 10));
+        setHasMore(allFlightData.length > 10);
+      }
     }
-  }, [inputValue, allFlightData]);
+  }, [inputValue, allFlightData, isMobile]);
 
-  // 무한 스크롤 처리 (검색 중이 아닐 때만)
   const lastFlightElementRef = (node: HTMLElement | null) => {
-    if (!node || !hasMore) return;
+    if (isMobile || !node || !hasMore) return;
     if (observer.current) observer.current.disconnect();
     observer.current = new IntersectionObserver((entries) => {
       if (entries[0].isIntersecting) {
@@ -111,47 +124,64 @@ export default function StartInformation() {
           </div>
         </div>
 
-        <div className="mt-6 grid grid-cols-5 bg-grayHover p-2 text-center text-gray600 font-regular text-[14px]">
-          <div className="flex justify-center items-center">
-            <div className="bg-gray-200 rounded animate-pulse h-8" style={{ width: "150px" }}></div>
-          </div>
-          <div className="flex justify-center items-center">
-            <div className="bg-gray-200 rounded animate-pulse h-5" style={{ width: "100px" }}></div>
-          </div>
-          <div className="flex justify-center items-center">
-            <div className="bg-gray-200 rounded animate-pulse h-5" style={{ width: "40px" }}></div>
-          </div>
-          <div className="flex justify-center items-center">
-            <div className="bg-gray-200 rounded animate-pulse h-5" style={{ width: "50px" }}></div>
-          </div>
-          <div className="flex justify-center items-center">
-            <div className="bg-gray-200 rounded animate-pulse h-5" style={{ width: "50px" }}></div>
-          </div>
-        </div>
-        <div className="mt-2 space-y-2">
-          {[...Array(10)].map((_, i) => (
-            <div
-              key={i}
-              className="grid grid-cols-5 gap-2 p-2 border-b border-gray-300 text-center text-gray600 font-regular text-[14px]"
-            >
-              <div className="flex justify-center items-center">
-                <div className="bg-gray-200 rounded animate-pulse h-8" style={{ width: "150px" }}></div>
+        {isMobile ? (
+          <div className="md:hidden divide-y divide-gray-300">
+            {Array.from({ length: 10 }).map((_, i) => (
+              <div key={i} className="bg-white p-4 animate-pulse">
+                <div className="flex justify-between items-center mb-2">
+                  <div className="bg-gray-200 h-6 w-40 rounded"></div>
+                  <div className="bg-gray-200 h-6 w-10 rounded"></div>
+                </div>
+                <div className="mb-1">
+                  <div className="bg-gray-200 h-5 w-24 rounded"></div>
+                </div>
+                <div className="mb-1">
+                  <div className="bg-gray-200 h-5 w-16 rounded"></div>
+                </div>
+                <div className="mb-1">
+                  <div className="bg-gray-200 h-5 w-20 rounded"></div>
+                </div>
+                <div className="mb-1">
+                  <div className="bg-gray-200 h-5 w-24 rounded"></div>
+                </div>
               </div>
-              <div className="flex justify-center items-center">
-                <div className="bg-gray-200 rounded animate-pulse h-5" style={{ width: "100px" }}></div>
-              </div>
-              <div className="flex justify-center items-center">
-                <div className="bg-gray-200 rounded animate-pulse h-5" style={{ width: "40px" }}></div>
-              </div>
-              <div className="flex justify-center items-center">
-                <div className="bg-gray-200 rounded animate-pulse h-5" style={{ width: "50px" }}></div>
-              </div>
-              <div className="flex justify-center items-center">
-                <div className="bg-gray-200 rounded animate-pulse h-5" style={{ width: "50px" }}></div>
-              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="hidden md:block">
+            <div className="mt-6 grid grid-cols-5 bg-grayHover p-2 text-center text-gray600 font-regular text-[14px]">
+              <div className="bg-gray-200 h-8 w-36 rounded animate-pulse mx-auto"></div>
+              <div className="bg-gray-200 h-5 w-24 rounded animate-pulse mx-auto"></div>
+              <div className="bg-gray-200 h-5 w-12 rounded animate-pulse mx-auto"></div>
+              <div className="bg-gray-200 h-5 w-16 rounded animate-pulse mx-auto"></div>
+              <div className="bg-gray-200 h-5 w-16 rounded animate-pulse mx-auto"></div>
             </div>
-          ))}
-        </div>
+            <div className="mt-2 space-y-2">
+              {Array.from({ length: 10 }).map((_, i) => (
+                <div
+                  key={i}
+                  className="grid grid-cols-5 gap-2 p-2 border-b border-gray-300 text-center text-gray600 font-regular text-[14px]"
+                >
+                  <div className="flex justify-center items-center">
+                    <div className="bg-gray-200 rounded animate-pulse h-8 w-36"></div>
+                  </div>
+                  <div className="flex justify-center items-center">
+                    <div className="bg-gray-200 rounded animate-pulse h-5 w-24"></div>
+                  </div>
+                  <div className="flex justify-center items-center">
+                    <div className="bg-gray-200 rounded animate-pulse h-5 w-12"></div>
+                  </div>
+                  <div className="flex justify-center items-center">
+                    <div className="bg-gray-200 rounded animate-pulse h-5 w-16"></div>
+                  </div>
+                  <div className="flex justify-center items-center">
+                    <div className="bg-gray-200 rounded animate-pulse h-5 w-16"></div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </>
     );
   }
@@ -187,32 +217,88 @@ export default function StartInformation() {
             <input
               type="text"
               placeholder="항공편명 검색"
-              className="pl-10 p-2 border border-blue500 rounded w-[320px]"
+              className="pl-10 p-2 border border-blue500 rounded w-[280px]"
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
             />
           </div>
         </div>
       </div>
-      <div className="mt-6 grid grid-cols-5 bg-grayHover p-2 text-center text-gray600 font-regular text-[14px]">
-        <div>항공사 및 항공편명</div>
-        <div>출발지</div>
-        <div>탑승구</div>
-        <div>항공편 상태</div>
-        <div>시간</div>
+
+      <div className="hidden md:block">
+        <div className="mt-6 grid grid-cols-5 bg-grayHover p-2 text-center text-gray600 font-regular text-[14px]">
+          <div>항공사 및 항공편명</div>
+          <div>출발지</div>
+          <div>탑승구</div>
+          <div>항공편 상태</div>
+          <div>시간</div>
+        </div>
+        {displayedFlights.length === 0 && inputValue && (
+          <div className="text-center text-gray700 mt-8 mb-4">
+            검색한 항공편에 대한 정보가 없습니다.
+          </div>
+        )}
+        <StartData
+          displayedFlights={displayedFlights}
+          lastFlightElementRef={lastFlightElementRef}
+        />
       </div>
 
-      
-      {displayedFlights.length === 0 && inputValue && (
-        <div className="text-center text-gray700 mt-8 mb-4">
-          검색한 항공편에 대한 정보가 없습니다.
-        </div>
-      )}
-      
-      <StartData
-        displayedFlights={displayedFlights}
-        lastFlightElementRef={lastFlightElementRef}
-      />
+      <div className="md:hidden divide-y divide-gray-300">
+        {displayedFlights.length === 0 && inputValue && (
+          <div className="text-center text-gray700 mt-8 mb-4">
+            검색한 항공편에 대한 정보가 없습니다.
+          </div>
+        )}
+        {displayedFlights.map((flight, index) => (
+          <div key={flight.flightNumber || index} className="bg-white p-4">
+            <div className="flex justify-between items-center mb-2">
+              <div className="font-bold text-lg text-black">
+                {flight.airline} {flight.flightNumber}
+              </div>
+              <Image
+                src={flight.logo}
+                alt={flight.airline}
+                width={40}
+                height={40}
+              />
+            </div>
+            <div className="mb-1 text-gray600">
+              <strong className="font-medium">출발지: </strong>
+              <span className="text-black">{flight.destination}</span>
+            </div>
+            <div className="mb-1 text-gray600">
+              <strong className="font-medium">탑승구: </strong>
+              <span className="text-blue500">{flight.gate}</span>
+            </div>
+            <div className="mb-1 text-gray600">
+              <strong className="font-medium">상태: </strong>
+              <span className={`text-${flight.status === "지연" ? "red500" : "blue500"}`}>
+                {flight.status}
+              </span>
+            </div>
+            <div className="text-gray600">
+              {flight.scheduledTime === flight.modifiedTime ? (
+                <span>
+                  <strong className="font-medium">시간: </strong> {flight.modifiedTime}
+                </span>
+              ) : (
+                <span>
+                  <div>
+                    <strong className="font-medium">예정: </strong> {flight.scheduledTime}
+                  </div>
+                  <div>
+                    <strong className="font-medium">변경: </strong> {flight.modifiedTime}
+                    {flight.delay && (
+                      <span className="text-red500"> ({flight.delay})</span>
+                    )}
+                  </div>
+                </span>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
     </>
   );
 }
