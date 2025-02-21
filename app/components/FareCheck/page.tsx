@@ -266,8 +266,10 @@ interface ResultViewProps {
 }
 function ResultView({ fee, onReset }: ResultViewProps) {
   return (
-    <div className="flex items-center flex-col justify-center h-[220px] gap-1">
-      <Image src="/Payment.svg" alt="payment" width={180} height={50} />
+    <div className="flex items-center flex-col justify-center h-[520px] gap-1">
+      <div className="text-red-700 px-4 py-2 rounded relative">
+        <strong>※ 예상 요금이며 실제와 다를 수 있습니다.</strong>
+      </div>
       <p className="text-[20px] font-bold text-black mb-4 mt-2">
         예상 주차 요금은{" "}
         <span className="text-[24px] relative inline-block">
