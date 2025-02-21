@@ -23,7 +23,6 @@ const StartDataComponent: React.FC<StartDataProps> = ({
   displayedFlights,
   lastFlightElementRef,
 }) => {
-  // 오늘 날짜를 '월 일' 형식(예: "2월 21일")으로 생성
   const today = new Date();
   const options: Intl.DateTimeFormatOptions = { month: 'long', day: 'numeric' };
   const todayFormatted = today.toLocaleDateString('ko-KR', options);
@@ -63,12 +62,11 @@ const StartDataComponent: React.FC<StartDataProps> = ({
             {flight.status}
           </div>
           <div className="flex flex-col items-start ml-14">
-            {/* 날짜가 고정되어 있는 대신 오늘 날짜를 동적으로 표시 */}
             <div className="text-sm text-grayCustom">
-              예정 {todayFormatted}
+              예정 {flight.scheduledTime}
             </div>
             <div className="text-sm text-blue500">
-              변경 {todayFormatted}
+              변경 {flight.modifiedTime}
             </div>
             {flight.delay && (
               <div className="text-red-500 text-sm">지연 {flight.delay}</div>
