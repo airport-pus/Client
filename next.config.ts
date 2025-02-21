@@ -4,8 +4,8 @@ const withPWA = require('next-pwa')({
   skipWaiting: true,
 });
 
-/** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: 'standalone',
 };
 
 module.exports = withPWA(nextConfig);
