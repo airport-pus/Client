@@ -23,9 +23,8 @@ const StartDataComponent: React.FC<StartDataProps> = ({
   displayedFlights,
   lastFlightElementRef,
 }) => {
-  const today = new Date();
-  const options: Intl.DateTimeFormatOptions = { month: 'long', day: 'numeric' };
-  const todayFormatted = today.toLocaleDateString('ko-KR', options);
+  // const today = new Date(); 
+  // const options: Intl.DateTimeFormatOptions = { month: 'long', day: 'numeric' };
 
   return (
     <>
