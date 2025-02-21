@@ -41,7 +41,7 @@ export const formatTime = (time: string | null): string => {
             return `2025-02-12 ${hours}:${minutes}`;
         }
         return "시간 미정";
-    } catch (error) {
+    } catch {
         return "시간 미정";
     }
 };
@@ -69,12 +69,12 @@ export const calculateDelay = (std: string | null, etd: string | null): string |
 
         const delayMinutes = etdMinutes - stdMinutes;
         return delayMinutes > 0 ? `${delayMinutes}분` : null;
-    } catch (error) {
+    } catch {
         return null;
     }
 };
 
-export const getRemarkKor = (f: any): string | null => {
+export const getRemarkKor = (f: { etd: string | null; std: string | null }): string | null => {
     if (!f.etd || !f.std) return null;
     else if (f.etd > f.std) return "지연";
     else if (f.etd === f.std) return "출발";
