@@ -163,8 +163,10 @@ function ParkingForm({ dates, parkingOptions, onOptionChange, onDateChange, onCa
 
 function ResultView({ fee, onReset }: ResultViewProps) {
   return (
-    <div className="flex items-center flex-col justify-center h-[220px] gap-1">
-      <Image src="/Payment.svg" alt="payment" width={180} height={50} />
+    <div className="flex items-center flex-col justify-center h-[520px] xl:h-full gap-1">
+      <p className="text-red-600 mb-[-8]">
+        ※ 예상 추차 요금이며 실제와 다를 수 있습니다.
+      </p>
       <p className="text-[20px] font-bold text-black mb-4 mt-2">
         예상 주차 요금은{" "}
         <span className="text-[24px] relative inline-block">
@@ -176,7 +178,7 @@ function ResultView({ fee, onReset }: ResultViewProps) {
         입니다
       </p>
       <button
-        className="h-[36px] w-[115px] bg-lightBlueBackground text-lightBlueText border-lightBlueBorder text-[14px] border-2 rounded-[8px] transition-all duration-200 ease-in-out mb-[-32px]"
+        className="h-[39px] w-[135px] bg-blue500 text-white text-[14px] rounded-[5px]"
         onClick={onReset}
       >
         다시 조회하기
@@ -184,6 +186,7 @@ function ResultView({ fee, onReset }: ResultViewProps) {
     </div>
   )
 }
+
 
 function FormSkeleton() {
   return (
