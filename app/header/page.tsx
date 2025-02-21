@@ -46,7 +46,7 @@ export default function Header() {
           <span className="text-blue500 font-semibold">
             {visitCount.toLocaleString()}
           </span>
-          <span className="md:hidden">명이 페이지에 방문했어요.</span>
+          <span className="md:hidden">명이 방문했어요.</span>
           <span className="hidden md:inline">명이 페이지에 방문했어요.</span>
         </p>
       </div>
