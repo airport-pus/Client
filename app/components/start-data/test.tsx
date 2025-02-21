@@ -54,11 +54,7 @@ const StartDataComponent: React.FC<StartDataProps> = ({
             {flight.destination}
           </div>
           <div className="text-center text-blue-500">{flight.gate}</div>
-          <div
-            className={`text-center ml-2 ${
-              flight.status === "지연" ? "text-red-500" : "text-blue-500"
-            }`}
-          >
+          <div className={`text-center ml-2 ${flight.status === "지연" ? "text-red-500" : "text-blue-500"}`}>
             {flight.status}
           </div>
           <div className="flex flex-col items-start ml-14">

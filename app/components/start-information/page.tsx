@@ -11,15 +11,13 @@ import { formatTime, fetcher, calculateDelay } from "@/utils";
 import { DisplayFlight } from "@/types/StartDisplayFlight";
 import { FlightData } from "@/types/StartFlightData";
 
-
-
 export default function StartInformation() {
   const { data, error } = useSWR<FlightData[]>(
     `${process.env.NEXT_PUBLIC_API_BASE_URL}/apron?io=O`,
     fetcher,
     {
       revalidateOnFocus: false,
-      refreshInterval: 30000, 
+      refreshInterval: 30000,
     }
   );
 
@@ -36,6 +34,16 @@ export default function StartInformation() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  const updateFlightTimeWithToday = (timeStr: string) => {
+    const parts = timeStr.split(" ");
+    if (parts.length < 2) return timeStr;
+    const year = parts[0].split("-")[0]; 
+    const now = new Date();
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const day = String(now.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day} ${parts[1]}`;
+  };
+
   const allFlightData = useMemo(() => {
     const uniqueFlights = new Map();
     data?.forEach((flight) => {
@@ -46,8 +54,8 @@ export default function StartInformation() {
           destination: flight.arrivedKor,
           gate: flight.gate || "-",
           status: flight.remarkKor || "-",
-          scheduledTime: formatTime(flight.std),
-          modifiedTime: formatTime(flight.etd),
+          scheduledTime: updateFlightTimeWithToday(formatTime(flight.std)),
+          modifiedTime: updateFlightTimeWithToday(formatTime(flight.etd)),
           delay: calculateDelay(flight.std, flight.etd),
           logo: `/logos/${getLogo(flight.airlineEnglish)}`,
         });
