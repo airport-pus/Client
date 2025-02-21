@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import Footer from "./footer/page"
+import Footer from "./footer/test"
 import Header from "./header/page"
 import ParkingCongestion from "./components/ParkingCongestion/test"
 import FareCheck from "./components/FareCheck/test"

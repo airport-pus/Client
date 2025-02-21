@@ -59,14 +59,18 @@ export default function Header() {
         </Link>
 
         <span className="hidden md:inline text-grayCustom text-[14px] ml-4 mt-[-20px]">
-          문의하기 
+          <Link href="https://docs.google.com/forms/d/e/1FAIpQLSeUhXwKLTGywR7-K-5tq480NcKpLVGyf_A0n_6BP8onk0uPSQ/viewform?usp=dialog">
+            문의하기 
+          </Link>
         </span>
 
         <span
           className="md:hidden text-grayCustom text-[14px] ml-4 inline-block relative"
           style={{ left: "-12px" }}
         >
-          문의
+          <Link href="https://docs.google.com/forms/d/e/1FAIpQLSeUhXwKLTGywR7-K-5tq480NcKpLVGyf_A0n_6BP8onk0uPSQ/viewform?usp=dialog">
+            문의
+          </Link>
         </span>
       </div>
     </div>
