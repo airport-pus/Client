@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import Image from "next/image"
 import { formatDate, TIME_OPTIONS, calculateTimeRange, createParkingFeeRequest } from "@/utils"
 import { ParkingOptionsProps } from "@/types/ParkingOptionsProps"
 import { ParkingFormProps } from "@/types/ParkingFormProps"
