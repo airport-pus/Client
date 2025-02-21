@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Footer from "./footer/test"
 import Header from "./header/page"
 import ParkingCongestion from "./components/ParkingCongestion/page"
@@ -9,11 +9,56 @@ import SectionalConfusion from "./components/sectional-confusion/page"
 import StartInformation from "./components/start-information/page"
 import FinshInformation from "./components/finsh-information/page"
 
+// BeforeInstallPromptEvent 타입 정의 (필요에 따라 속성을 추가하세요)
+interface BeforeInstallPromptEvent extends Event {
+  readonly platforms: string[]
+  prompt: () => Promise<void>
+  userChoice: Promise<{ outcome: 'accepted' | 'dismissed'; platform: string }>
+}
+
 export default function Home() {
   const [selected, setSelected] = useState<number>(1)
+  const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null)
+  const [showPwaBanner, setShowPwaBanner] = useState(false)
 
   const handleButtonClick = (index: number) => {
     setSelected(index)
+  }
+
+  useEffect(() => {
+    const handleBeforeInstallPrompt = (event: BeforeInstallPromptEvent) => {
+      event.preventDefault()
+      setDeferredPrompt(event)
+      // 모바일 환경에서만 배너 표시 (로컬에서는 표시하지 않음)
+      if (window.innerWidth < 768) {
+        setShowPwaBanner(true)
+      }
+    }
+
+    window.addEventListener("beforeinstallprompt", (event) => {
+      handleBeforeInstallPrompt(event as BeforeInstallPromptEvent)
+    })
+
+    return () => {
+      window.removeEventListener("beforeinstallprompt", (event) => {
+        handleBeforeInstallPrompt(event as BeforeInstallPromptEvent)
+      })
+    }
+  }, [])
+
+  const handleInstallPwa = () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt()
+      deferredPrompt.userChoice.then((choiceResult: { outcome: 'accepted' | 'dismissed'; platform: string }) => {
+        if (choiceResult.outcome === "accepted") {
+          console.log("PWA 설치 완료!")
+        } else {
+          console.log("PWA 설치 취소")
+        }
+        setShowPwaBanner(false) 
+        setDeferredPrompt(null)
+      })
+    }
   }
 
   return (
@@ -62,6 +107,18 @@ export default function Home() {
             {selected === 2 && <StartInformation />} 
             {selected === 3 && <FinshInformation />}
           </div>
+
+          {showPwaBanner && (
+            <div className="fixed bottom-16 left-1/2 transform -translate-x-1/2 bg-blue500 text-white px-4 py-3 md:px-6 md:py-4 rounded-lg shadow-lg flex flex-nowrap items-center space-x-3 min-w-[300px] md:min-w-[350px]">
+              <span className="whitespace-nowrap">앱을 설치해서 더 편하게 이용하세요!</span>
+              <button className="bg-white text-blue500 px-3 py-1 rounded-md whitespace-nowrap" onClick={handleInstallPwa}>
+                설치
+              </button>
+              <button className="text-white text-sm whitespace-nowrap" onClick={() => setShowPwaBanner(false)}>
+                닫기
+              </button>
+            </div>
+          )}
         </div>
       </main>
       <Footer className="mt-auto" />
