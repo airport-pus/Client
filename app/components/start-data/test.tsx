@@ -1,4 +1,3 @@
-// components/StartData.tsx
 "use client";
 import React from "react";
 import Image from "next/image";
@@ -24,6 +23,10 @@ const StartDataComponent: React.FC<StartDataProps> = ({
   displayedFlights,
   lastFlightElementRef,
 }) => {
+  const today = new Date();
+  const options: Intl.DateTimeFormatOptions = { month: 'long', day: 'numeric' };
+  const todayFormatted = today.toLocaleDateString('ko-KR', options);
+
   return (
     <>
       {displayedFlights.map((flight, index) => (
@@ -60,10 +63,10 @@ const StartDataComponent: React.FC<StartDataProps> = ({
           </div>
           <div className="flex flex-col items-start ml-14">
             <div className="text-sm text-grayCustom">
-              예정 {flight.scheduledTime}
+              예정 {todayFormatted}
             </div>
             <div className="text-sm text-blue500">
-              변경 {flight.modifiedTime}
+              변경 {todayFormatted}
             </div>
             {flight.delay && (
               <div className="text-red-500 text-sm">지연 {flight.delay}</div>
