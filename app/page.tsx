@@ -3,11 +3,11 @@
 import { useState } from "react"
 import Footer from "./footer/page"
 import Header from "./header/page"
-import ParkingCongestion from "./components/ParkingCongestion/page"
-import FareCheck from "./components/FareCheck/page"
-import SectionalConfusion from "./components/sectional-confusion/page"
-import StartInformation from "./components/start-information/page"
-import FinshInformation from "./components/finsh-information/page"
+import ParkingCongestion from "./components/ParkingCongestion/test"
+import FareCheck from "./components/FareCheck/test"
+import SectionalConfusion from "./components/sectional-confusion/test"
+import StartInformation from "./components/start-information/test"
+import FinshInformation from "./components/finsh-information/test"
 
 export default function Home() {
   const [selected, setSelected] = useState<number>(1)

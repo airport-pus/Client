@@ -4,7 +4,7 @@ export interface FlightData {
     airlineKorean: string;
     arrivedEng: string;
     arrivedKor: string;
-    gate: string;
+    baggageClaim: string;
     boardingEng: string;
     boardingKor: string;
     std: string | null;

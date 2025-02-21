@@ -1,29 +1,27 @@
 "use client";
 import { useState, useEffect, useRef, useMemo } from "react";
 import useSWR from "swr";
-import StartData from "../start-data/page";
+import StartData from "../finsh-data/test";
+import airlineDictionary, { getLogo } from "./logoList";
 import Image from "next/image";
-// logoList
-import { getLogo } from "./logoList";
 // utils
-import { formatTime, fetcher, calculateDelay } from "@/utils";
+import { formatTime, fetcher, calculateDelay, getRemarkKor } from "@/utils";
 // type
-import { FlightData } from "@/types/In/InFlightData";
-import { DisplayFlight } from "@/types/In/InDisplayFlight";
+import { FlightData } from "@/types/InFlightData";
+import { DisplayFlight } from "@/types/InDisplayFlight";
 
 export default function StartInformation() {
   const { data, error } = useSWR<FlightData[]>(
-    `${process.env.NEXT_PUBLIC_API_BASE_URL}/apron?io=O`,
+    `${process.env.NEXT_PUBLIC_API_BASE_URL}/apron?io=I`,
     fetcher,
-    {
-      revalidateOnFocus: false,
-      refreshInterval: 30000, 
-    }
+    { refreshInterval: 30000 }
   );
 
   const [displayedFlights, setDisplayedFlights] = useState<DisplayFlight[]>([]);
+  const [hasMore, setHasMore] = useState(true);
   const [inputValue, setInputValue] = useState("");
   const [isMobile, setIsMobile] = useState(false);
+  const observer = useRef<IntersectionObserver | null>(null);
 
   useEffect(() => {
     const handleResize = () => {
@@ -34,16 +32,17 @@ export default function StartInformation() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const allFlightData = useMemo(() => {
-    const uniqueFlights = new Map();
-    data?.forEach((flight) => {
+  const allFlightData = useMemo<DisplayFlight[]>(() => {
+    if (!data) return [];
+    const uniqueFlights = new Map<string, DisplayFlight>();
+    data.forEach((flight) => {
       if (!uniqueFlights.has(flight.flightNumber)) {
         uniqueFlights.set(flight.flightNumber, {
           airline: flight.airlineKorean,
           flightNumber: flight.flightNumber,
-          destination: flight.arrivedKor,
-          gate: flight.gate || "-",
-          status: flight.remarkKor || "-",
+          destination: flight.boardingKor,
+          gate: flight.baggageClaim || "-",
+          status: getRemarkKor(flight) || "-",
           scheduledTime: formatTime(flight.std),
           modifiedTime: formatTime(flight.etd),
           delay: calculateDelay(flight.std, flight.etd),
@@ -55,20 +54,25 @@ export default function StartInformation() {
   }, [data]);
 
   useEffect(() => {
-    const filteredFlights = allFlightData.filter((flight) =>
+    const filtered = allFlightData.filter((flight) =>
       flight.flightNumber.toLowerCase().includes(inputValue.toLowerCase())
     );
-    setDisplayedFlights(
-      inputValue.trim()
-        ? filteredFlights
-        : allFlightData.slice(0, isMobile ? filteredFlights.length : 10)
-    );
+    if (inputValue.trim()) {
+      setDisplayedFlights(filtered);
+      setHasMore(false);
+    } else {
+      if (isMobile) {
+        setDisplayedFlights(filtered);
+        setHasMore(false);
+      } else {
+        setDisplayedFlights(allFlightData.slice(0, 10));
+        setHasMore(allFlightData.length > 10);
+      }
+    }
   }, [inputValue, allFlightData, isMobile]);
 
-  const observer = useRef<IntersectionObserver | null>(null);
   const lastFlightElementRef = (node: HTMLElement | null) => {
-    if (isMobile) return;
-    if (!node) return;
+    if (isMobile || !node || !hasMore) return;
     if (observer.current) observer.current.disconnect();
     observer.current = new IntersectionObserver((entries) => {
       if (entries[0].isIntersecting) {
@@ -80,13 +84,23 @@ export default function StartInformation() {
 
   const loadMoreFlights = () => {
     if (inputValue.trim()) return;
-    setDisplayedFlights(allFlightData);
+    const nextFlights = allFlightData.slice(
+      displayedFlights.length,
+      displayedFlights.length + 10
+    );
+    setDisplayedFlights((prev) => {
+      const updated = [...prev, ...nextFlights];
+      if (updated.length >= allFlightData.length) {
+        setHasMore(false);
+      }
+      return updated;
+    });
   };
 
   if (error) {
     return (
       <div className="text-center py-4 text-red500">
-        오류 발생: {error.message}
+        오류가 발생했습니다: {error.message}
       </div>
     );
   }
@@ -174,10 +188,10 @@ export default function StartInformation() {
 
   return (
     <>
-      <div className="mt-5 p-4 border-l-4 border-blue500 bg-blue100 text-black">
-        <p className="font-bold text-[19px]">출발 주기장 이용 안내</p>
+      <div className="mt-14 p-4 border-l-4 border-blue500 bg-blue100 text-black mt-5">
+        <p className="font-bold text-[19px]">도착 주기장 이용 안내</p>
         <p className="text-[16px] mt-2">
-          • 이 주기장은 김해국제공항에서 출발하는 항공기의 주기장입니다.
+          • 이 주기장은 김해국제공항에 도착하는 항공기의 주기장입니다.
         </p>
         <p className="text-[16px] mt-1">
           • 항공편명을 검색하여 원하는 항공편 정보를 쉽게 확인할 수 있습니다.
@@ -196,8 +210,8 @@ export default function StartInformation() {
             <Image
               src="/search.svg"
               alt="검색 아이콘"
-              width={24}
-              height={24}
+              width={16}
+              height={16}
               className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray700"
             />
             <input
@@ -214,18 +228,16 @@ export default function StartInformation() {
       <div className="hidden md:block">
         <div className="mt-6 grid grid-cols-5 bg-grayHover p-2 text-center text-gray600 font-regular text-[14px]">
           <div>항공사 및 항공편명</div>
-          <div>도착지</div>
+          <div>출발지</div>
           <div>탑승구</div>
           <div>항공편 상태</div>
           <div>시간</div>
         </div>
-
         {displayedFlights.length === 0 && inputValue && (
           <div className="text-center text-gray700 mt-8 mb-4">
             검색한 항공편에 대한 정보가 없습니다.
           </div>
         )}
-
         <StartData
           displayedFlights={displayedFlights}
           lastFlightElementRef={lastFlightElementRef}
@@ -252,7 +264,7 @@ export default function StartInformation() {
               />
             </div>
             <div className="mb-1 text-gray600">
-              <strong className="font-medium">도착지: </strong>
+              <strong className="font-medium">출발지: </strong>
               <span className="text-black">{flight.destination}</span>
             </div>
             <div className="mb-1 text-gray600">
@@ -261,7 +273,7 @@ export default function StartInformation() {
             </div>
             <div className="mb-1 text-gray600">
               <strong className="font-medium">상태: </strong>
-              <span className={`text-${flight.status === '지연' ? 'red500' : 'blue500'}`}>
+              <span className={`text-${flight.status === "지연" ? "red500" : "blue500"}`}>
                 {flight.status}
               </span>
             </div>
