@@ -8,35 +8,10 @@ import { getLogo } from "./logoList";
 // utils
 import { formatTime, fetcher, calculateDelay } from "@/utils";
 // type
+import { DisplayFlight } from "@/types/StartDisplayFlight";
+import { FlightData } from "@/types/StartFlightData";
 
-interface FlightData {
-  flightNumber: string;
-  airlineEnglish: string;
-  airlineKorean: string;
-  arrivedEng: string;
-  arrivedKor: string;
-  gate: string;
-  boardingEng: string;
-  boardingKor: string;
-  std: string | null;
-  etd: string | null;
-  io: string;
-  line: string;
-  remarkEng: string;
-  remarkKor: string;
-}
 
-interface DisplayFlight {
-  airline: string;
-  flightNumber: string;
-  destination: string;
-  gate: string;
-  status: string;
-  scheduledTime: string;
-  modifiedTime: string;
-  delay: string | null;
-  logo: string;
-}
 
 export default function StartInformation() {
   const { data, error } = useSWR<FlightData[]>(

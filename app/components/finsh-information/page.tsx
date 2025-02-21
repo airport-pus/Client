@@ -7,34 +7,9 @@ import Image from "next/image";
 // utils
 import { formatTime, fetcher, calculateDelay, getRemarkKor } from "@/utils";
 // type
-interface FlightData {
-  flightNumber: string;
-  airlineEnglish: string;
-  airlineKorean: string;
-  arrivedEng: string;
-  arrivedKor: string;
-  baggageClaim: string;
-  boardingEng: string;
-  boardingKor: string;
-  std: string | null;
-  etd: string | null;
-  io: string;
-  line: string;
-  remarkEng: string;
-  remarkKor: string;
-}
+import { DisplayFlight } from "@/types/FinishDisplayFlight";
+import { FlightData } from "@/types/FinishFlightData";
 
-interface DisplayFlight {
-  airline: string;
-  flightNumber: string;
-  destination: string;
-  gate: string;
-  status: string;
-  scheduledTime: string;
-  modifiedTime: string;
-  delay: string | null;
-  logo: string;
-}
 
 export default function StartInformation() {
   const { data, error } = useSWR<FlightData[]>(

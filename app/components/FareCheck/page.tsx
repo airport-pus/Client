@@ -1,90 +1,15 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { formatDate, isHoliday, TIME_OPTIONS } from "@/utils"
+import Image from "next/image"
+import { formatDate, TIME_OPTIONS, calculateTimeRange, createParkingFeeRequest } from "@/utils"
+import { ParkingOptionsProps } from "@/types/ParkingOptionsProps"
+import { ParkingFormProps } from "@/types/ParkingFormProps"
+import { ResultViewProps } from "@/types/ResultViewProps"
+import { ParkingLot } from "@/types/ParkingLot"
+import { VehicleSize } from "@/types/VehicleSize"
+import { DiscountType } from "@/types/DiscountType"
 
-type ParkingLot = 'P1P2' | 'P3'
-type VehicleSize = 'small' | 'large'
-type DiscountType = 'normal' | 'compact' | 'eco12' | 'eco3' | 'disabled' | 'children' | 'veteran'
-
-interface ParkingFeeRequest {
-  holidayMinutes: number
-  weekdayMinutes: number
-  parkingLot: string
-  isLargeCar: boolean
-  discountType: number
-}
-
-interface TimeRange {
-  weekdayMinutes: number
-  holidayMinutes: number
-}
-
-const DISCOUNT_TYPE_MAP: Record<DiscountType, number> = {
-  normal: 0,
-  compact: 1,
-  eco12: 2,
-  eco3: 3,
-  disabled: 4,
-  children: 5,
-  veteran: 6
-}
-
-const calculateTimeRange = (
-  startDate: string,
-  startTime: string,
-  endDate: string,
-  endTime: string,
-  holidayDates: string[]
-): TimeRange => {
-  const startDateTime = new Date(`${startDate}T${startTime}`)
-  const endDateTime = new Date(`${endDate}T${endTime}`)
-
-  if (endDateTime <= startDateTime) {
-    return { weekdayMinutes: 0, holidayMinutes: 0 }
-  }
-
-  const currentDate = new Date(startDateTime)
-  let weekdayMinutes = 0
-  let holidayMinutes = 0
-
-  while (currentDate < endDateTime) {
-    if (isHoliday(currentDate, holidayDates)) {
-      holidayMinutes++
-    } else {
-      weekdayMinutes++
-    }
-    currentDate.setMinutes(currentDate.getMinutes() + 1)
-  }
-
-  return { weekdayMinutes, holidayMinutes }
-}
-
-const createParkingFeeRequest = (
-  timeRange: TimeRange,
-  parkingLot: ParkingLot,
-  vehicleSize: VehicleSize,
-  discountType: DiscountType
-): ParkingFeeRequest => ({
-  holidayMinutes: timeRange.weekdayMinutes,
-  weekdayMinutes: timeRange.holidayMinutes,
-  parkingLot: parkingLot === "P1P2" ? "P1" : "P3",
-  isLargeCar: vehicleSize === "large",
-  discountType: DISCOUNT_TYPE_MAP[discountType]
-})
-
-interface ParkingOptionsProps {
-  parkingOptions: {
-    parkingLot: ParkingLot
-    vehicleSize: VehicleSize
-    discountType: DiscountType
-  }
-  onOptionChange: (
-    field: keyof ParkingOptionsProps["parkingOptions"]
-  ) => (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => void
-}
 function ParkingOptions({ parkingOptions, onOptionChange }: ParkingOptionsProps) {
   return (
     <div className="flex mb-4 mt-[20px] flex-col xl:flex-row">
@@ -157,30 +82,7 @@ function ParkingOptions({ parkingOptions, onOptionChange }: ParkingOptionsProps)
   )
 }
 
-interface ParkingFormProps {
-  dates: {
-    startDate: string
-    startTime: string
-    endDate: string
-    endTime: string
-  }
-  parkingOptions: {
-    parkingLot: ParkingLot
-    vehicleSize: VehicleSize
-    discountType: DiscountType
-  }
-  onOptionChange: (
-    field: keyof ParkingOptionsProps["parkingOptions"]
-  ) => (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => void
-  onDateChange: (
-    field: keyof ParkingFormProps["dates"]
-  ) => (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => void
-  onCalculate: () => void
-}
+
 function ParkingForm({ dates, parkingOptions, onOptionChange, onDateChange, onCalculate }: ParkingFormProps) {
   return (
     <>
@@ -259,16 +161,10 @@ function ParkingForm({ dates, parkingOptions, onOptionChange, onDateChange, onCa
   )
 }
 
-interface ResultViewProps {
-  fee: number
-  onReset: () => void
-}
 function ResultView({ fee, onReset }: ResultViewProps) {
   return (
-    <div className="flex items-center flex-col justify-center h-[520px] xl:h-full gap-1">
-      <p className="text-red-600 mb-[-8]">
-        ※ 예상 추차 요금이며 실제와 다를 수 있습니다.
-      </p>
+    <div className="flex items-center flex-col justify-center h-[220px] gap-1">
+      <Image src="/Payment.svg" alt="payment" width={180} height={50} />
       <p className="text-[20px] font-bold text-black mb-4 mt-2">
         예상 주차 요금은{" "}
         <span className="text-[24px] relative inline-block">
@@ -280,7 +176,7 @@ function ResultView({ fee, onReset }: ResultViewProps) {
         입니다
       </p>
       <button
-        className="h-[39px] w-[135px] bg-blue500 text-white text-[14px] rounded-[5px]"
+        className="h-[36px] w-[115px] bg-lightBlueBackground text-lightBlueText border-lightBlueBorder text-[14px] border-2 rounded-[8px] transition-all duration-200 ease-in-out mb-[-32px]"
         onClick={onReset}
       >
         다시 조회하기
@@ -288,9 +184,6 @@ function ResultView({ fee, onReset }: ResultViewProps) {
     </div>
   )
 }
-
-
-
 
 function FormSkeleton() {
   return (
