@@ -60,7 +60,6 @@ const getStatusText = (value: number) => {
   return "";
 };
 
-// 한국어 구간명을 영어로 변환하는 함수
 const getEnglishSectionName = (section: string) => {
   switch (section) {
     case "1구간":
@@ -109,7 +108,6 @@ const TrafficStatus = () => {
     fetcher
   );
 
-  // ── 왼쪽 컨텐츠 (두번째 코드에서 가져온 부분) ──
   let leftContent;
   if (realTimeError) {
     leftContent = <div className="p-4 text-red-500 text-center">404</div>;
@@ -175,7 +173,7 @@ const TrafficStatus = () => {
         <h2 className="text-[20px] font-bold mb-3 text-black mt-5 ml-[-24px]">
           실시간 공항 구간별 혼잡도 확인
         </h2>
-        <p className="mb-4 text-gray400 text-[14px] ml-[-24px] mt-[-11px] mb-[4px]">
+        <p className="mb-4 text-gray400 text-[14px] ml-[-24px] mt-[-13px] mb-[4px]">
           항목을 클릭하면 시간별 그래프를 보실 수 있습니다.
         </p>
         <ul className="divide-y divide-gray-200 ml-[-36px]">
@@ -201,9 +199,7 @@ const TrafficStatus = () => {
       </div>
     );
   }
-  // ── 끝 ──
 
-  // ── 오른쪽 차트 관련 로직 (첫번째 코드에서 사용한 부분) ──
   const extractDateAndHour = (dateStr: string) => {
     const [datePart, hourPart] = dateStr.split(" ");
     const hour = hourPart.replace("시", "");
@@ -331,8 +327,8 @@ const TrafficStatus = () => {
         <div className="w-full max-w-[370px] lg:w-[800px] mx-auto lg:ml-0">
           {leftContent}
         </div>
-        <div className="w-full lg:w-[670px] h-auto min-h-[280px] p-4 mt-8 lg:mt-14 lg:ml-2">
-          <div className="h-[280px]">
+        <div className="w-full lg:w-[670px] h-auto min-h-[220px] p-4 mt-8 lg:mt-14 lg:ml-2">
+          <div className="h-[220px]">
             <Skeleton height="100%" />
           </div>
         </div>
@@ -345,17 +341,17 @@ const TrafficStatus = () => {
       <div className="w-full max-w-[370px] lg:w-[800px] mx-auto lg:ml-0">
         {leftContent}
       </div>
-      <div className="w-full lg:w-[670px] h-auto min-h-[280px] p-4 mt-8 lg:mt-14 lg:ml-2">
-        <div className="mb-2 text-[22px] text-black font-bold ml-[10px] lg:ml-2 lg:mt-[-68] mb-[32px] flex flex-row justify-between items-center gap-4">
+      <div className="w-full lg:w-[670px] h-auto min-h-[220px] p-4 mt-8 lg:mt-24 lg:ml-2">
+        <div className="mb-2 text-[22px] text-black font-bold ml-[10px] lg:ml-[-8px] lg:mt-[-92] mb-[32px] flex flex-row justify-between items-center gap-4">
           <div className="text-xl font-bold text-black">
             <span className="lg:hidden ml-[-13px]">{`${selectedSection} 혼잡도`}</span>
             <span className="hidden lg:inline">{`${selectedSection} 혼잡도 그래프`}</span>
           </div>
         </div>
-        <div className="mb-4 text-[14px] text-gray400 ml-[10px] lg:ml-2 mt-[-38] hidden lg:block">
+        <div className="mb-4 text-[14px] text-gray400 ml-[10px] lg:ml-[-8px] mt-[-32] hidden lg:block mt-2">
           파란색 점을 누르면 세부정보를 볼 수 있어요.
         </div>
-        <div className="h-[280px]">
+        <div className="h-[250px] lg:ml-[-8px]">
           <Line data={chartData} options={options} />
         </div>
       </div>
