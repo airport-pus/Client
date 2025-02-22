@@ -60,30 +60,46 @@ const getStatusText = (value: number) => {
   return "";
 };
 
+const getEnglishSectionName = (section: string) => {
+  switch (section) {
+    case "1구간":
+      return "Section 1";
+    case "2구간":
+      return "Section 2";
+    case "3구간":
+      return "Section 3";
+    case "전체 구간":
+      return "All Sections";
+    default:
+      return "";
+  }
+};
+
 const TrafficStatus = () => {
+  const [selectedSection, setSelectedSection] = useState<string>("1구간");
+  const [selectedDate, setSelectedDate] = useState<DateType>("오늘");
+
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth < 768) {
-        ChartJS.defaults.font.weight = 500;
-        ChartJS.defaults.font.size = 13;
-      } else {
-        ChartJS.defaults.font.weight = 400;
-        ChartJS.defaults.font.size = 11;
+      if (typeof window !== 'undefined') {
+        if (window.innerWidth < 768) {
+          ChartJS.defaults.font.weight = 500;
+          ChartJS.defaults.font.size = 13;
+        } else {
+          ChartJS.defaults.font.weight = 400;
+          ChartJS.defaults.font.size = 11;
+        }
       }
     };
 
     handleResize();
     window.addEventListener('resize', handleResize);
-
     return () => {
       window.removeEventListener('resize', handleResize);
     };
   }, []);
 
-  const [selectedSection, setSelectedSection] = useState("1구간");
-  const [selectedDate, setSelectedDate] = useState<DateType>("오늘");
-
-  const { data: apiData, error } = useSWR<RealTimeApiResponse>(
+  const { data: apiData, error: realTimeError } = useSWR<RealTimeApiResponse>(
     `${process.env.NEXT_PUBLIC_API_BASE_URL}/congestions/real`,
     fetcher
   );
@@ -92,114 +108,97 @@ const TrafficStatus = () => {
     fetcher
   );
 
-  if (error || historyError) {
-    return <div>Error loading data...</div>;
-  }
-
-  if (!apiData || !congestionHistory) {
-    return (
-      <div className="relative flex flex-col lg:flex-row">
-        <div className="w-full lg:w-auto flex flex-col items-center lg:items-start">
-          <div className="mb-2 w-full lg:w-[460px] text-[22px] text-black font-bold mt-5 lg:mt-2 ml-8 lg:ml-2 mb-[-3]">
-            <h2 className="text-xl font-bold mb-1 text-black">
-              <Skeleton width={200} height={28} />
-            </h2>
-          </div>
-          <div className="mb-4 w-full lg:w-[480px] text-[14px] text-gray400 ml-8 lg:ml-2 mb-[-9]">
-            <span className="hidden lg:inline">
-              <Skeleton width={300} height={20} />
-            </span>
-            <span className="lg:hidden">
-              <Skeleton width={150} height={20} />
-            </span>
-          </div>
-          <div className="w-full max-w-[300px] lg:w-[480px] mx-auto lg:ml-2">
-            <div className="mt-6 grid grid-cols-2 bg-gray300 p-2 text-center text-grayCustom font-regular text-[14px]">
-              <div>
-                <Skeleton width={50} height={20} />
-              </div>
-              <div>
-                <Skeleton width={70} height={20} />
-              </div>
-            </div>
-            <div className="border-b border-gray-200">
-              {Array.from({ length: 4 }).map((_, index) => (
-                <div
-                  key={index}
-                  className="grid grid-cols-2 p-4 border-b last:border-b-0 text-center"
-                >
-                  <div className="font-medium text-black">
-                    <Skeleton width="80%" height={20} />
-                  </div>
-                  <div>
-                    <Skeleton width="60%" height={20} />
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        <div className="w-full lg:w-[670px] h-auto min-h-[280px] p-4 mt-8 lg:mt-14 lg:ml-2">
-          <div className="mb-2 text-[22px] text-black font-bold ml-[10px] lg:ml-2 lg:mt-[-68] mb-[32px] flex flex-row justify-between items-center gap-4">
-            <div className="text-xl font-bold text-black">
-              <span className="lg:hidden ml-[-13px]">
-                <Skeleton width={150} height={28} />
+  let leftContent;
+  if (realTimeError) {
+    leftContent = <div className="p-4 text-red-500 text-center">404</div>;
+  } else if (apiData === undefined) {
+    leftContent = (
+      <div className="mb-4 ml-8">
+        <h2 className="text-[20px] font-bold mb-3 text-black mt-5 ml-[-24px]">
+          <Skeleton width={220} height={24} />
+        </h2>
+        <p className="mb-4 text-gray400 text-[14px] ml-[-24px] mt-[-13px] mb-[4px]">
+          <Skeleton width={230} height={18} />
+        </p>
+        <ul className="divide-y divide-gray-200 ml-[-36px]">
+          {Array.from({ length: 4 }).map((_, index) => (
+            <li key={index} className="cursor-pointer flex items-center justify-between py-4 px-4 hover:bg-gray-50 transition">
+              <span className="flex items-center text-lg font-bold text-black text-[14px]">
+                <Skeleton width={15} height={20} className="mr-5" />
+                <Skeleton width={60} height={20} className="mr-2" />
+                <Skeleton width={80} height={16} />
               </span>
-              <span className="hidden lg:inline">
-                <Skeleton width={250} height={28} />
+              <Skeleton width={50} height={28} className="rounded" />
+            </li>
+          ))}
+        </ul>
+      </div>
+    );
+  } else if (!apiData) {
+    leftContent = <div className="p-4 text-red-500 text-center">404</div>;
+  } else {
+    const statusMap: { [key: number]: { text: string; color: string } } = {
+      0: { text: "원활", color: "bg-green100 text-green500" },
+      1: { text: "원활", color: "bg-green100 text-green500" },
+      2: { text: "보통", color: "bg-yellow100 text-yellow500" },
+      3: { text: "혼잡", color: "bg-red100 text-red500" },
+      4: { text: "매우 혼잡", color: "bg-red100 text-red500" },
+    };
+
+    const sectionStatuses: SectionStatus[] = [
+      {
+        section: "1구간",
+        status: statusMap[apiData.cgdrALvl]?.text || "",
+        statusColor: statusMap[apiData.cgdrALvl]?.color || "",
+      },
+      {
+        section: "2구간",
+        status: statusMap[apiData.cgdrBLvl]?.text || "",
+        statusColor: statusMap[apiData.cgdrBLvl]?.color || "",
+      },
+      {
+        section: "3구간",
+        status: statusMap[apiData.cgdrCLvl]?.text || "",
+        statusColor: statusMap[apiData.cgdrCLvl]?.color || "",
+      },
+      {
+        section: "전체 구간",
+        status: statusMap[apiData.cgdrAllLvl]?.text || "",
+        statusColor: statusMap[apiData.cgdrAllLvl]?.color || "",
+      },
+    ];
+
+    leftContent = (
+      <div className="mb-4 ml-8">
+        <h2 className="text-[20px] font-bold mb-3 text-black mt-5 ml-[-24px]">
+          실시간 공항 구간별 혼잡도 확인
+        </h2>
+        <p className="mb-4 text-gray400 text-[14px] ml-[-24px] mt-[-13px] mb-[4px]">
+          항목을 클릭하면 시간별 그래프를 보실 수 있습니다.
+        </p>
+        <ul className="divide-y divide-gray-200 ml-[-36px]">
+          {sectionStatuses.map((sectionStatus, index) => (
+            <li
+              key={index}
+              onClick={() => setSelectedSection(sectionStatus.section)}
+              className="cursor-pointer flex items-center justify-between py-4 px-4 hover:bg-gray-50 transition"
+            >
+              <span className="text-lg font-bold text-black text-[14px]">
+                <span className="mr-5 text-xl">·</span>
+                {sectionStatus.section}
+                <span className="ml-2 text-[12px] text-gray-400 font-normal">
+                  {getEnglishSectionName(sectionStatus.section)}
+                </span>
               </span>
-            </div>
-            <div className="flex items-center">
-              <div className="px-4 py-1 lg:py-2 text-[14px] font-medium whitespace-nowrap rounded-md flex items-center mr-2">
-                <Skeleton width={50} height={32} />
-              </div>
-              <div className="px-4 py-1 lg:py-2 text-[14px] font-medium whitespace-nowrap rounded-md flex items-center">
-                <Skeleton width={50} height={32} />
-              </div>
-            </div>
-          </div>
-          <div className="mb-4 text-[14px] text-gray400 ml-[10px] lg:ml-2 mt-[-38] hidden lg:block">
-            <Skeleton width={220} height={20} />
-          </div>
-          <div className="h-[280px]">
-            <Skeleton height="100%" />
-          </div>
-        </div>
+              <span className={`inline-block px-3 py-1 text-sm rounded ${sectionStatus.statusColor}`}>
+                {sectionStatus.status}
+              </span>
+            </li>
+          ))}
+        </ul>
       </div>
     );
   }
-
-  const statusMap: { [key: number]: { text: string; color: string } } = {
-    0: { text: "원활", color: "bg-green100 text-green500" },
-    1: { text: "원활", color: "bg-green100 text-green500" },
-    2: { text: "보통", color: "bg-yellow100 text-yellow500" },
-    3: { text: "혼잡", color: "bg-red100 text-red500" },
-    4: { text: "혼잡", color: "bg-red100 text-red500" },
-  };
-
-  const sectionStatuses: SectionStatus[] = [
-    {
-      section: "1구간",
-      status: statusMap[apiData.cgdrALvl]?.text || "",
-      statusColor: statusMap[apiData.cgdrALvl]?.color || "",
-    },
-    {
-      section: "2구간",
-      status: statusMap[apiData.cgdrBLvl]?.text || "",
-      statusColor: statusMap[apiData.cgdrBLvl]?.color || "",
-    },
-    {
-      section: "3구간",
-      status: statusMap[apiData.cgdrCLvl]?.text || "",
-      statusColor: statusMap[apiData.cgdrCLvl]?.color || "",
-    },
-    {
-      section: "전체 구간",
-      status: statusMap[apiData.cgdrAllLvl]?.text || "",
-      statusColor: statusMap[apiData.cgdrAllLvl]?.color || "",
-    },
-  ];
 
   const extractDateAndHour = (dateStr: string) => {
     const [datePart, hourPart] = dateStr.split(" ");
@@ -212,10 +211,13 @@ const TrafficStatus = () => {
   yesterday.setDate(yesterday.getDate() - 1);
   const yesterdayDateStr = yesterday.toISOString().split("T")[0];
 
-  const recordsForSelectedDate = congestionHistory.filter((record) => {
-    const { date } = extractDateAndHour(record.date);
-    return selectedDate === "오늘" ? date === todayDateStr : date === yesterdayDateStr;
-  });
+  let recordsForSelectedDate: CongestionRecord[] = [];
+  if (congestionHistory) {
+    recordsForSelectedDate = congestionHistory.filter((record) => {
+      const { date } = extractDateAndHour(record.date);
+      return selectedDate === "오늘" ? date === todayDateStr : date === yesterdayDateStr;
+    });
+  }
 
   const dedupedRecordsObj = recordsForSelectedDate.reduce((acc, record) => {
     const { hour } = extractDateAndHour(record.date);
@@ -257,14 +259,14 @@ const TrafficStatus = () => {
         data: dynamicData,
         borderColor: "#215DCE",
         backgroundColor: "rgba(33, 93, 206, 0.2)",
-        borderWidth: window.innerWidth < 768 ? 3 : 2,
-        pointRadius: window.innerWidth < 768 ? 8 : 6,
+        borderWidth: (typeof window !== 'undefined' && window.innerWidth < 768) ? 3 : 2,
+        pointRadius: (typeof window !== 'undefined' && window.innerWidth < 768) ? 8 : 6,
         pointBackgroundColor: "#215DCE",
         pointBorderColor: "#FFFFFF",
         pointBorderWidth: 2,
         tension: 0.4,
         segment: {
-          borderWidth: window.innerWidth < 768 ? 3 : 2,
+          borderWidth: (typeof window !== 'undefined' && window.innerWidth < 768) ? 3 : 2,
         },
       },
     ],
@@ -279,7 +281,7 @@ const TrafficStatus = () => {
           maxRotation: 45,
           minRotation: 45,
           font: { 
-            size: window.innerWidth < 768 ? 13 : 11
+            size: (typeof window !== 'undefined' && window.innerWidth < 768) ? 13 : 11,
           },
         },
         grid: { display: false },
@@ -310,95 +312,52 @@ const TrafficStatus = () => {
     elements: {
       line: {
         tension: 0.4,
-        borderWidth: window.innerWidth < 768 ? 3 : 2,
+        borderWidth: (typeof window !== 'undefined' && window.innerWidth < 768) ? 3 : 2,
       },
     },
   };
+  
+  if (historyError) {
+    return <div>데이터 로드를 실패했습니다.</div>;
+  }
 
-  return (
-    <div className="relative flex flex-col lg:flex-row">
-      <div className="w-full lg:w-auto flex flex-col items-center lg:items-start">
-        <div className="mb-2 w-full lg:w-[460px] text-[22px] text-black font-bold mt-5 lg:mt-2 ml-8 lg:ml-2 mb-[-3]">
-          <h2 className="text-xl font-bold mb-1 text-black">실시간 공항 구간별 혼잡도 확인</h2>
+  if (!congestionHistory) {
+    return (
+      <div className="relative flex flex-col lg:flex-row">
+        <div className="w-full max-w-[370px] lg:w-[800px] mx-auto lg:ml-0">
+          {leftContent}
         </div>
-        <div className="mb-4 w-full lg:w-[480px] text-[14px] text-gray400 ml-8 lg:ml-2 mb-[-9]">
-          <span className="hidden lg:inline">표에서 셀을 클릭하면 시간별 그래프를 보실 수 있습니다.</span>
-          <span className="lg:hidden">셀을 클릭하면 그래프를 볼 수 있어요.</span>
-        </div>
-        <div className="w-full max-w-[300px] lg:w-[480px] mx-auto lg:ml-2">
-          <div className="mt-6 grid grid-cols-2 bg-gray300 p-2 text-center text-grayCustom font-regular text-[14px]">
-            <div>구간</div>
-            <div>혼잡도</div>
+        <div className="w-full lg:w-[670px] h-auto min-h-[220px] p-4 mt-8 lg:mt-24 lg:ml-2">
+          <div className="mb-2 text-[22px] text-black font-bold ml-[10px] lg:ml-[-8px] lg:mt-[-92] mb-[32px]">
+            <Skeleton width={200} height={28} />
           </div>
-          <div className="border-b border-gray-200">
-            {sectionStatuses.map((sectionStatus, index) => (
-              <div
-                key={index}
-                onClick={() => setSelectedSection(sectionStatus.section)}
-                className="grid grid-cols-2 p-4 border-b last:border-b-0 text-center hover:bg-gray350 transition-colors duration-200 cursor-pointer"
-              >
-                <div className="font-medium text-black">{sectionStatus.section}</div>
-                <div>
-                  <span className={`px-2 py-1 text-[12px] rounded-md ${sectionStatus.statusColor}`}>
-                    {sectionStatus.status}
-                  </span>
-                </div>
-              </div>
-            ))}
+          <div className="mb-4 text-[14px] text-gray400 ml-[10px] lg:ml-[-8px] mt-[-32] hidden lg:block mt-2">
+            <Skeleton width={250} height={20} />
+          </div>
+          <div className="h-[180px] lg:ml-[-8px]">
+            <Skeleton height={220} />
           </div>
         </div>
       </div>
-      <div className="w-full lg:w-[670px] h-auto min-h-[280px] p-4 mt-8 lg:mt-14 lg:ml-2">
-        <div className="mb-2 text-[22px] text-black font-bold ml-[10px] lg:ml-2 lg:mt-[-68] mb-[32px] flex flex-row justify-between items-center gap-4">
+    );
+  }
+
+  return (
+    <div className="relative flex flex-col lg:flex-row">
+      <div className="w-full max-w-[370px] lg:w-[800px] mx-auto lg:ml-0">
+        {leftContent}
+      </div>
+      <div className="w-full lg:w-[670px] h-auto min-h-[220px] p-4 mt-8 lg:mt-24 lg:ml-2">
+        <div className="mb-2 text-[22px] text-black font-bold ml-[10px] lg:ml-[-8px] lg:mt-[-92] mb-[32px] flex flex-row justify-between items-center gap-4">
           <div className="text-xl font-bold text-black">
             <span className="lg:hidden ml-[-13px]">{`${selectedSection} 혼잡도`}</span>
             <span className="hidden lg:inline">{`${selectedSection} 혼잡도 그래프`}</span>
           </div>
-          <div className="flex items-center">
-            <button
-              onClick={() => setSelectedDate("어제")}
-              className={`px-4 py-1 lg:py-2 text-[14px] font-medium border whitespace-nowrap ${
-                selectedDate === "어제"
-                  ? "bg-lightBlueBackground text-lightBlueText border-lightBlueBorder"
-                  : "bg-gray200 text-gray700 border-grayBorder"
-              } rounded-md flex items-center mr-2`}
-            >
-              어제
-              <Image
-                src="/date.svg"
-                width={16}
-                height={16}
-                alt="date"
-                className={`ml-2 hidden lg:inline ${
-                  selectedDate === "어제" ? "text-gray500" : "text-gray700"
-                }`}
-              />
-            </button>
-            <button
-              onClick={() => setSelectedDate("오늘")}
-              className={`px-4 py-1 lg:py-2 text-[14px] font-medium border whitespace-nowrap ${
-                selectedDate === "오늘"
-                  ? "bg-lightBlueBackground text-lightBlueText border-lightBlueBorder"
-                  : "bg-gray200 text-gray700 border-grayBorder"
-              } rounded-md flex items-center`}
-            >
-              오늘
-              <Image
-                src="/date.svg"
-                width={16}
-                height={16}
-                alt="date"
-                className={`ml-2 hidden lg:inline ${
-                  selectedDate === "오늘" ? "text-gray500" : "text-gray700"
-                }`}
-              />
-            </button>
-          </div>
         </div>
-        <div className="mb-4 text-[14px] text-gray400 ml-[10px] lg:ml-2 mt-[-38] hidden lg:block">
+        <div className="mb-4 text-[14px] text-gray400 ml-[10px] lg:ml-[-8px] mt-[-32] hidden lg:block mt-2">
           파란색 점을 누르면 세부정보를 볼 수 있어요.
         </div>
-        <div className="h-[280px]">
+        <div className="h-[250px] lg:ml-[-8px]">
           <Line data={chartData} options={options} />
         </div>
       </div>
