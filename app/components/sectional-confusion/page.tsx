@@ -76,7 +76,7 @@ const getEnglishSectionName = (section: string) => {
 };
 
 const TrafficStatus = () => {
-  const [selectedSection, setSelectedSection] = useState<string>("전체 구간");
+  const [selectedSection, setSelectedSection] = useState<string>("1구간");
   const [selectedDate, setSelectedDate] = useState<DateType>("오늘");
 
   useEffect(() => {
@@ -114,21 +114,21 @@ const TrafficStatus = () => {
   } else if (apiData === undefined) {
     leftContent = (
       <div className="mb-4 ml-8">
-        <h2 className="text-[20px] font-bold mb-0 text-black mt-5">
+        <h2 className="text-[20px] font-bold mb-3 text-black mt-5 ml-[-24px]">
           <Skeleton width={220} height={24} />
         </h2>
-        <p className="mb-4 text-gray400 text-[14px]">
-          <Skeleton width={250} height={18} />
+        <p className="mb-4 text-gray400 text-[14px] ml-[-24px] mt-[-13px] mb-[4px]">
+          <Skeleton width={230} height={18} />
         </p>
-        <ul className="divide-y divide-gray-200">
+        <ul className="divide-y divide-gray-200 ml-[-36px]">
           {Array.from({ length: 4 }).map((_, index) => (
             <li key={index} className="cursor-pointer flex items-center justify-between py-4 px-4 hover:bg-gray-50 transition">
-              <span className="text-lg font-bold text-black">
-                <Skeleton width={80} height={20} />
+              <span className="flex items-center text-lg font-bold text-black text-[14px]">
+                <Skeleton width={15} height={20} className="mr-5" />
+                <Skeleton width={60} height={20} className="mr-2" />
+                <Skeleton width={80} height={16} />
               </span>
-              <span className="inline-block px-3 py-1 text-sm rounded">
-                <Skeleton width={50} height={20} />
-              </span>
+              <Skeleton width={50} height={28} className="rounded" />
             </li>
           ))}
         </ul>
@@ -318,7 +318,7 @@ const TrafficStatus = () => {
   };
   
   if (historyError) {
-    return <div>Error loading data...</div>;
+    return <div>데이터 로드를 실패했습니다.</div>;
   }
 
   if (!congestionHistory) {
@@ -327,9 +327,15 @@ const TrafficStatus = () => {
         <div className="w-full max-w-[370px] lg:w-[800px] mx-auto lg:ml-0">
           {leftContent}
         </div>
-        <div className="w-full lg:w-[670px] h-auto min-h-[220px] p-4 mt-8 lg:mt-14 lg:ml-2">
-          <div className="h-[220px]">
-            <Skeleton height="100%" />
+        <div className="w-full lg:w-[670px] h-auto min-h-[220px] p-4 mt-8 lg:mt-24 lg:ml-2">
+          <div className="mb-2 text-[22px] text-black font-bold ml-[10px] lg:ml-[-8px] lg:mt-[-92] mb-[32px]">
+            <Skeleton width={200} height={28} />
+          </div>
+          <div className="mb-4 text-[14px] text-gray400 ml-[10px] lg:ml-[-8px] mt-[-32] hidden lg:block mt-2">
+            <Skeleton width={250} height={20} />
+          </div>
+          <div className="h-[180px] lg:ml-[-8px]">
+            <Skeleton height={220} />
           </div>
         </div>
       </div>
