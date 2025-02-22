@@ -346,8 +346,8 @@ const TrafficStatus = () => {
       <div className="w-full max-w-[370px] lg:w-[800px] mx-auto lg:ml-0">
         {leftContent}
       </div>
-      <div className="w-full lg:w-[670px] h-auto min-h-[220px] p-4 mt-8 lg:mt-24 lg:ml-2">
-        <div className="mb-2 text-[22px] text-black font-bold ml-[10px] lg:ml-[-8px] lg:mt-[-92] mb-[32px] flex flex-row justify-between items-center gap-4">
+      <div className="w-full lg:w-[670px] h-auto min-h-[220px] p-4 mt-8 lg:mt-0 lg:ml-2">
+        <div className="mb-2 text-[22px] text-black font-bold ml-[10px] lg:ml-[-8px] lg:mt-[5px] mb-[32px] flex flex-row justify-between items-center gap-4">
           <div className="text-xl font-bold text-black">
             <span className="lg:hidden ml-[-13px]">{`${selectedSection} 혼잡도`}</span>
             <span className="hidden lg:inline">{`${selectedSection} 혼잡도 그래프`}</span>
