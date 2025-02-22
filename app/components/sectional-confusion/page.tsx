@@ -327,10 +327,10 @@ const TrafficStatus = () => {
           {leftContent}
         </div>
         <div className="w-full lg:w-[670px] h-auto min-h-[220px] p-4 mt-8 lg:mt-24 lg:ml-2">
-          <div className="mb-2 text-[22px] text-black font-bold ml-[10px] lg:ml-[-8px] lg:mt-[-92px] mb-[32px]">
+          <div className="mb-2 text-[22px] text-black font-bold ml-[10px] lg:ml-[-8px] lg:mt-[-92px] mb-[2px]">
             <Skeleton width={200} height={28} />
           </div>
-          <div className="mb-4 text-[14px] text-gray-400 ml-[10px] lg:ml-[-8px] hidden lg:block mt-2">
+          <div className="mb-4 text-[14px] text-gray-400 ml-[10px] lg:ml-[-8px] hidden lg:block">
             <Skeleton width={250} height={20} />
           </div>
           <div className="h-[180px] lg:ml-[-8px]">
