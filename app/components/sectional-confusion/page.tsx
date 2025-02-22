@@ -334,7 +334,7 @@ const TrafficStatus = () => {
             <Skeleton width={250} height={20} />
           </div>
           <div className="h-[180px] lg:ml-[-8px]">
-            <Skeleton height={220} />
+            <Skeleton height={245} />
           </div>
         </div>
       </div>
