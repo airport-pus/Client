@@ -12,9 +12,12 @@ export default function Header() {
       try {
         await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/visit`, {
           method: 'POST',
+          credentials: "include", 
         });
-        
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/visit`);
+
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/visit`, {
+          credentials: "include",
+        });
         const count = await response.text();
         setVisitCount(Number(count));
       } catch (error) {
