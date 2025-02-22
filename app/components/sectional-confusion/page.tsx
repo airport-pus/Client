@@ -14,7 +14,6 @@ import {
   TooltipItem,
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
-import Image from 'next/image';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 
@@ -77,7 +76,7 @@ const getEnglishSectionName = (section: string) => {
 
 const TrafficStatus = () => {
   const [selectedSection, setSelectedSection] = useState<string>("1구간");
-  const [selectedDate, setSelectedDate] = useState<DateType>("오늘");
+  const [selectedDate] = useState<DateType>("오늘");
 
   useEffect(() => {
     const handleResize = () => {
