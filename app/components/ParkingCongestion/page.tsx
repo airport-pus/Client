@@ -197,6 +197,6 @@ const ParkingCongestion = () => {
       </div>
     </div>
   )
-}
+} 
 
 export default ParkingCongestion
