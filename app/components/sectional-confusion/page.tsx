@@ -346,7 +346,7 @@ const TrafficStatus = () => {
       <div className="w-full max-w-[370px] lg:w-[800px] mx-auto lg:ml-0">
         {leftContent}
       </div>
-      <div className="w-full lg:w-[670px] h-auto min-h-[220px] p-4 mt-8 lg:mt-0 lg:ml-2">
+      <div className="w-full lg:w-[670px] h-auto min-h-[320px] p-4 mt-8 lg:mt-0 lg:ml-2">
         <div className="mb-2 text-[22px] text-black font-bold ml-[10px] lg:ml-[-8px] lg:mt-[5px] mb-[32px] flex flex-row justify-between items-center gap-4">
           <div className="text-xl font-bold text-black">
             <span className="lg:hidden ml-[-13px]">{`${selectedSection} 혼잡도`}</span>
@@ -356,7 +356,7 @@ const TrafficStatus = () => {
         <div className="mb-4 text-[14px] text-gray400 ml-[10px] lg:ml-[-8px] mt-[-32] hidden lg:block mt-2">
           파란색 점을 누르면 세부정보를 볼 수 있어요.
         </div>
-        <div className="h-[250px] lg:ml-[-8px]">
+        <div className="h-[300px] lg:h-[250px] lg:ml-[-8px] relative">
           <Line data={chartData} options={options} />
         </div>
       </div>
