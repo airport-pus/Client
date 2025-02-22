@@ -116,7 +116,7 @@ const TrafficStatus = () => {
         <h2 className="text-[20px] font-bold mb-3 text-black mt-5 ml-[-24px]">
           <Skeleton width={220} height={24} />
         </h2>
-        <p className="mb-4 text-gray400 text-[14px] ml-[-24px] mt-[-13px] mb-[4px]">
+        <p className="mb-4 text-gray-400 text-[14px] ml-[-24px] mt-[-13px]">
           <Skeleton width={230} height={18} />
         </p>
         <ul className="divide-y divide-gray-200 ml-[-36px]">
@@ -137,11 +137,11 @@ const TrafficStatus = () => {
     leftContent = <div className="p-4 text-red-500 text-center">404</div>;
   } else {
     const statusMap: { [key: number]: { text: string; color: string } } = {
-      0: { text: "원활", color: "bg-green100 text-green500" },
-      1: { text: "원활", color: "bg-green100 text-green500" },
-      2: { text: "보통", color: "bg-yellow100 text-yellow500" },
-      3: { text: "혼잡", color: "bg-red100 text-red500" },
-      4: { text: "매우 혼잡", color: "bg-red100 text-red500" },
+      0: { text: "원활", color: "bg-green-100 text-green-500" },
+      1: { text: "원활", color: "bg-green-100 text-green-500" },
+      2: { text: "보통", color: "bg-yellow-100 text-yellow-500" },
+      3: { text: "혼잡", color: "bg-red-100 text-red-500" },
+      4: { text: "매우 혼잡", color: "bg-red-100 text-red-500" },
     };
 
     const sectionStatuses: SectionStatus[] = [
@@ -172,7 +172,7 @@ const TrafficStatus = () => {
         <h2 className="text-[20px] font-bold mb-3 text-black mt-5 ml-[-24px]">
           실시간 공항 구간별 혼잡도 확인
         </h2>
-        <p className="mb-4 text-gray400 text-[14px] ml-[-24px] mt-[-13px] mb-[4px]">
+        <p className="mb-4 text-gray-400 text-[14px] ml-[-24px] mt-[-13px]">
           항목을 클릭하면 시간별 그래프를 보실 수 있습니다.
         </p>
         <ul className="divide-y divide-gray-200 ml-[-36px]">
@@ -327,10 +327,10 @@ const TrafficStatus = () => {
           {leftContent}
         </div>
         <div className="w-full lg:w-[670px] h-auto min-h-[220px] p-4 mt-8 lg:mt-24 lg:ml-2">
-          <div className="mb-2 text-[22px] text-black font-bold ml-[10px] lg:ml-[-8px] lg:mt-[-92] mb-[32px]">
+          <div className="mb-2 text-[22px] text-black font-bold ml-[10px] lg:ml-[-8px] lg:mt-[-92px] mb-[32px]">
             <Skeleton width={200} height={28} />
           </div>
-          <div className="mb-4 text-[14px] text-gray400 ml-[10px] lg:ml-[-8px] mt-[-32] hidden lg:block mt-2">
+          <div className="mb-4 text-[14px] text-gray-400 ml-[10px] lg:ml-[-8px] hidden lg:block mt-2">
             <Skeleton width={250} height={20} />
           </div>
           <div className="h-[180px] lg:ml-[-8px]">
@@ -347,13 +347,13 @@ const TrafficStatus = () => {
         {leftContent}
       </div>
       <div className="w-full lg:w-[670px] h-auto min-h-[320px] p-4 mt-8 lg:mt-0 lg:ml-2">
-        <div className="mb-2 text-[22px] text-black font-bold ml-[10px] lg:ml-[-8px] lg:mt-[5px] mb-[32px] flex flex-row justify-between items-center gap-4">
+        <div className="mb-2 text-[22px] text-black font-bold ml-[10px] lg:ml-[-8px] lg:mt-[5px] mb-[1px] flex flex-row justify-between items-center gap-4">
           <div className="text-xl font-bold text-black">
             <span className="lg:hidden ml-[-13px]">{`${selectedSection} 혼잡도`}</span>
             <span className="hidden lg:inline">{`${selectedSection} 혼잡도 그래프`}</span>
           </div>
         </div>
-        <div className="mb-4 text-[14px] text-gray400 ml-[10px] lg:ml-[-8px] mt-[-32] hidden lg:block mt-2">
+        <div className="mb-4 text-[14px] text-gray-400 ml-[10px] lg:ml-[-8px] hidden lg:block">
           파란색 점을 누르면 세부정보를 볼 수 있어요.
         </div>
         <div className="h-[300px] lg:h-[250px] lg:ml-[-8px] relative">
