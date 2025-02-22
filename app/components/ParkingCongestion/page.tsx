@@ -176,7 +176,7 @@ const ParkingCongestion = () => {
 
   return (
     <div className="col-span-12 xl:col-span-8 bg-white rounded-[8px] h-[300px] xl:h-[250px] w-full xl:w-[520px] p-4 xl:p-6 relative mt-1 md:mt-[-0]">
-      <h2 className="text-xl font-bold mt-[8px] mb-[8px] xl:mb-2 text-black text-[20px] ml-[10px] xl:ml-0 mt-[-1px]">
+      <h2 className="text-xl font-bold mt-[8px] xl:mt-0 mb-[8px] xl:mb-2 text-black text-[20px] ml-[10px] xl:ml-0">
         공항 주차장 혼잡도
       </h2>
       <div className="text-gray400 mb-2 mt-[-8px] text-[14px] flex flex-col xl:flex-row xl:items-center space-y-2 xl:space-y-0">
