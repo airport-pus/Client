@@ -286,11 +286,11 @@ const TrafficStatus = () => {
         grid: { display: false },
       },
       y: {
+        min: 1,
+        max: 3,
         ticks: {
           callback: (tickValue: string | number) => getStatusText(Number(tickValue)),
           stepSize: 1,
-          min: 1,
-          max: 3,
         },
         grid: {
           display: true,
