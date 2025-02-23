@@ -1,6 +1,6 @@
 {
     "name": "Airport-PUS",
-    "short_name": "AirportPUS",
+    "short_name": "Airport-PUS",
     "description": "김해국제공항의 모든 정보를 바로 여기서!",
     "start_url": "/",
     "display": "standalone",
