@@ -5,7 +5,7 @@ import StartData from "../start-data/test";
 import { getLogo } from "./logoList";
 import Image from "next/image";
 // utils
-import { formatTime, fetcher, calculateDelay, getRemarkKor } from "@/utils";
+import { formatTime, fetcher, calculateDelay } from "@/utils";
 // type
 import { DisplayFlight } from "@/types/FinishDisplayFlight";
 import { FlightData } from "@/types/FinishFlightData";
@@ -53,12 +53,13 @@ export default function StartInformation() {
         uniqueFlights.set(flight.flightNumber, processedFlight);
       } else {
         const existingFlight = uniqueFlights.get(flight.flightNumber);
-        if (!existingFlight) return;
-        const existingNullCount = [existingFlight.gate, existingFlight.modifiedTime, existingFlight.delay].filter(v => v === "-").length;
-        const newNullCount = [processedFlight.gate, processedFlight.modifiedTime, processedFlight.delay].filter(v => v === "-").length;
+        if (existingFlight) {
+          const existingNullCount = [existingFlight.gate, existingFlight.modifiedTime, existingFlight.delay].filter(v => v === "-").length;
+          const newNullCount = [processedFlight.gate, processedFlight.modifiedTime, processedFlight.delay].filter(v => v === "-").length;
 
-        if (newNullCount < existingNullCount) {
-          uniqueFlights.set(flight.flightNumber, processedFlight);
+          if (newNullCount < existingNullCount) {
+            uniqueFlights.set(flight.flightNumber, processedFlight);
+          }
         }
       }
     });
