@@ -9,7 +9,6 @@ import SectionalConfusion from "./components/sectional-confusion/page"
 import StartInformation from "./components/start-information/page"
 import FinshInformation from "./components/finsh-information/page"
 
-// BeforeInstallPromptEvent 타입 정의 (필요에 따라 속성을 추가하세요)
 interface BeforeInstallPromptEvent extends Event {
   readonly platforms: string[]
   prompt: () => Promise<void>
@@ -21,15 +20,22 @@ export default function Home() {
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null)
   const [showPwaBanner, setShowPwaBanner] = useState(false)
 
+  useEffect(() => {
+    const savedTab = localStorage.getItem('selectedTab')
+    if (savedTab) {
+      setSelected(parseInt(savedTab))
+    }
+  }, [])
+
   const handleButtonClick = (index: number) => {
     setSelected(index)
+    localStorage.setItem('selectedTab', index.toString())
   }
 
   useEffect(() => {
     const handleBeforeInstallPrompt = (event: BeforeInstallPromptEvent) => {
       event.preventDefault()
       setDeferredPrompt(event)
-      // 모바일 환경에서만 배너 표시 (로컬에서는 표시하지 않음)
       if (window.innerWidth < 768) {
         setShowPwaBanner(true)
       }

@@ -32,13 +32,14 @@ export const formatDate = (date: Date): string => {
 }
 
 export const formatTime = (time: string | null): string => {
-    if (!time) return "시간 미정";
+    if (!time) return "없음";
 
     try {
         const hours = time.substring(0, 2);
         const minutes = time.substring(2, 4);
         if (hours && minutes) {
-            return `2025-02-12 ${hours}:${minutes}`;
+            const today = formatDate(new Date());
+            return `${today} ${hours}:${minutes}`;
         }
         return "시간 미정";
     } catch {

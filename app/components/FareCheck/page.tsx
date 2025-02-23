@@ -189,7 +189,7 @@ function ResultView({ fee, onReset }: ResultViewProps) {
 
 function FormSkeleton() {
   return (
-    <div className="flex flex-col justify-center items-start h-full animate-pulse">
+    <div className="flex flex-col justify-center items-start h-[520px] xl:h-full animate-pulse">
       <div className="bg-gray-300 h-8 w-56 mb-6 rounded"></div>
       <div className="w-full space-y-4">
         <div className="bg-gray-300 h-10 w-full rounded"></div>
@@ -202,7 +202,7 @@ function FormSkeleton() {
 
 function ResultSkeleton() {
   return (
-    <div className="flex items-center flex-col justify-center h-full gap-1 animate-pulse">
+    <div className="flex items-center flex-col justify-center h-[520px] xl:h-full gap-1 animate-pulse">
       <div className="bg-gray-300 w-[180px] h-[50px] mb-4 rounded-md"></div>
       <div className="bg-gray-300 w-[240px] h-[24px] mb-4 rounded-md"></div>
       <div className="bg-gray-300 w-[115px] h-[36px] rounded-md"></div>
@@ -331,7 +331,7 @@ export default function ParkingFeeCalculator() {
   }
 
   return (
-    <div className="col-span-12 xl:col-span-4 bg-white rounded-[8px] h-auto xl:h-[250px] p-6 relative xl:w-[700px] xl:left-[-300px]">
+    <div className="col-span-12 xl:col-span-4 bg-white rounded-[8px] min-h-[250px] xl:h-[250px] p-6 relative xl:w-[700px] xl:left-[-300px]">
       {initialLoading ? (
         <FormSkeleton />
       ) : loading ? (

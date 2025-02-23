@@ -2,10 +2,10 @@
 import { useState, useEffect, useRef, useMemo } from "react";
 import useSWR from "swr";
 import StartData from "../start-data/test";
-import { getLogo } from "./logoList"; // airlineDictionary를 사용하지 않으므로 제거
+import { getLogo } from "./logoList";
 import Image from "next/image";
 // utils
-import { formatTime, fetcher, calculateDelay, getRemarkKor } from "@/utils";
+import { formatTime, fetcher, calculateDelay } from "@/utils";
 // type
 import { DisplayFlight } from "@/types/FinishDisplayFlight";
 import { FlightData } from "@/types/FinishFlightData";
@@ -37,18 +37,30 @@ export default function StartInformation() {
     if (!data) return [];
     const uniqueFlights = new Map<string, DisplayFlight>();
     data.forEach((flight) => {
+      const processedFlight = {
+        airline: flight.airlineKorean,
+        flightNumber: flight.flightNumber,
+        destination: flight.boardingKor,
+        gate: flight.baggageClaim || "-",
+        status: flight.remarkKor || "-",
+        scheduledTime: formatTime(flight.std),
+        modifiedTime: formatTime(flight.etd || "-"),
+        delay: calculateDelay(flight.std, flight.etd || "0"),
+        logo: `/logos/${getLogo(flight.airlineEnglish)}`,
+      };
+
       if (!uniqueFlights.has(flight.flightNumber)) {
-        uniqueFlights.set(flight.flightNumber, {
-          airline: flight.airlineKorean,
-          flightNumber: flight.flightNumber,
-          destination: flight.boardingKor,
-          gate: flight.baggageClaim || "-",
-          status: getRemarkKor(flight) || "-",
-          scheduledTime: formatTime(flight.std),
-          modifiedTime: formatTime(flight.etd),
-          delay: calculateDelay(flight.std, flight.etd),
-          logo: `/logos/${getLogo(flight.airlineEnglish)}`,
-        });
+        uniqueFlights.set(flight.flightNumber, processedFlight);
+      } else {
+        const existingFlight = uniqueFlights.get(flight.flightNumber);
+        if (existingFlight) {
+          const existingNullCount = [existingFlight.gate, existingFlight.modifiedTime, existingFlight.delay].filter(v => v === "-").length;
+          const newNullCount = [processedFlight.gate, processedFlight.modifiedTime, processedFlight.delay].filter(v => v === "-").length;
+
+          if (newNullCount < existingNullCount) {
+            uniqueFlights.set(flight.flightNumber, processedFlight);
+          }
+        }
       }
     });
     return Array.from(uniqueFlights.values());
@@ -230,7 +242,7 @@ export default function StartInformation() {
         <div className="mt-6 grid grid-cols-5 bg-grayHover p-2 text-center text-gray600 font-regular text-[14px]">
           <div>항공사 및 항공편명</div>
           <div>출발지</div>
-          <div>탑승구</div>
+          <div>도착 게이트</div>
           <div>항공편 상태</div>
           <div>시간</div>
         </div>
@@ -252,7 +264,7 @@ export default function StartInformation() {
           </div>
         )}
         {displayedFlights.map((flight, index) => (
-          <div key={flight.flightNumber || index} className="bg-white p-4">
+          <div key={`${flight.flightNumber}-${index}`} className="bg-white p-4">
             <div className="flex justify-between items-center mb-2">
               <div className="font-bold text-lg text-black">
                 {flight.airline} {flight.flightNumber}
@@ -267,7 +279,7 @@ export default function StartInformation() {
             <div className="mb-1 text-gray600">
               <strong className="font-medium">출발지: </strong>
               <span className="text-black">{flight.destination}</span>
-            </div>
+            </div>ㅈ
             <div className="mb-1 text-gray600">
               <strong className="font-medium">탑승구: </strong>
               <span className="text-blue500">{flight.gate}</span>

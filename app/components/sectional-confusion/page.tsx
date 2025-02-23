@@ -291,6 +291,13 @@ const TrafficStatus = () => {
           stepSize: 1,
           min: 1,
           max: 3,
+          autoSkip: false,
+          major: {
+            enabled: true
+          },
+          font: {
+            size: (typeof window !== 'undefined' && window.innerWidth < 768) ? 13 : 11,
+          }
         },
         grid: {
           display: true,

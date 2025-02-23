@@ -45,24 +45,47 @@ export default function StartInformation() {
   };
 
   const allFlightData = useMemo(() => {
-    const uniqueFlights = new Map();
+    const uniqueFlights = new Map<string, { flight: DisplayFlight; nullCount: number }>();
+  
+    const countNulls = (flight: FlightData): number => {
+      let count = 0;
+      if (!flight.airlineKorean) count++;
+      if (!flight.flightNumber) count++;
+      if (!flight.arrivedKor) count++;
+      if (!flight.gate) count++;
+      if (!flight.remarkKor) count++;
+      if (!flight.std) count++;
+      if (!flight.etd) count++;
+      if (!flight.airlineEnglish) count++;
+      return count;
+    };
+  
     data?.forEach((flight) => {
+      const nullCount = countNulls(flight);
+      const transformedFlight: DisplayFlight = {
+        airline: flight.airlineKorean,
+        flightNumber: flight.flightNumber,
+        destination: flight.arrivedKor,
+        gate: flight.gate || "-",
+        status: flight.remarkKor || "-",
+        scheduledTime: updateFlightTimeWithToday(formatTime(flight.std)),
+        modifiedTime: updateFlightTimeWithToday(formatTime(flight.etd)),
+        delay: calculateDelay(flight.std, flight.etd),
+        logo: `/logos/${getLogo(flight.airlineEnglish)}`
+      };
+  
       if (!uniqueFlights.has(flight.flightNumber)) {
-        uniqueFlights.set(flight.flightNumber, {
-          airline: flight.airlineKorean,
-          flightNumber: flight.flightNumber,
-          destination: flight.arrivedKor,
-          gate: flight.gate || "-",
-          status: flight.remarkKor || "-",
-          scheduledTime: updateFlightTimeWithToday(formatTime(flight.std)),
-          modifiedTime: updateFlightTimeWithToday(formatTime(flight.etd)),
-          delay: calculateDelay(flight.std, flight.etd),
-          logo: `/logos/${getLogo(flight.airlineEnglish)}`,
-        });
+        uniqueFlights.set(flight.flightNumber, { flight: transformedFlight, nullCount });
+      } else {
+        const existing = uniqueFlights.get(flight.flightNumber);
+        if (existing && nullCount < existing.nullCount) {
+          uniqueFlights.set(flight.flightNumber, { flight: transformedFlight, nullCount });
+        }
       }
     });
-    return Array.from(uniqueFlights.values());
+    return Array.from(uniqueFlights.values()).map((item) => item.flight);
   }, [data]);
+  
 
   useEffect(() => {
     const filteredFlights = allFlightData.filter((flight) =>
