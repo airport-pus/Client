@@ -252,7 +252,7 @@ export default function StartInformation() {
           </div>
         )}
         {displayedFlights.map((flight, index) => (
-          <div key={flight.flightNumber || index} className="bg-white p-4">
+          <div key={`${flight.flightNumber}-${index}`} className="bg-white p-4">
             <div className="flex justify-between items-center mb-2">
               <div className="font-bold text-lg text-black">
                 {flight.airline} {flight.flightNumber}
