@@ -43,31 +43,26 @@ export default function StartInformation() {
     const day = String(now.getDate()).padStart(2, "0");
     return `${year}-${month}-${day} ${parts[1]}`;
   };
+
   const allFlightData = useMemo(() => {
-    // 해당 항공편 데이터에서 null 또는 undefined인 필드 개수를 계산하는 헬퍼 함수
+    const uniqueFlights = new Map<string, { flight: DisplayFlight; nullCount: number }>();
+  
     const countNulls = (flight: FlightData): number => {
       let count = 0;
-      if (flight.airlineKorean == null) count++;
-      if (flight.arrivedKor == null) count++;
-      if (flight.gate == null) count++;
-      if (flight.remarkKor == null) count++;
-      if (flight.std == null) count++;
-      if (flight.etd == null) count++;
-      if (flight.airlineEnglish == null) count++;
+      if (!flight.airlineKorean) count++;
+      if (!flight.flightNumber) count++;
+      if (!flight.arrivedKor) count++;
+      if (!flight.gate) count++;
+      if (!flight.remarkKor) count++;
+      if (!flight.std) count++;
+      if (!flight.etd) count++;
+      if (!flight.airlineEnglish) count++;
       return count;
     };
   
-    // 중복 처리를 위해 DisplayFlight과 nullCount를 함께 저장할 타입
-    type FlightTuple = {
-      display: DisplayFlight;
-      nullCount: number;
-    };
-  
-    const uniqueFlights = new Map<string, FlightTuple>();
-  
     data?.forEach((flight) => {
       const nullCount = countNulls(flight);
-      const displayFlight: DisplayFlight = {
+      const transformedFlight: DisplayFlight = {
         airline: flight.airlineKorean,
         flightNumber: flight.flightNumber,
         destination: flight.arrivedKor,
@@ -76,19 +71,19 @@ export default function StartInformation() {
         scheduledTime: updateFlightTimeWithToday(formatTime(flight.std)),
         modifiedTime: updateFlightTimeWithToday(formatTime(flight.etd)),
         delay: calculateDelay(flight.std, flight.etd),
-        logo: `/logos/${getLogo(flight.airlineEnglish)}`,
+        logo: `/logos/${getLogo(flight.airlineEnglish)}`
       };
-
-      if (uniqueFlights.has(flight.flightNumber)) {
+  
+      if (!uniqueFlights.has(flight.flightNumber)) {
+        uniqueFlights.set(flight.flightNumber, { flight: transformedFlight, nullCount });
+      } else {
         const existing = uniqueFlights.get(flight.flightNumber);
         if (existing && nullCount < existing.nullCount) {
-          uniqueFlights.set(flight.flightNumber, { display: displayFlight, nullCount });
+          uniqueFlights.set(flight.flightNumber, { flight: transformedFlight, nullCount });
         }
-      } else {
-        uniqueFlights.set(flight.flightNumber, { display: displayFlight, nullCount });
       }
     });
-    return Array.from(uniqueFlights.values()).map((item) => item.display);
+    return Array.from(uniqueFlights.values()).map((item) => item.flight);
   }, [data]);
   
 
