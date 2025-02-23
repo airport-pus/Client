@@ -2,7 +2,7 @@
 import { useState, useEffect, useRef, useMemo } from "react";
 import useSWR from "swr";
 import StartData from "../start-data/test";
-import { getLogo } from "./logoList"; // airlineDictionary를 사용하지 않으므로 제거
+import { getLogo } from "./logoList";
 import Image from "next/image";
 // utils
 import { formatTime, fetcher, calculateDelay, getRemarkKor } from "@/utils";
@@ -37,18 +37,29 @@ export default function StartInformation() {
     if (!data) return [];
     const uniqueFlights = new Map<string, DisplayFlight>();
     data.forEach((flight) => {
+      const processedFlight = {
+        airline: flight.airlineKorean,
+        flightNumber: flight.flightNumber,
+        destination: flight.boardingKor,
+        gate: flight.baggageClaim || "-",
+        status: flight.remarkKor || "-",
+        scheduledTime: formatTime(flight.std),
+        modifiedTime: formatTime(flight.etd || "-"),
+        delay: calculateDelay(flight.std, flight.etd || "0"),
+        logo: `/logos/${getLogo(flight.airlineEnglish)}`,
+      };
+
       if (!uniqueFlights.has(flight.flightNumber)) {
-        uniqueFlights.set(flight.flightNumber, {
-          airline: flight.airlineKorean,
-          flightNumber: flight.flightNumber,
-          destination: flight.boardingKor,
-          gate: flight.baggageClaim || "-",
-          status: getRemarkKor(flight) || "-",
-          scheduledTime: formatTime(flight.std),
-          modifiedTime: formatTime(flight.etd),
-          delay: calculateDelay(flight.std, flight.etd),
-          logo: `/logos/${getLogo(flight.airlineEnglish)}`,
-        });
+        uniqueFlights.set(flight.flightNumber, processedFlight);
+      } else {
+        const existingFlight = uniqueFlights.get(flight.flightNumber);
+        if (!existingFlight) return;
+        const existingNullCount = [existingFlight.gate, existingFlight.modifiedTime, existingFlight.delay].filter(v => v === "-").length;
+        const newNullCount = [processedFlight.gate, processedFlight.modifiedTime, processedFlight.delay].filter(v => v === "-").length;
+
+        if (newNullCount < existingNullCount) {
+          uniqueFlights.set(flight.flightNumber, processedFlight);
+        }
       }
     });
     return Array.from(uniqueFlights.values());
