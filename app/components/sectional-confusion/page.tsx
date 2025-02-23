@@ -254,7 +254,7 @@ const TrafficStatus = () => {
     labels: dynamicLabels,
     datasets: [
       {
-        label: `${selectedSection} 시간별 혼잡도`,
+        label: `${todayDateStr} 시간별 혼잡도`,
         data: dynamicData,
         borderColor: "#215DCE",
         backgroundColor: "rgba(33, 93, 206, 0.2)",
@@ -353,7 +353,7 @@ const TrafficStatus = () => {
             <span className="hidden lg:inline">{`${selectedSection} 혼잡도 그래프`}</span>
           </div>
         </div>
-        <div className="mb-4 text-[14px] text-gray400 ml-[10px] lg:ml-[-8px] hidden lg:block">
+        <div className="text-[14px] text-gray400 ml-[-4px] lg:ml-[-8px] mb-6 lg:mb-4">
           파란색 점을 누르면 세부정보를 볼 수 있어요.
         </div>
         <div className="h-[300px] lg:h-[250px] lg:ml-[-8px] relative">

@@ -7,24 +7,21 @@
 | 주차장 혼잡도         | 구역별 (P1, P2, P3) 주차장 혼잡도 정보 |
 | 주차 요금 조회 | 할인, 시간, 주차한 곳 입력을 통한 주차요금 계산 |
 
-
-
-
-
-
-
-## 🛠 사용 기술
-- ⚛️ React 18 + Next.js 14
+## 🛠 Tech Stack
+- ⚛️ React 18 + Next.js 15
 - 🎨 Styling: TailWindCSS
 - 🔄 State Management:
   - useSWR
-
 - 📚 Storybook 8
 - 🧪 TypeScript 5
 - 🌐 Vite
 
+- 🟢 Node.js (>= 18)
+- 🏗️ Monorepo with Turborepo
 
-## 🧑‍💻 개발자
-|<img src="https://avatars.githubusercontent.com/u/128358820?v=4" width="160">|<img src="https://avatars.githubusercontent.com/u/179797931?v=4" width="160">|
-|:-:|:-:|
-|[신희성](https://github.com/huise0ng)|[김규민](https://github.com/gyumingim)|
+
+## 🧑‍💻 Contributor
+<a href="https://github.com/airport-pus/Client/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=airport-pus/Client" />
+</a>
+
