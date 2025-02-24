@@ -10,11 +10,10 @@ import { formatTime, fetcher, calculateDelay } from "@/utils";
 import { DisplayFlight } from "@/types/FinishDisplayFlight";
 import { FlightData } from "@/types/FinishFlightData";
 
-
 export default function StartInformation() {
   const { data, error } = useSWR<FlightData[]>(
     `${process.env.NEXT_PUBLIC_API_BASE_URL}/apron?io=I`,
-    fetcher,  
+    fetcher,
     { refreshInterval: 30000 }
   );
 
@@ -238,6 +237,7 @@ export default function StartInformation() {
         </div>
       </div>
 
+      {/* 데스크톱 화면 */}
       <div className="hidden md:block">
         <div className="mt-6 grid grid-cols-5 bg-grayHover p-2 text-center text-gray600 font-regular text-[14px]">
           <div>항공사 및 항공편명</div>
@@ -257,6 +257,7 @@ export default function StartInformation() {
         />
       </div>
 
+      {/* 모바일 화면 */}
       <div className="md:hidden divide-y divide-gray-300">
         {displayedFlights.length === 0 && inputValue && (
           <div className="text-center text-gray700 mt-8 mb-4">
@@ -279,29 +280,37 @@ export default function StartInformation() {
             <div className="mb-1 text-gray600">
               <strong className="font-medium">출발지: </strong>
               <span className="text-black">{flight.destination}</span>
-            </div>ㅈ
+            </div>
+            {/* 여기에 있던 ㅈ 문자를 삭제했습니다. */}
             <div className="mb-1 text-gray600">
               <strong className="font-medium">탑승구: </strong>
               <span className="text-blue500">{flight.gate}</span>
             </div>
             <div className="mb-1 text-gray600">
               <strong className="font-medium">상태: </strong>
-              <span className={`text-${flight.status === "지연" ? "red500" : "blue500"}`}>
+              <span
+                className={`text-${
+                  flight.status === "지연" ? "red500" : "blue500"
+                }`}
+              >
                 {flight.status}
               </span>
             </div>
             <div className="text-gray600">
               {flight.scheduledTime === flight.modifiedTime ? (
                 <span>
-                  <strong className="font-medium">시간: </strong> {flight.modifiedTime}
+                  <strong className="font-medium">시간: </strong>{" "}
+                  {flight.modifiedTime}
                 </span>
               ) : (
                 <span>
                   <div>
-                    <strong className="font-medium">예정: </strong> {flight.scheduledTime}
+                    <strong className="font-medium">예정: </strong>{" "}
+                    {flight.scheduledTime}
                   </div>
                   <div>
-                    <strong className="font-medium">변경: </strong> {flight.modifiedTime}
+                    <strong className="font-medium">변경: </strong>{" "}
+                    {flight.modifiedTime}
                     {flight.delay && (
                       <span className="text-red500"> ({flight.delay})</span>
                     )}
