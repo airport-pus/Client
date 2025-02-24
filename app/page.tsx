@@ -56,6 +56,18 @@ export default function Home() {
     };
   }, []);
 
+  // PWA 배너가 보일 때 스크롤과 터치 이벤트를 막음
+  useEffect(() => {
+    if (showPwaBanner) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, [showPwaBanner]);
+
   const handleInstallPwa = () => {
     if (deferredPrompt) {
       deferredPrompt.prompt()
