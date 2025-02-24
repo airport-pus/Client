@@ -95,7 +95,7 @@ export default function Home() {
                   <img
                     src="/pwa.svg"
                     alt="Logo"
-                    className="mx-auto mb-4 mt-[-60px] w-[190px]"
+                    className="mx-auto mb-4 mt-[-60px] w-[240px] mb-[0px]"
                   />
                   <div>
                     <span className="font-bold">airport-pus</span>
@@ -111,7 +111,7 @@ export default function Home() {
                   앱에서 보기
                 </button>
                 <button className="text-gray-500 text-sm w-full px-[16px] py-[8px] rounded-[6px]" onClick={() => setShowPwaBanner(false)}>
-                  <span className="block -mt-2.5">오늘은 그냥 볼게요.</span>
+                  <span className="block">오늘은 그냥 볼게요.</span>
                 </button>
               </div>
             </div>
