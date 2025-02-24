@@ -1,7 +1,7 @@
 export default function Footer({ className }: { className?: string }) {
     return (
       <footer 
-        className={`h-[89px] bg-white w-full relative ${className || ""}`}
+        className={`h-[89px] bg-white w-full relative ${className || ""} md:h-[100px] lg:h-[120px]`}
         style={{
           boxShadow: '824px 178px 250px rgba(0, 0, 0, 0.01), 463px 100px 250px rgba(0, 0, 0, 0.05), 206px 44px 211px rgba(0, 0, 0, 0.09), 51px 11px 116px rgba(0, 0, 0, 0.1)'
         }}
