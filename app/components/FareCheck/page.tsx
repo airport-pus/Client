@@ -82,6 +82,12 @@ function ParkingOptions({ parkingOptions, onOptionChange }: ParkingOptionsProps)
 }
 
 function ParkingForm({ dates, parkingOptions, onOptionChange, onDateChange, onCalculate }: ParkingFormProps) {
+  const isFormValid =
+    dates.startDate.trim() !== "" &&
+    dates.startTime.trim() !== "" &&
+    dates.endDate.trim() !== "" &&
+    dates.endTime.trim() !== ""
+
   return (
     <>
       <h2 className="text-xl font-bold mb-4 text-black">예상 주차요금 조회</h2>
@@ -149,8 +155,11 @@ function ParkingForm({ dates, parkingOptions, onOptionChange, onDateChange, onCa
           </div>
         </div>
         <button
-          className="h-[36px] w-[96px] bg-blue500 text-white px-2 rounded-[8px] mt-10 xl:mt-8 xl:ml-2 transition-all duration-200 ease-in-out xl:translate-x-[-36px] order-5"
+          disabled={!isFormValid}
           onClick={onCalculate}
+          className={`h-[36px] w-[96px] text-white px-2 rounded-[8px] mt-10 xl:mt-8 xl:ml-2 transition-all duration-200 ease-in-out xl:translate-x-[-36px] order-5 ${
+            isFormValid ? "bg-blue500 cursor-pointer" : "bg-gray400 cursor-not-allowed"
+          }`}
         >
           🚗 조회
         </button>
