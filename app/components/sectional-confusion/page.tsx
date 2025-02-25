@@ -104,7 +104,8 @@ const TrafficStatus = () => {
   );
   const { data: congestionHistory, error: historyError } = useSWR<CongestionRecord[]>(
     `${process.env.NEXT_PUBLIC_API_BASE_URL}/congestions`,
-    fetcher
+    fetcher,
+    { refreshInterval: 30000 }
   );
 
   let leftContent;
@@ -250,11 +251,15 @@ const TrafficStatus = () => {
 
   const { labels: dynamicLabels, data: dynamicData } = generateChartData(dedupedRecords, selectedSection);
 
+  const chartLabelDate = dedupedRecords.length > 0
+    ? extractDateAndHour(dedupedRecords[0].date).date
+    : todayDateStr;
+
   const chartData = {
     labels: dynamicLabels,
     datasets: [
       {
-        label: `${todayDateStr} 시간별 혼잡도`,
+        label: `${chartLabelDate} 시간별 혼잡도`,
         data: dynamicData,
         borderColor: "#215DCE",
         backgroundColor: "rgba(33, 93, 206, 0.2)",
