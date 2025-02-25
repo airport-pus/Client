@@ -37,6 +37,7 @@ export default function Home() {
     const handleBeforeInstallPrompt = (event: BeforeInstallPromptEvent) => {
       event.preventDefault();
       setDeferredPrompt(event);
+
       if (window.innerWidth < 768) {
         setShowPwaBanner(true);
       }
@@ -57,20 +58,19 @@ export default function Home() {
     };
   }, []);
 
-  // iOS 기기 확인 후 배너 표시 (iOS는 beforeinstallprompt 미지원)
   useEffect(() => {
     const isIos = () => {
       return /iphone|ipad|ipod/.test(window.navigator.userAgent.toLowerCase());
     };
 
-    if (isIos() && window.innerWidth < 768) {
+    if (isIos() && !(window.navigator as any).standalone) {
       setShowIosBanner(true);
     }
   }, []);
 
   useEffect(() => {
     const updateBodyOverflow = () => {
-      if ((showPwaBanner || showIosBanner) && window.innerWidth < 768) {
+      if (showPwaBanner || showIosBanner) {
         document.body.style.overflow = 'hidden';
       } else {
         document.body.style.overflow = 'auto';
@@ -88,25 +88,26 @@ export default function Home() {
 
   const handleInstallPwa = () => {
     if (deferredPrompt) {
-      deferredPrompt.prompt()
+      deferredPrompt.prompt();
       deferredPrompt.userChoice.then((choiceResult: { outcome: 'accepted' | 'dismissed'; platform: string }) => {
         if (choiceResult.outcome === "accepted") {
-          console.log("PWA 설치 완료!")
+          console.log("PWA 설치 완료!");
         } else {
-          console.log("PWA 설치 취소")
+          console.log("PWA 설치 취소");
         }
-        setShowPwaBanner(false)
-        setDeferredPrompt(null)
-      })
+        setShowPwaBanner(false);
+        setDeferredPrompt(null);
+      });
     }
-  }
+  };
 
   const handleIosInstall = () => {
     window.location.href = "/ios";
-  }
+  };
 
   return (
     <div className="flex flex-col min-h-screen">
+      {/* Android 등 beforeinstallprompt 지원하는 기기용 배너 (모바일 전용) */}
       {showPwaBanner && (
         <>
           <div className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden" />
@@ -129,10 +130,16 @@ export default function Home() {
                 </div>
               </div>
               <div className="mt-[20px] w-full flex flex-col items-center space-y-[10px]">
-                <button className="bg-blue500 text-white w-[260px] h-[46px] rounded-[20px]" onClick={handleInstallPwa}>
+                <button
+                  className="bg-blue500 text-white w-[260px] h-[46px] rounded-[20px]"
+                  onClick={handleInstallPwa}
+                >
                   앱에서 보기
                 </button>
-                <button className="text-gray-500 text-sm w-full px-[16px] py-[8px] rounded-[6px]" onClick={() => setShowPwaBanner(false)}>
+                <button
+                  className="text-gray-500 text-sm w-full px-[16px] py-[8px] rounded-[6px]"
+                  onClick={() => setShowPwaBanner(false)}
+                >
                   <span className="block">오늘은 그냥 볼게요.</span>
                 </button>
               </div>
@@ -143,8 +150,8 @@ export default function Home() {
 
       {showIosBanner && (
         <>
-          <div className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden" />
-          <div className="fixed bottom-[68px] left-1/2 transform -translate-x-1/2 bg-white text-black font-pretendard md:hidden px-[16px] py-[56px] md:px-[24px] md:py-[24px] rounded-[13px] shadow-lg flex flex-col items-center space-y-[12px] min-w-[300px] md:min-w-[350px] z-50">
+          <div className="fixed inset-0 bg-black bg-opacity-50 z-40" />
+          <div className="fixed bottom-[68px] left-1/2 transform -translate-x-1/2 bg-white text-black font-pretendard px-[16px] py-[56px] md:px-[24px] md:py-[24px] rounded-[13px] shadow-lg flex flex-col items-center space-y-[12px] min-w-[300px] md:min-w-[350px] z-50">
             <div className="translate-y-[40px] w-full">
               <div className="flex flex-col justify-end flex-grow">
                 <div className="text-center">
@@ -163,10 +170,16 @@ export default function Home() {
                 </div>
               </div>
               <div className="mt-[20px] w-full flex flex-col items-center space-y-[10px]">
-                <button className="bg-blue500 text-white w-[260px] h-[46px] rounded-[20px]" onClick={handleIosInstall}>
+                <button
+                  className="bg-blue500 text-white w-[260px] h-[46px] rounded-[20px]"
+                  onClick={handleIosInstall}
+                >
                   앱에서 보기
                 </button>
-                <button className="text-gray-500 text-sm w-full px-[16px] py-[8px] rounded-[6px]" onClick={() => setShowIosBanner(false)}>
+                <button
+                  className="text-gray-500 text-sm w-full px-[16px] py-[8px] rounded-[6px]"
+                  onClick={() => setShowIosBanner(false)}
+                >
                   <span className="block">오늘은 그냥 볼게요.</span>
                 </button>
               </div>
