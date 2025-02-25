@@ -32,7 +32,6 @@ const getCongestionLabel = (value: number): string => {
   return "혼잡"
 }
 
-// API로부터 받아올 데이터의 타입
 interface ParkingLot {
   parkingAirportCodeName: string
   parkingCongestionDegree: string
@@ -41,7 +40,6 @@ interface ParkingLot {
   parkingTotalSpace: number
 }
 
-// 컴포넌트에서 사용할 데이터 타입
 interface ParkingData {
   name: string
   congestion: string
@@ -51,12 +49,10 @@ interface ParkingData {
   remaining: number
 }
 
-// Extended dataset interface - parkingInfo를 추가
 interface ExtendedLineDataset extends ChartDataset<"line", number[]> {
   parkingInfo: ParkingData[]
 }
 
-// Extended tooltip item interface - dataset이 ExtendedLineDataset임을 명시
 interface ExtendedTooltipItem extends TooltipItem<"line"> {
   dataset: ExtendedLineDataset
 }
@@ -66,7 +62,9 @@ const ParkingCongestion = () => {
     `${process.env.NEXT_PUBLIC_API_BASE_URL}/parking`,
     fetcher,
     {
-      refreshInterval: 3000,
+      refreshInterval: 30000,
+      revalidateOnFocus: true,
+      dedupingInterval: 60000,
     }
   )
 

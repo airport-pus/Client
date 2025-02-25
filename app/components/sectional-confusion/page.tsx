@@ -105,7 +105,12 @@ const TrafficStatus = () => {
   const { data: congestionHistory, error: historyError } = useSWR<CongestionRecord[]>(
     `${process.env.NEXT_PUBLIC_API_BASE_URL}/congestions`,
     fetcher,
-    { refreshInterval: 30000 }
+    { 
+      refreshInterval: 30000,
+      revalidateOnFocus: true,
+      dedupingInterval: 60000, 
+    
+    }
   );
 
   let leftContent;
