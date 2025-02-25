@@ -56,14 +56,20 @@ export default function Home() {
     };
   }, []);
 
-  // PWA 배너가 보일 때 스크롤과 터치 이벤트를 막음
   useEffect(() => {
-    if (showPwaBanner) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'auto';
-    }
+    const updateBodyOverflow = () => {
+      if (showPwaBanner && window.innerWidth < 768) {
+        document.body.style.overflow = 'hidden';
+      } else {
+        document.body.style.overflow = 'auto';
+      }
+    };
+    updateBodyOverflow();
+
+    window.addEventListener('resize', updateBodyOverflow);
+
     return () => {
+      window.removeEventListener('resize', updateBodyOverflow);
       document.body.style.overflow = 'auto';
     };
   }, [showPwaBanner]);
