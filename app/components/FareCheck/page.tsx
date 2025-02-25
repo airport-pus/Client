@@ -81,7 +81,6 @@ function ParkingOptions({ parkingOptions, onOptionChange }: ParkingOptionsProps)
   )
 }
 
-
 function ParkingForm({ dates, parkingOptions, onOptionChange, onDateChange, onCalculate }: ParkingFormProps) {
   return (
     <>
@@ -186,7 +185,6 @@ function ResultView({ fee, onReset }: ResultViewProps) {
   )
 }
 
-
 function FormSkeleton() {
   return (
     <div className="flex flex-col justify-center items-start h-[520px] xl:h-full animate-pulse">
@@ -209,7 +207,6 @@ function ResultSkeleton() {
     </div>
   )
 }
-
 
 export default function ParkingFeeCalculator() {
   const [holidays, setHolidays] = useState<string[]>([])
@@ -238,9 +235,9 @@ export default function ParkingFeeCalculator() {
   }, [])
 
   const [dates, setDates] = useState({
-    startDate: "2023-03-13",
+    startDate: formatDate(new Date()),
     startTime: "00:00",
-    endDate: "2023-03-13",
+    endDate: "", 
     endTime: "00:00"
   })
   const [parkingOptions, setParkingOptions] = useState({
@@ -257,12 +254,10 @@ export default function ParkingFeeCalculator() {
 
   useEffect(() => {
     const today = new Date()
-    const startDate = new Date(today)
-    startDate.setDate(today.getDate() - 7)
     setDates(prev => ({
       ...prev,
-      startDate: formatDate(startDate),
-      endDate: formatDate(today)
+      startDate: formatDate(today),
+      endDate: ""
     }))
     const timer = setTimeout(() => {
       setInitialLoading(false)
