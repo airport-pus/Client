@@ -19,6 +19,7 @@ export default function Home() {
   const [selected, setSelected] = useState<number>(1)
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null)
   const [showPwaBanner, setShowPwaBanner] = useState(false)
+  const [showIosBanner, setShowIosBanner] = useState(false)
 
   useEffect(() => {
     const savedTab = localStorage.getItem('selectedTab')
@@ -56,9 +57,20 @@ export default function Home() {
     };
   }, []);
 
+  // iOS 기기 확인 후 배너 표시 (iOS는 beforeinstallprompt 미지원)
+  useEffect(() => {
+    const isIos = () => {
+      return /iphone|ipad|ipod/.test(window.navigator.userAgent.toLowerCase());
+    };
+
+    if (isIos() && window.innerWidth < 768) {
+      setShowIosBanner(true);
+    }
+  }, []);
+
   useEffect(() => {
     const updateBodyOverflow = () => {
-      if (showPwaBanner && window.innerWidth < 768) {
+      if ((showPwaBanner || showIosBanner) && window.innerWidth < 768) {
         document.body.style.overflow = 'hidden';
       } else {
         document.body.style.overflow = 'auto';
@@ -72,7 +84,7 @@ export default function Home() {
       window.removeEventListener('resize', updateBodyOverflow);
       document.body.style.overflow = 'auto';
     };
-  }, [showPwaBanner]);
+  }, [showPwaBanner, showIosBanner]);
 
   const handleInstallPwa = () => {
     if (deferredPrompt) {
@@ -87,6 +99,10 @@ export default function Home() {
         setDeferredPrompt(null)
       })
     }
+  }
+
+  const handleIosInstall = () => {
+    window.location.href = "/ios";
   }
 
   return (
@@ -124,6 +140,41 @@ export default function Home() {
           </div>
         </>
       )}
+
+      {showIosBanner && (
+        <>
+          <div className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden" />
+          <div className="fixed bottom-[68px] left-1/2 transform -translate-x-1/2 bg-white text-black font-pretendard md:hidden px-[16px] py-[56px] md:px-[24px] md:py-[24px] rounded-[13px] shadow-lg flex flex-col items-center space-y-[12px] min-w-[300px] md:min-w-[350px] z-50">
+            <div className="translate-y-[40px] w-full">
+              <div className="flex flex-col justify-end flex-grow">
+                <div className="text-center">
+                  <img
+                    src="/pwa.svg"
+                    alt="Logo"
+                    className="mx-auto mb-4 mt-[-60px] w-[240px] mb-[0px]"
+                  />
+                  <div>
+                    <span className="font-bold">airport-pus</span>
+                    <span className="font-light"> 앱으로</span>
+                  </div>
+                  <div className="font-light">
+                    빠르게 서비스 이용해보세요.
+                  </div>
+                </div>
+              </div>
+              <div className="mt-[20px] w-full flex flex-col items-center space-y-[10px]">
+                <button className="bg-blue500 text-white w-[260px] h-[46px] rounded-[20px]" onClick={handleIosInstall}>
+                  앱에서 보기
+                </button>
+                <button className="text-gray-500 text-sm w-full px-[16px] py-[8px] rounded-[6px]" onClick={() => setShowIosBanner(false)}>
+                  <span className="block">오늘은 그냥 볼게요.</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+
       <main className="flex-grow 2md:p-8 p-2 bg-[#F3F4F6] font-pretendard">
         <div className="max-w-[1280px] mx-auto 2md:px-5 px-2">
           <Header />
