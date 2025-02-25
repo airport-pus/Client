@@ -60,9 +60,9 @@ function ParkingOptions({ parkingOptions, onOptionChange }: ParkingOptionsProps)
       </div>
       <div className="mb-4 mt-[-3px] ml-[120px] order-3 hidden xl:block">
         <span className="text-sm font-semibold text-gray600 ml-[-40px] whitespace-nowrap">할인</span>
-        <div className="flex items-center mt-[2]">
+        <div className="flex items-center mt-[2] cursor-pointer">
           <select
-            className="border px-3 py-1 rounded-md text-gray500 bg-blue100 border-blue200 appearance-none"
+            className="border px-3 py-1 rounded-md text-gray500 bg-blue100 border-blue200 appearance-none cursor-pointer"
             value={parkingOptions.discountType}
             onChange={onOptionChange("discountType")}
             style={{ transform: "translateX(-40px) translateY(3px)" }}
@@ -81,8 +81,13 @@ function ParkingOptions({ parkingOptions, onOptionChange }: ParkingOptionsProps)
   )
 }
 
-
 function ParkingForm({ dates, parkingOptions, onOptionChange, onDateChange, onCalculate }: ParkingFormProps) {
+  const isFormValid =
+    dates.startDate.trim() !== "" &&
+    dates.startTime.trim() !== "" &&
+    dates.endDate.trim() !== "" &&
+    dates.endTime.trim() !== ""
+
   return (
     <>
       <h2 className="text-xl font-bold mb-4 text-black">예상 주차요금 조회</h2>
@@ -109,15 +114,15 @@ function ParkingForm({ dates, parkingOptions, onOptionChange, onDateChange, onCa
         <div className="flex-1">
           <span className="text-sm font-semibold text-gray600 block">입·출차 시간 선택</span>
           <div className="mt-2 flex flex-col xl:flex-row xl:items-center">
-            <div className="flex items-center">
+            <div className="flex items-center cursor-pointer">
               <input
                 type="date"
-                className="border px-2 py-1 rounded-md mr-2 text-gray500 bg-blue100 border-blue200"
+                className="border px-2 py-1 rounded-md mr-2 text-gray500 bg-blue100 border-blue200 cursor-pointer"
                 value={dates.startDate}
                 onChange={onDateChange("startDate")}
               />
               <select
-                className="border px-2 py-1 rounded-md text-gray500 bg-blue100 border-blue200 appearance-none"
+                className="border px-2 py-1 rounded-md text-gray500 bg-blue100 border-blue200 appearance-none cursor-pointer"
                 value={dates.startTime}
                 onChange={onDateChange("startTime")}
               >
@@ -128,15 +133,15 @@ function ParkingForm({ dates, parkingOptions, onOptionChange, onDateChange, onCa
                 ))}
               </select>
             </div>
-            <div className="flex items-center mt-2 xl:mt-0 xl:ml-4">
+            <div className="flex items-center mt-2 xl:mt-0 xl:ml-4 cursor-pointer">
               <input
                 type="date"
-                className="border px-2 py-1 rounded-md mr-2 text-gray500 bg-blue100 border-blue200"
+                className="border px-2 py-1 rounded-md mr-2 text-gray500 bg-blue100 border-blue200 cursor-pointer"
                 value={dates.endDate}
                 onChange={onDateChange("endDate")}
               />
               <select
-                className="border px-2 py-1 rounded-md text-gray500 bg-blue100 border-blue200 appearance-none"
+                className="border px-2 py-1 rounded-md text-gray500 bg-blue100 border-blue200 appearance-none cursor-pointer"
                 value={dates.endTime}
                 onChange={onDateChange("endTime")}
               >
@@ -150,8 +155,11 @@ function ParkingForm({ dates, parkingOptions, onOptionChange, onDateChange, onCa
           </div>
         </div>
         <button
-          className="h-[36px] w-[96px] bg-blue500 text-white px-2 rounded-[8px] mt-10 xl:mt-8 xl:ml-2 transition-all duration-200 ease-in-out xl:translate-x-[-36px] order-5"
+          disabled={!isFormValid}
           onClick={onCalculate}
+          className={`h-[36px] w-[96px] text-white px-2 rounded-[8px] mt-10 xl:mt-8 xl:ml-2 transition-all duration-200 ease-in-out xl:translate-x-[-36px] order-5 ${
+            isFormValid ? "bg-blue500 cursor-pointer" : "bg-gray400 cursor-not-allowed"
+          }`}
         >
           🚗 조회
         </button>
@@ -186,7 +194,6 @@ function ResultView({ fee, onReset }: ResultViewProps) {
   )
 }
 
-
 function FormSkeleton() {
   return (
     <div className="flex flex-col justify-center items-start h-[520px] xl:h-full animate-pulse">
@@ -209,7 +216,6 @@ function ResultSkeleton() {
     </div>
   )
 }
-
 
 export default function ParkingFeeCalculator() {
   const [holidays, setHolidays] = useState<string[]>([])
@@ -238,9 +244,9 @@ export default function ParkingFeeCalculator() {
   }, [])
 
   const [dates, setDates] = useState({
-    startDate: "2023-03-13",
+    startDate: formatDate(new Date()),
     startTime: "00:00",
-    endDate: "2023-03-13",
+    endDate: "", 
     endTime: "00:00"
   })
   const [parkingOptions, setParkingOptions] = useState({
@@ -257,12 +263,10 @@ export default function ParkingFeeCalculator() {
 
   useEffect(() => {
     const today = new Date()
-    const startDate = new Date(today)
-    startDate.setDate(today.getDate() - 7)
     setDates(prev => ({
       ...prev,
-      startDate: formatDate(startDate),
-      endDate: formatDate(today)
+      startDate: formatDate(today),
+      endDate: ""
     }))
     const timer = setTimeout(() => {
       setInitialLoading(false)
