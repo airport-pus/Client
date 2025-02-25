@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import Image from "next/image"
 import Footer from "./footer/test"
 import Header from "./header/page"
 import ParkingCongestion from "./components/ParkingCongestion/page"
@@ -35,79 +36,81 @@ export default function Home() {
 
   useEffect(() => {
     const handleBeforeInstallPrompt = (event: BeforeInstallPromptEvent) => {
-      event.preventDefault();
-      setDeferredPrompt(event);
+      event.preventDefault()
+      setDeferredPrompt(event)
 
       if (window.innerWidth < 768) {
-        setShowPwaBanner(true);
+        setShowPwaBanner(true)
       }
-    };
+    }
 
-    window.addEventListener("beforeinstallprompt", (event) => {
-      handleBeforeInstallPrompt(event as BeforeInstallPromptEvent);
-    });
+    const beforeInstallPromptHandler = (event: Event) => {
+      handleBeforeInstallPrompt(event as BeforeInstallPromptEvent)
+    }
+
+    window.addEventListener("beforeinstallprompt", beforeInstallPromptHandler)
 
     if (process.env.NODE_ENV === "development") {
-      setShowPwaBanner(true);
+      setShowPwaBanner(true)
     }
 
     return () => {
-      window.removeEventListener("beforeinstallprompt", (event) => {
-        handleBeforeInstallPrompt(event as BeforeInstallPromptEvent);
-      });
-    };
-  }, []);
+      window.removeEventListener("beforeinstallprompt", beforeInstallPromptHandler)
+    }
+  }, [])
 
   useEffect(() => {
     const isIos = () => {
-      return /iphone|ipad|ipod/.test(window.navigator.userAgent.toLowerCase());
-    };
-
-    if (isIos() && !(window.navigator as any).standalone) {
-      setShowIosBanner(true);
+      return /iphone|ipad|ipod/.test(window.navigator.userAgent.toLowerCase())
     }
-  }, []);
+
+    if (isIos()) {
+      const navigatorWithStandalone = window.navigator as Navigator & { standalone?: boolean }
+      if (!navigatorWithStandalone.standalone) {
+        setShowIosBanner(true)
+      }
+    }
+  }, [])
 
   useEffect(() => {
     const updateBodyOverflow = () => {
       if (showPwaBanner || showIosBanner) {
-        document.body.style.overflow = 'hidden';
+        document.body.style.overflow = 'hidden'
       } else {
-        document.body.style.overflow = 'auto';
+        document.body.style.overflow = 'auto'
       }
-    };
-    updateBodyOverflow();
+    }
+    updateBodyOverflow()
 
-    window.addEventListener('resize', updateBodyOverflow);
+    window.addEventListener('resize', updateBodyOverflow)
 
     return () => {
-      window.removeEventListener('resize', updateBodyOverflow);
-      document.body.style.overflow = 'auto';
-    };
-  }, [showPwaBanner, showIosBanner]);
+      window.removeEventListener('resize', updateBodyOverflow)
+      document.body.style.overflow = 'auto'
+    }
+  }, [showPwaBanner, showIosBanner])
 
   const handleInstallPwa = () => {
     if (deferredPrompt) {
-      deferredPrompt.prompt();
+      deferredPrompt.prompt()
       deferredPrompt.userChoice.then((choiceResult: { outcome: 'accepted' | 'dismissed'; platform: string }) => {
         if (choiceResult.outcome === "accepted") {
-          console.log("PWA 설치 완료!");
+          console.log("PWA 설치 완료!")
         } else {
-          console.log("PWA 설치 취소");
+          console.log("PWA 설치 취소")
         }
-        setShowPwaBanner(false);
-        setDeferredPrompt(null);
-      });
+        setShowPwaBanner(false)
+        setDeferredPrompt(null)
+      })
     }
-  };
+  }
 
   const handleIosInstall = () => {
-    window.location.href = "/ios";
-  };
+    window.location.href = "/ios"
+  }
 
   return (
     <div className="flex flex-col min-h-screen">
-      {/* Android 등 beforeinstallprompt 지원하는 기기용 배너 (모바일 전용) */}
       {showPwaBanner && (
         <>
           <div className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden" />
@@ -115,9 +118,11 @@ export default function Home() {
             <div className="translate-y-[40px] w-full">
               <div className="flex flex-col justify-end flex-grow">
                 <div className="text-center">
-                  <img
+                  <Image
                     src="/pwa.svg"
                     alt="Logo"
+                    width={240}
+                    height={240}
                     className="mx-auto mb-4 mt-[-60px] w-[240px] mb-[0px]"
                   />
                   <div>
@@ -155,9 +160,11 @@ export default function Home() {
             <div className="translate-y-[40px] w-full">
               <div className="flex flex-col justify-end flex-grow">
                 <div className="text-center">
-                  <img
+                  <Image
                     src="/pwa.svg"
                     alt="Logo"
+                    width={240}
+                    height={240}
                     className="mx-auto mb-4 mt-[-60px] w-[240px] mb-[0px]"
                   />
                   <div>
