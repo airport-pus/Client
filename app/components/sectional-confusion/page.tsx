@@ -107,7 +107,7 @@ const TrafficStatus = () => {
     fetcher,
     { 
       refreshInterval: 30000,
-      revalidateOnFocus: true,
+      revalidateOnFocus: false,
       dedupingInterval: 60000, 
     
     }

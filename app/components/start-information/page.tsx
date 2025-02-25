@@ -16,7 +16,7 @@ export default function StartInformation() {
     `${process.env.NEXT_PUBLIC_API_BASE_URL}/apron?io=O`,
     fetcher,
     {
-      revalidateOnFocus: true,
+      revalidateOnFocus: false,
       refreshInterval: 30000,
       dedupingInterval: 60000,
     }
