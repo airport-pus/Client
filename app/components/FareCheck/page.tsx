@@ -60,9 +60,9 @@ function ParkingOptions({ parkingOptions, onOptionChange }: ParkingOptionsProps)
       </div>
       <div className="mb-4 mt-[-3px] ml-[120px] order-3 hidden xl:block">
         <span className="text-sm font-semibold text-gray600 ml-[-40px] whitespace-nowrap">할인</span>
-        <div className="flex items-center mt-[2]">
+        <div className="flex items-center mt-[2] cursor-pointer">
           <select
-            className="border px-3 py-1 rounded-md text-gray500 bg-blue100 border-blue200 appearance-none"
+            className="border px-3 py-1 rounded-md text-gray500 bg-blue100 border-blue200 appearance-none cursor-pointer"
             value={parkingOptions.discountType}
             onChange={onOptionChange("discountType")}
             style={{ transform: "translateX(-40px) translateY(3px)" }}
@@ -109,15 +109,15 @@ function ParkingForm({ dates, parkingOptions, onOptionChange, onDateChange, onCa
         <div className="flex-1">
           <span className="text-sm font-semibold text-gray600 block">입·출차 시간 선택</span>
           <div className="mt-2 flex flex-col xl:flex-row xl:items-center">
-            <div className="flex items-center">
+            <div className="flex items-center cursor-pointer">
               <input
                 type="date"
-                className="border px-2 py-1 rounded-md mr-2 text-gray500 bg-blue100 border-blue200"
+                className="border px-2 py-1 rounded-md mr-2 text-gray500 bg-blue100 border-blue200 cursor-pointer"
                 value={dates.startDate}
                 onChange={onDateChange("startDate")}
               />
               <select
-                className="border px-2 py-1 rounded-md text-gray500 bg-blue100 border-blue200 appearance-none"
+                className="border px-2 py-1 rounded-md text-gray500 bg-blue100 border-blue200 appearance-none cursor-pointer"
                 value={dates.startTime}
                 onChange={onDateChange("startTime")}
               >
@@ -128,15 +128,15 @@ function ParkingForm({ dates, parkingOptions, onOptionChange, onDateChange, onCa
                 ))}
               </select>
             </div>
-            <div className="flex items-center mt-2 xl:mt-0 xl:ml-4">
+            <div className="flex items-center mt-2 xl:mt-0 xl:ml-4 cursor-pointer">
               <input
                 type="date"
-                className="border px-2 py-1 rounded-md mr-2 text-gray500 bg-blue100 border-blue200"
+                className="border px-2 py-1 rounded-md mr-2 text-gray500 bg-blue100 border-blue200 cursor-pointer"
                 value={dates.endDate}
                 onChange={onDateChange("endDate")}
               />
               <select
-                className="border px-2 py-1 rounded-md text-gray500 bg-blue100 border-blue200 appearance-none"
+                className="border px-2 py-1 rounded-md text-gray500 bg-blue100 border-blue200 appearance-none cursor-pointer"
                 value={dates.endTime}
                 onChange={onDateChange("endTime")}
               >
