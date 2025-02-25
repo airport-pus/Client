@@ -14,7 +14,11 @@ export default function StartInformation() {
   const { data, error } = useSWR<FlightData[]>(
     `${process.env.NEXT_PUBLIC_API_BASE_URL}/apron?io=I`,
     fetcher,
-    { refreshInterval: 30000 }
+    {
+      revalidateOnFocus: true,
+      refreshInterval: 30000,
+      dedupingInterval: 60000,
+    }
   );
 
   const [displayedFlights, setDisplayedFlights] = useState<DisplayFlight[]>([]);
@@ -237,7 +241,6 @@ export default function StartInformation() {
         </div>
       </div>
 
-      {/* 데스크톱 화면 */}
       <div className="hidden md:block">
         <div className="mt-6 grid grid-cols-5 bg-grayHover p-2 text-center text-gray600 font-regular text-[14px]">
           <div>항공사 및 항공편명</div>
@@ -257,7 +260,6 @@ export default function StartInformation() {
         />
       </div>
 
-      {/* 모바일 화면 */}
       <div className="md:hidden divide-y divide-gray-300">
         {displayedFlights.length === 0 && inputValue && (
           <div className="text-center text-gray700 mt-8 mb-4">
@@ -281,7 +283,6 @@ export default function StartInformation() {
               <strong className="font-medium">출발지: </strong>
               <span className="text-black">{flight.destination}</span>
             </div>
-            {/* 여기에 있던 ㅈ 문자를 삭제했습니다. */}
             <div className="mb-1 text-gray600">
               <strong className="font-medium">탑승구: </strong>
               <span className="text-blue500">{flight.gate}</span>
