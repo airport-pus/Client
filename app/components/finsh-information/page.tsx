@@ -249,18 +249,11 @@ export default function StartInformation() {
           <div>항공편 상태</div>
           <div>시간</div>
         </div>
-
-        {displayedFlights.length === 0 && !inputValue && (
-          <div className="text-center text-gray700 mt-8 mb-4">
-            도착 주기장에 대한 항공편 정보가 없습니다.
-          </div>
-        )}
         {displayedFlights.length === 0 && inputValue && (
           <div className="text-center text-gray700 mt-8 mb-4">
             검색한 항공편에 대한 정보가 없습니다.
           </div>
         )}
-
         <StartData
           displayedFlights={displayedFlights}
           lastFlightElementRef={lastFlightElementRef}
@@ -268,11 +261,6 @@ export default function StartInformation() {
       </div>
 
       <div className="md:hidden divide-y divide-gray-300">
-        {displayedFlights.length === 0 && !inputValue && (
-          <div className="text-center text-gray700 mt-8 mb-4">
-            도착 주기장에 대한 항공편 정보가 없습니다.
-          </div>
-        )}
         {displayedFlights.length === 0 && inputValue && (
           <div className="text-center text-gray700 mt-8 mb-4">
             검색한 항공편에 대한 정보가 없습니다.
