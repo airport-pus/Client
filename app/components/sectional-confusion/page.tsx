@@ -74,6 +74,13 @@ const getEnglishSectionName = (section: string) => {
   }
 };
 
+function getLocalDateString(date: Date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
 const TrafficStatus = () => {
   const [selectedSection, setSelectedSection] = useState<string>("1구간");
   const [selectedDate] = useState<DateType>("오늘");
@@ -109,7 +116,6 @@ const TrafficStatus = () => {
       refreshInterval: 30000,
       revalidateOnFocus: false,
       dedupingInterval: 60000, 
-    
     }
   );
 
@@ -207,14 +213,19 @@ const TrafficStatus = () => {
 
   const extractDateAndHour = (dateStr: string) => {
     const [datePart, hourPart] = dateStr.split(" ");
+    if (!datePart || !hourPart) {
+      return { date: "", hour: "0" };
+    }
     const hour = hourPart.replace("시", "");
     return { date: datePart, hour };
   };
 
-  const todayDateStr = new Date().toISOString().split("T")[0];
-  const yesterday = new Date();
-  yesterday.setDate(yesterday.getDate() - 1);
-  const yesterdayDateStr = yesterday.toISOString().split("T")[0];
+  const now = new Date();
+  const todayDateStr = getLocalDateString(now);
+
+  const yesterdayDate = new Date(now);
+  yesterdayDate.setDate(yesterdayDate.getDate() - 1);
+  const yesterdayDateStr = getLocalDateString(yesterdayDate);
 
   let recordsForSelectedDate: CongestionRecord[] = [];
   if (congestionHistory) {
@@ -258,7 +269,7 @@ const TrafficStatus = () => {
 
   const chartLabelDate = dedupedRecords.length > 0
     ? extractDateAndHour(dedupedRecords[0].date).date
-    : todayDateStr;
+    : todayDateStr; 
 
   const chartData = {
     labels: dynamicLabels,
@@ -332,7 +343,7 @@ const TrafficStatus = () => {
       },
     },
   };
-  
+
   if (historyError) {
     return <div>데이터 로드를 실패했습니다.</div>;
   }

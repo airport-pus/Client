@@ -75,7 +75,9 @@ export default function Home() {
   useEffect(() => {
     const updateBodyOverflow = () => {
       if (showPwaBanner || showIosBanner) {
-        document.body.style.overflow = 'hidden'
+        if (window.innerWidth < 768) {
+          document.body.style.overflow = 'hidden'
+        }
       } else {
         document.body.style.overflow = 'auto'
       }
