@@ -204,7 +204,7 @@ export default function StartInformation() {
           </div>
         )}
       </>
-    );
+    );  
   }
 
   return (
