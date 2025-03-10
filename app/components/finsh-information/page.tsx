@@ -25,6 +25,7 @@ export default function StartInformation() {
   const [hasMore, setHasMore] = useState(true);
   const [inputValue, setInputValue] = useState("");
   const [isMobile, setIsMobile] = useState(false);
+  const [selectedType, setSelectedType] = useState("all");
   const observer = useRef<IntersectionObserver | null>(null);
 
   useEffect(() => {
@@ -221,23 +222,32 @@ export default function StartInformation() {
         <p className="text-[16px] text-red500 mt-1">
           • <strong>빨간색 표시</strong>: 항공편이 지연된 경우, 지연 시간을 함께 표시합니다.
         </p>
-        <div className="mt-4">
+        <div className="mt-4 flex items-center gap-3">
           <div className="relative">
             <Image
               src="/search.svg"
               alt="검색 아이콘"
-              width={16}
-              height={16}
+              width={24}
+              height={24}
               className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray700"
             />
             <input
               type="text"
               placeholder="항공편명 검색"
-              className="pl-10 p-2 border border-blue500 rounded w-[280px]"
+              className="pl-10 p-2 border border-blue500 rounded w-[280px] focus:outline-none focus:ring-2 focus:ring-blue500/50"
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
             />
           </div>
+          <select
+            value={selectedType}
+            onChange={(e) => setSelectedType(e.target.value)}
+            className="p-2 border border-blue500 rounded bg-white text-[14px] focus:outline-none focus:ring-2 focus:ring-blue500/50 cursor-pointer"
+          >
+            <option value="all">전체</option>
+            <option value="domestic">국내선</option>
+            <option value="international">국제선</option>
+          </select>
         </div>
       </div>
 
