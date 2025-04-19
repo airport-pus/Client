@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import GoogleAnalytics from './components/GoogleAnalytics'
+import { Inter } from "next/font/google";
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -12,6 +13,8 @@ const geistMono = Geist_Mono({
   variable: '--font-geist-mono',
   subsets: ['latin'],
 });
+
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: 'Airport-PUS',
@@ -31,9 +34,16 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ko">
-      <head />
+      <head>
+        <link
+          rel="stylesheet"
+          as="style"
+          crossOrigin="anonymous"
+          href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css"
+        />
+      </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased ${inter.className} font-pretendard`}
       >
         <GoogleAnalytics />
         {children}
