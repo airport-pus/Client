@@ -148,11 +148,14 @@ export default function StartInformation() {
             <div className="h-6 w-5/6 bg-gray-200 rounded animate-pulse mb-2"></div>
             <div className="h-6 w-1/3 bg-gray-200 rounded animate-pulse"></div>
           </div>
-          <div className="relative">
-            <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
-              <div className="h-4 w-4 bg-gray-200 rounded animate-pulse"></div>
+          <div className="flex flex-col md:flex-row md:items-center gap-3">
+            <div className="relative">
+              <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
+                <div className="h-4 w-4 bg-gray-200 rounded animate-pulse"></div>
+              </div>
+              <div className="h-10 w-full md:w-[280px] bg-gray-200 rounded animate-pulse pl-10"></div>
             </div>
-            <div className="h-10 w-[320px] bg-gray-200 rounded animate-pulse pl-10"></div>
+            <div className="h-10 w-full md:w-[280px] bg-gray-200 rounded animate-pulse"></div>
           </div>
         </div>
 
