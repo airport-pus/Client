@@ -237,7 +237,7 @@ export default function StartInformation() {
         <p className="text-[16px] text-red500 mt-1">
           • <strong>빨간색 표시</strong>: 항공편이 지연된 경우, 지연 시간을 함께 표시합니다.
         </p>
-        <div className="mt-4 flex items-center gap-3">
+        <div className="mt-4 flex flex-col md:flex-row md:items-center gap-3">
           <div className="relative">
             <Image
               src="/search.svg"
@@ -249,7 +249,7 @@ export default function StartInformation() {
             <input
               type="text"
               placeholder="항공편명 검색"
-              className="pl-10 p-2 border border-blue500 rounded w-[280px] focus:outline-none focus:ring-2 focus:ring-blue500/50"
+              className="pl-10 p-2 border border-blue500 rounded w-full md:w-[280px] focus:outline-none focus:ring-2 focus:ring-blue500/50"
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
             />
@@ -257,7 +257,7 @@ export default function StartInformation() {
           <select
             value={selectedType}
             onChange={(e) => setSelectedType(e.target.value)}
-            className="pl-3 p-2 border border-blue500 rounded w-[280px] focus:outline-none focus:ring-2 focus:ring-blue500/50 cursor-pointer appearance-none bg-no-repeat bg-right"
+            className="pl-3 p-2 border border-blue500 rounded w-full md:w-[280px] focus:outline-none focus:ring-2 focus:ring-blue500/50 cursor-pointer appearance-none bg-no-repeat bg-right"
             style={{
               backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E")`,
               backgroundPosition: 'right 8px center',
