@@ -87,7 +87,7 @@ const ParkingCongestion = () => {
             <div className="w-8 h-3 bg-gray-200 rounded ml-1"></div>
           </div>
         </div>
-        <div className="h-[200px] xl:h-[170px] w-full bg-gray-200 rounded"></div>
+        <div className="h-[150px] xl:h-[150px] w-full bg-gray-200 rounded"></div>
       </div>
     )
   }
