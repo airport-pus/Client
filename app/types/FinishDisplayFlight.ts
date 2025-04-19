@@ -8,4 +8,5 @@ export interface DisplayFlight {
   modifiedTime: string;
   delay: string | null;
   logo: string;
+  line: string;
 }

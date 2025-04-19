@@ -51,6 +51,7 @@ export default function StartInformation() {
         modifiedTime: formatTime(flight.etd || "-"),
         delay: calculateDelay(flight.std, flight.etd || "0"),
         logo: `/logos/${getLogo(flight.airlineEnglish)}`,
+        line: flight.line
       };
 
       if (!uniqueFlights.has(flight.flightNumber)) {
@@ -71,9 +72,15 @@ export default function StartInformation() {
   }, [data]);
 
   useEffect(() => {
-    const filtered = allFlightData.filter((flight) =>
-      flight.flightNumber.toLowerCase().includes(inputValue.toLowerCase())
-    );
+    const filtered = allFlightData.filter((flight) => {
+      const matchesSearch = flight.flightNumber.toLowerCase().includes(inputValue.toLowerCase());
+      const matchesType = 
+        selectedType === 'all' ? true :
+        selectedType === 'domestic' ? flight.line === '국내' :
+        flight.line === '국제';
+      return matchesSearch && matchesType;
+    });
+
     if (inputValue.trim()) {
       setDisplayedFlights(filtered);
       setHasMore(false);
@@ -82,11 +89,11 @@ export default function StartInformation() {
         setDisplayedFlights(filtered);
         setHasMore(false);
       } else {
-        setDisplayedFlights(allFlightData.slice(0, 10));
-        setHasMore(allFlightData.length > 10);
+        setDisplayedFlights(filtered.slice(0, 10));
+        setHasMore(filtered.length > 10);
       }
     }
-  }, [inputValue, allFlightData, isMobile]);
+  }, [inputValue, allFlightData, isMobile, selectedType]);
 
   const lastFlightElementRef = (node: HTMLElement | null) => {
     if (isMobile || !node || !hasMore) return;
@@ -101,13 +108,21 @@ export default function StartInformation() {
 
   const loadMoreFlights = () => {
     if (inputValue.trim()) return;
-    const nextFlights = allFlightData.slice(
+    const filteredFlights = allFlightData.filter((flight) => {
+      const matchesType = 
+        selectedType === 'all' ? true :
+        selectedType === 'domestic' ? flight.line === '국내' :
+        flight.line === '국제';
+      return matchesType;
+    });
+    
+    const nextFlights = filteredFlights.slice(
       displayedFlights.length,
       displayedFlights.length + 10
     );
     setDisplayedFlights((prev) => {
       const updated = [...prev, ...nextFlights];
-      if (updated.length >= allFlightData.length) {
+      if (updated.length >= filteredFlights.length) {
         setHasMore(false);
       }
       return updated;
@@ -205,7 +220,7 @@ export default function StartInformation() {
 
   return (
     <>
-      <div className="mt-14 p-4 border-l-4 border-blue500 bg-blue100 text-black mt-5">
+      <div className="mt-5 p-4 border-l-4 border-blue500 bg-blue100 text-black">
         <p className="font-bold text-[19px]">도착 주기장 이용 안내</p>
         <p className="text-[16px] mt-2">
           • 이 주기장은 김해국제공항에 도착하는 항공기의 주기장입니다.
@@ -242,9 +257,14 @@ export default function StartInformation() {
           <select
             value={selectedType}
             onChange={(e) => setSelectedType(e.target.value)}
-            className="p-2 border border-blue500 rounded bg-white text-[14px] focus:outline-none focus:ring-2 focus:ring-blue500/50 cursor-pointer"
+            className="pl-3 p-2 border border-blue500 rounded w-[280px] focus:outline-none focus:ring-2 focus:ring-blue500/50 cursor-pointer appearance-none bg-no-repeat bg-right"
+            style={{
+              backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E")`,
+              backgroundPosition: 'right 8px center',
+              backgroundSize: '16px'
+            }}
           >
-            <option value="all">전체</option>
+            <option value="all">전체 항공편</option>
             <option value="domestic">국내선</option>
             <option value="international">국제선</option>
           </select>
@@ -260,14 +280,9 @@ export default function StartInformation() {
           <div>시간</div>
         </div>
 
-        {displayedFlights.length === 0 && !inputValue && (
+        {displayedFlights.length === 0 && (
           <div className="text-center text-gray700 mt-8 mb-4">
-            현재 출발 주기장에 대한 항공편 정보가 없습니다.
-          </div>
-        )}
-        {displayedFlights.length === 0 && inputValue && (
-          <div className="text-center text-gray700 mt-8 mb-4">
-            검색한 항공편에 대한 정보가 없습니다.
+            {inputValue ? "검색한 항공편에 대한 정보가 없습니다." : "현재 도착 주기장에 대한 항공편 정보가 없습니다."}
           </div>
         )}
 
@@ -278,18 +293,13 @@ export default function StartInformation() {
       </div>
 
       <div className="md:hidden divide-y divide-gray-300">
-        {displayedFlights.length === 0 && !inputValue && (
+        {displayedFlights.length === 0 && (
           <div className="text-center text-gray700 mt-8 mb-4">
-            현재 도착 주기장에 대한 항공편 정보가 없습니다.
-          </div>
-        )}
-        {displayedFlights.length === 0 && inputValue && (
-          <div className="text-center text-gray700 mt-8 mb-4">
-            검색한 항공편에 대한 정보가 없습니다.
+            {inputValue ? "검색한 항공편에 대한 정보가 없습니다." : "현재 도착 주기장에 대한 항공편 정보가 없습니다."}
           </div>
         )}
         {displayedFlights.map((flight, index) => (
-          <div key={`${flight.flightNumber}-${index}`} className="bg-white p-4">
+          <div key={flight.flightNumber || index} className="bg-white p-4">
             <div className="flex justify-between items-center mb-2">
               <div className="font-bold text-lg text-black">
                 {flight.airline} {flight.flightNumber}
@@ -311,29 +321,22 @@ export default function StartInformation() {
             </div>
             <div className="mb-1 text-gray600">
               <strong className="font-medium">상태: </strong>
-              <span
-                className={`text-${
-                  flight.status === "지연" ? "red500" : "blue500"
-                }`}
-              >
+              <span className={`text-${flight.status === '지연' ? 'red500' : 'blue500'}`}>
                 {flight.status}
               </span>
             </div>
             <div className="text-gray600">
               {flight.scheduledTime === flight.modifiedTime ? (
                 <span>
-                  <strong className="font-medium">시간: </strong>{" "}
-                  {flight.modifiedTime}
+                  <strong className="font-medium">시간: </strong> {flight.modifiedTime}
                 </span>
               ) : (
                 <span>
                   <div>
-                    <strong className="font-medium">예정: </strong>{" "}
-                    {flight.scheduledTime}
+                    <strong className="font-medium">예정: </strong> {flight.scheduledTime}
                   </div>
                   <div>
-                    <strong className="font-medium">변경: </strong>{" "}
-                    {flight.modifiedTime}
+                    <strong className="font-medium">변경: </strong> {flight.modifiedTime}
                     {flight.delay && (
                       <span className="text-red500"> ({flight.delay})</span>
                     )}
@@ -347,3 +350,4 @@ export default function StartInformation() {
     </>
   );
 }
+  
