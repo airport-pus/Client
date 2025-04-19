@@ -73,7 +73,8 @@ export default function StartInformation() {
         scheduledTime: updateFlightTimeWithToday(formatTime(flight.std)),
         modifiedTime: updateFlightTimeWithToday(formatTime(flight.etd)),
         delay: calculateDelay(flight.std, flight.etd),
-        logo: `/logos/${getLogo(flight.airlineEnglish)}`
+        logo: `/logos/${getLogo(flight.airlineEnglish)}`,
+        line: flight.line
       };
   
       if (!uniqueFlights.has(flight.flightNumber)) {
@@ -90,15 +91,27 @@ export default function StartInformation() {
   
 
   useEffect(() => {
-    const filteredFlights = allFlightData.filter((flight) =>
-      flight.flightNumber.toLowerCase().includes(inputValue.toLowerCase())
-    );
-    setDisplayedFlights(
-      inputValue.trim()
-        ? filteredFlights
-        : allFlightData.slice(0, isMobile ? filteredFlights.length : 10)
-    );
-  }, [inputValue, allFlightData, isMobile]);
+    const filterFlights = () => {
+      const filteredFlights = allFlightData.filter((flight) => {
+        const matchesSearch = flight.flightNumber.toLowerCase().includes(inputValue.toLowerCase());
+        const matchesType = 
+          selectedType === 'all' ? true :
+          selectedType === 'domestic' ? flight.line === '국내' :
+          flight.line === '국제';
+        
+        console.log('Flight:', flight.flightNumber, 'Line:', flight.line, 'Selected:', selectedType, 'Matches:', matchesType); // 디버깅용
+        return matchesSearch && matchesType;
+      });
+
+      setDisplayedFlights(
+        inputValue.trim()
+          ? filteredFlights
+          : filteredFlights.slice(0, isMobile ? filteredFlights.length : 10)
+      );
+    };
+
+    filterFlights();
+  }, [inputValue, selectedType, isMobile, allFlightData]);
 
   const observer = useRef<IntersectionObserver | null>(null);
   const lastFlightElementRef = (node: HTMLElement | null) => {
@@ -115,7 +128,16 @@ export default function StartInformation() {
 
   const loadMoreFlights = () => {
     if (inputValue.trim()) return;
-    setDisplayedFlights(allFlightData);
+    
+    const filteredFlights = allFlightData.filter((flight) => {
+      const matchesType = 
+        selectedType === 'all' ? true :
+        selectedType === 'domestic' ? flight.line === '국내' :
+        flight.line === '국제';
+      return matchesType;
+    });
+    
+    setDisplayedFlights(filteredFlights);
   };
 
   if (error) {
@@ -137,11 +159,14 @@ export default function StartInformation() {
             <div className="h-6 w-5/6 bg-gray-200 rounded animate-pulse mb-2"></div>
             <div className="h-6 w-1/3 bg-gray-200 rounded animate-pulse"></div>
           </div>
-          <div className="relative">
-            <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
-              <div className="h-4 w-4 bg-gray-200 rounded animate-pulse"></div>
+          <div className="flex flex-col md:flex-row md:items-center gap-3">
+            <div className="relative">
+              <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
+                <div className="h-4 w-4 bg-gray-200 rounded animate-pulse"></div>
+              </div>
+              <div className="h-10 w-full md:w-[280px] bg-gray-200 rounded animate-pulse pl-10"></div>
             </div>
-            <div className="h-10 w-[320px] bg-gray-200 rounded animate-pulse pl-10"></div>
+            <div className="h-10 w-full md:w-[280px] bg-gray-200 rounded animate-pulse"></div>
           </div>
         </div>
 
@@ -226,7 +251,7 @@ export default function StartInformation() {
         <p className="text-[16px] text-red500 mt-1">
           • <strong>빨간색 표시</strong>: 항공편이 지연된 경우, 지연 시간을 함께 표시합니다.
         </p>
-        <div className="mt-4 flex items-center gap-3">
+        <div className="mt-4 flex flex-col md:flex-row md:items-center gap-3">
           <div className="relative">
             <Image
               src="/search.svg"
@@ -238,7 +263,7 @@ export default function StartInformation() {
             <input
               type="text"
               placeholder="항공편명 검색"
-              className="pl-10 p-2 border border-blue500 rounded w-[280px] focus:outline-none focus:ring-2 focus:ring-blue500/50"
+              className="pl-10 p-2 border border-blue500 rounded w-full md:w-[280px] focus:outline-none focus:ring-2 focus:ring-blue500/50"
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
             />
@@ -246,9 +271,14 @@ export default function StartInformation() {
           <select
             value={selectedType}
             onChange={(e) => setSelectedType(e.target.value)}
-            className="p-2 border border-blue500 rounded bg-white text-[14px] focus:outline-none focus:ring-2 focus:ring-blue500/50 cursor-pointer"
+            className="pl-3 p-2 border border-blue500 rounded w-full md:w-[280px] focus:outline-none focus:ring-2 focus:ring-blue500/50 cursor-pointer appearance-none bg-no-repeat bg-right"
+            style={{
+              backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E")`,
+              backgroundPosition: 'right 8px center',
+              backgroundSize: '16px'
+            }}
           >
-            <option value="all">전체</option>
+            <option value="all">전체 항공편</option>
             <option value="domestic">국내선</option>
             <option value="international">국제선</option>
           </select>
