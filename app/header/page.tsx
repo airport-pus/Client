@@ -1,81 +1,86 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import Image from "next/image"
+import { useState, useRef, useEffect } from "react"
 import Link from "next/link"
+import Image from "next/image"
+
+const AIRPORTS = [
+  { name: "김포국제공항", href: "#" },
+  { name: "김해국제공항", href: "/" },
+  { name: "인천국제공항", href: "#" },
+  { name: "제주국제공항", href: "#" },
+  { name: "청주국제공항", href: "#" },
+  { name: "대구국제공항", href: "#" },
+  { name: "양양국제공항", href: "#" },
+]
+
+const DEFAULT_AIRPORT = "김포국제공항"
 
 export default function Header() {
-  const [visitCount, setVisitCount] = useState<number>(0);
+  const [isAirportOpen, setIsAirportOpen] = useState(false)
+  const [selectedAirport, setSelectedAirport] = useState(DEFAULT_AIRPORT)
+  const airportRef = useRef<HTMLLIElement>(null)
 
   useEffect(() => {
-    const incrementAndFetchVisitCount = async () => {
-      try {
-        await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/visit`, {
-          method: 'POST',
-          credentials: "include", 
-        });
-
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/visit`, {
-          credentials: "include",
-        });
-        const count = await response.text();
-        setVisitCount(Number(count));
-      } catch (error) {
-        console.error('방문자 수 처리 중 오류가 발생했습니다:', error);
+    const handleClickOutside = (event: MouseEvent) => {
+      if (!airportRef.current?.contains(event.target as Node)) {
+        setIsAirportOpen(false)
       }
-    };
-
-    incrementAndFetchVisitCount();
-  }, []);
+    }
+    document.addEventListener("click", handleClickOutside)
+    return () => document.removeEventListener("click", handleClickOutside)
+  }, [])
 
   return (
-    <div className="col-span-12 flex items-center gap-4 mb-6 mt-10 md:mt-0">
-      <Link href="/dataset">
-        <Image 
-          src="/logo.svg" 
-          alt="PUSAN logo" 
-          width={80} 
-          height={80}
-          className="md:w-[100px] md:h-[100px]" 
-        />
-      </Link>
-      <div className="flex-grow">
-        <h1 className="text-[20px] lg:text-[24px] font-bold text-black whitespace-nowrap">
-          <span className="md:hidden">airport-pus</span>
-          <span className="hidden md:inline">김해국제공항의 모든 정보를 한 곳에서,</span>
-        </h1>
-        <p className="text-[16px] text-gray600">
-          <span className="hidden md:inline">지금까지 </span>
-          <span className="text-blue500 font-semibold">
-            {visitCount.toLocaleString()}
-          </span>
-          <span className="md:hidden">명이 방문했어요.</span>
-          <span className="hidden md:inline">명이 페이지에 방문했어요.</span>
-        </p>
-      </div>
-      <div className="flex items-center space-x-4">
-        <Link 
-          href="/dataset" 
-          className="text-grayCustom text-[14px] ml-4 mt-[-20px] cursor-pointer hidden md:block"
-        >
-          데이터셋
-        </Link>
-
-        <span className="hidden md:inline text-grayCustom text-[14px] ml-4 mt-[-20px]">
-          <Link href="https://docs.google.com/forms/d/e/1FAIpQLSeUhXwKLTGywR7-K-5tq480NcKpLVGyf_A0n_6BP8onk0uPSQ/viewform?usp=dialog">
-            문의하기 
+    <header className="fixed top-0 left-0 w-full h-[76px] flex flex-col justify-center items-center px-6 md:px-[320px] py-[18px] gap-[10px] bg-white/20 backdrop-blur-[50px] z-50 box-border">
+      <div className="w-full max-w-[1280px] flex justify-between items-center">
+        <div className="flex items-center">
+          <Link href="/" className="block">
+            <Image src="/logo.svg" alt="logo" width={80} height={80} className="h-9 w-auto md:h-10" />
           </Link>
-        </span>
+        </div>
 
-        <span
-          className="md:hidden text-grayCustom text-[14px] ml-4 inline-block relative"
-          style={{ left: "-12px" }}
-        >
-          <Link href="https://docs.google.com/forms/d/e/1FAIpQLSeUhXwKLTGywR7-K-5tq480NcKpLVGyf_A0n_6BP8onk0uPSQ/viewform?usp=dialog">
-            문의
-          </Link>
-        </span>
+        <nav className="flex items-center">
+          <ul className="flex list-none gap-6 md:gap-[40px]">
+            <li className="relative flex justify-center" ref={airportRef}>
+              <button
+                type="button"
+                onClick={() => setIsAirportOpen((prev) => !prev)}
+                className="text-[#2F3237] hover:text-[#878787] text-[16px] font-semibold transition-colors cursor-pointer"
+              >
+                공항 선택
+              </button>
+              {isAirportOpen && (
+                  <div className="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-[160px] min-h-[98px] bg-white rounded-[10px] shadow-[0px_0px_10px_rgba(86,93,122,0.14)] flex flex-col items-start py-[8px] z-[100]">
+                    {AIRPORTS.map((airport) => (
+                      <Link
+                        key={airport.name}
+                        href={airport.href}
+                        className="w-full px-3 flex flex-row items-center py-3 rounded-[6px] hover:bg-[#F6F6F7] transition-colors text-[#2F3237] text-[14px] font-medium"
+                        onClick={() => {
+                          setSelectedAirport(airport.name)
+                          setIsAirportOpen(false)
+                        }}
+                      >
+                        {airport.name}
+                      </Link>
+                    ))}
+                  </div>
+              )}
+            </li>
+            <li>
+              <a
+                href="https://docs.google.com/forms/d/e/1FAIpQLSeUhXwKLTGywR7-K-5tq480NcKpLVGyf_A0n_6BP8onk0uPSQ/viewform?usp=dialog"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[#2F3237] hover:text-[#878787] text-[16px] font-semibold transition-colors"
+              >
+                문의하기
+              </a>
+            </li>
+          </ul>
+        </nav>
       </div>
-    </div>
+    </header>
   )
 }

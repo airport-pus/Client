@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import Image from "next/image"
-import Footer from "./footer/test"
+import Footer from "./footer/page"
 import Header from "./header/page"
 import ParkingCongestion from "./components/ParkingCongestion/page"
 import FareCheck from "./components/FareCheck/page"
@@ -116,7 +116,7 @@ export default function Home() {
       {showPwaBanner && (
         <>
           <div className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden" />
-          <div className="fixed bottom-[68px] left-1/2 transform -translate-x-1/2 bg-white text-black font-pretendard md:hidden px-[16px] py-[56px] md:px-[24px] md:py-[24px] rounded-[13px] shadow-lg flex flex-col items-center space-y-[12px] min-w-[300px] md:min-w-[350px] z-50">
+          <div className="fixed bottom-[68px] left-1/2 transform -translate-x-1/2 bg-white text-black md:hidden px-[16px] py-[56px] md:px-[24px] md:py-[24px] rounded-[13px] shadow-lg flex flex-col items-center space-y-[12px] min-w-[300px] md:min-w-[350px] z-50">
             <div className="translate-y-[40px] w-full">
               <div className="flex flex-col justify-end flex-grow">
                 <div className="text-center">
@@ -158,7 +158,7 @@ export default function Home() {
       {showIosBanner && (
         <>
           <div className="fixed inset-0 bg-black bg-opacity-50 z-40" />
-          <div className="fixed bottom-[68px] left-1/2 transform -translate-x-1/2 bg-white text-black font-pretendard px-[16px] py-[56px] md:px-[24px] md:py-[24px] rounded-[13px] shadow-lg flex flex-col items-center space-y-[12px] min-w-[300px] md:min-w-[350px] z-50">
+          <div className="fixed bottom-[68px] left-1/2 transform -translate-x-1/2 bg-white text-black px-[16px] py-[56px] md:px-[24px] md:py-[24px] rounded-[13px] shadow-lg flex flex-col items-center space-y-[12px] min-w-[300px] md:min-w-[350px] z-50">
             <div className="translate-y-[40px] w-full">
               <div className="flex flex-col justify-end flex-grow">
                 <div className="text-center">
@@ -197,10 +197,13 @@ export default function Home() {
         </>
       )}
 
-      <main className="flex-grow 2md:p-8 p-2 bg-[#F3F4F6] font-pretendard">
+      <main className="flex-grow 2md:p-8 p-2 bg-white overflow-x-hidden">
         <div className="max-w-[1280px] mx-auto 2md:px-5 px-2">
           <Header />
+          <div className="h-[76px] shrink-0" aria-hidden="true" />
+        </div>
 
+        <div className="max-w-[1280px] mx-auto 2md:px-5 px-2">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-3 md:gap-5 mb-3 md:mb-5">
             <ParkingCongestion />
             <FareCheck />

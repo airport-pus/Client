@@ -65,6 +65,7 @@ export default {
       },
       fontFamily: {
         pretendard: ["Pretendard", "sans-serif"],
+        poppins: ["var(--font-poppins)", "Poppins", "sans-serif"],
       },
       keyframes: {
         marker: {

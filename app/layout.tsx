@@ -1,8 +1,7 @@
 import type { Metadata } from 'next';
-import { Geist, Geist_Mono } from 'next/font/google';
+import { Geist, Geist_Mono, Poppins } from 'next/font/google';
 import './globals.css';
 import GoogleAnalytics from './components/GoogleAnalytics'
-import { Inter } from "next/font/google";
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -14,7 +13,11 @@ const geistMono = Geist_Mono({
   subsets: ['latin'],
 });
 
-const inter = Inter({ subsets: ["latin"] });
+const poppins = Poppins({
+  weight: ['400', '500', '600', '700'],
+  subsets: ['latin'],
+  variable: '--font-poppins',
+});
 
 export const metadata: Metadata = {
   title: 'Airport-PUS',
@@ -43,7 +46,7 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased ${inter.className} font-pretendard`}
+        className={`${geistSans.variable} ${geistMono.variable} ${poppins.variable} antialiased font-pretendard`}
       >
         <GoogleAnalytics />
         {children}

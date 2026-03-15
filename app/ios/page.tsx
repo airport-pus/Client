@@ -2,15 +2,16 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import Footer from "../footer/test";
+import Footer from "../footer/page";
 import Header from "../header/page"; 
 
 export default function Home() {
   return (
     <div className="flex flex-col min-h-screen">
-      <main className="flex-grow p-4 md:p-8 bg-[#F3F4F6] font-pretendard">
+      <main className="flex-grow p-4 md:p-8 bg-white">
         <div className="max-w-[1280px] mx-auto px-3 md:px-5">
           <Header />
+          <div className="h-[76px] shrink-0" aria-hidden="true" />
 
           <div className="flex flex-col items-center justify-center">
             <div className="text-center max-w-[600px]">
